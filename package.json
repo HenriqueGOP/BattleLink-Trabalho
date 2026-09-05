@@ -1,0 +1,17 @@
+{
+  "name": "pokemon-battle-ipc",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Jogo local de batalha para demonstrar comunicação entre processos com TCP.",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "test": "npm test --prefix server",
+    "lint": "npm run lint --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,25 @@
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const socket = io("http://localhost:3001");
+  const me = Math.random().toString(36).slice(2, 6);
+
+  socket.on("connect", () => {
+    console.log("Conectado como", socket.id);
+    socket.emit("matchmaking:find");
+  });
+
+  socket.on("matchmaking:waiting", () => console.log("Aguardando oponente..."));
+  socket.on("matchmaking:found", ({ state }) => {
+    console.log("Partida encontrada!", state);
+    // A cada 2s faz uma ação aleatória (só pra testar)
+    setInterval(() => {
+      const actions = ["attack", "defend", "special"];
+      socket.emit("game:action", { type: actions[Math.floor(Math.random() * 3)] });
+    }, 2000);
+  });
+  socket.on("game:state", (state) =>
+    console.log(`HP: P1=${state.players[0].hp} P2=${state.players[1].hp} | turno=${state.turn}`));
+  socket.on("game:over", ({ winner }) => console.log("Vencedor:", winner));
+  socket.on("game:opponent-left", () => console.log("Oponente saiu."));
+  socket.on("server:error", ({ message }) => console.warn("Erro:", message));
+</script>
