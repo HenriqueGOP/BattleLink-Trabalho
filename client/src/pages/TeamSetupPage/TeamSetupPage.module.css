@@ -1,0 +1,369 @@
+/* Montagem de golpes: mesmas molduras da batalha (creme + menu azul). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 14px clamp(10px, 2.5vw, 24px) 24px;
+}
+
+/* ---------- cabeçalho ---------- */
+.header {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.title {
+  font-size: clamp(13px, 2.2vw, 20px);
+  letter-spacing: 0.04em;
+  color: var(--hud-face);
+  text-shadow: 2px 2px 0 var(--hud-edge);
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-left: auto;
+}
+
+/* ---------- abas: os seis da equipe ---------- */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  padding: 9px;
+  background: var(--menu-face);
+  border: 3px solid var(--menu-edge);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 3px var(--menu-face),
+    inset 0 0 0 5px #b8cce8,
+    0 4px 0 var(--hud-shadow);
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 7px 5px 8px;
+  cursor: pointer;
+  color: var(--hud-ink);
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  border: 3px solid var(--hud-edge);
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 2px var(--hud-edge-soft), var(--shadow-1);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.tab:hover {
+  transform: translateY(-2px);
+}
+
+.tabActive {
+  border-color: var(--hpbar-label);
+  box-shadow: inset 0 0 0 2px var(--hpbar-label), 0 0 12px rgba(248, 208, 48, 0.4);
+}
+
+.tabIndex {
+  justify-self: start;
+  font-family: var(--font-display);
+  font-size: 6px;
+  color: var(--hud-ink-soft);
+}
+
+.tabSprite {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.tabName {
+  font-family: var(--font-display);
+  font-size: 6px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: capitalize;
+  word-break: break-word;
+}
+
+/* ---------- detalhe: ficha + golpes ---------- */
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 13px 16px;
+  text-align: center;
+  color: var(--hud-ink);
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  border: 3px solid var(--hud-edge);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px var(--hud-edge-soft), 0 4px 0 var(--hud-shadow);
+}
+
+.pokemonName {
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  text-transform: capitalize;
+}
+
+.sprite {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
+}
+
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.infoCard .subtitle {
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  color: var(--hud-ink-soft);
+  margin-top: 4px;
+}
+
+.abilities {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.abilities li {
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-transform: capitalize;
+  color: var(--hud-ink);
+  background: rgba(56, 64, 88, 0.1);
+  border: 2px solid var(--hud-edge-soft);
+}
+
+/* ---------- painel de golpes ---------- */
+.moves {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
+  background: var(--menu-face);
+  border: 3px solid var(--menu-edge);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 3px var(--menu-face),
+    inset 0 0 0 5px #b8cce8,
+    0 4px 0 var(--hud-shadow);
+}
+
+.movesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.movesTitle {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--hud-ink);
+}
+
+.moveCount {
+  padding: 5px 9px;
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--hud-ink);
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  border: 2px solid var(--hud-edge);
+  border-radius: 6px;
+}
+
+.moveCount[data-full='true'] {
+  color: #fff;
+  background: #2f7a3f;
+  border-color: var(--hud-edge);
+}
+
+.chosenRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 30px;
+  align-items: center;
+}
+
+.chosen {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.03em;
+  text-transform: capitalize;
+  color: #fff;
+  background: var(--menu-edge);
+  border: 2px solid var(--hud-edge);
+}
+
+.chosenHint {
+  font-size: 16px;
+  color: var(--hud-ink-soft);
+}
+
+/* grade de golpes: quadrantes como no menu de batalha */
+.moveGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  gap: 7px;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+.moveCard {
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px 9px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--hud-ink);
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  border: 3px solid var(--hud-edge);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px var(--hud-edge-soft);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.moveCard:not(:disabled):hover {
+  transform: translateY(-2px);
+  border-color: var(--menu-edge);
+}
+
+.moveCard:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.moveSelected {
+  border-color: #2f7a3f;
+  box-shadow: inset 0 0 0 2px #2f7a3f, 0 0 10px rgba(47, 122, 63, 0.3);
+}
+
+.moveName {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border-radius: 3px;
+  font-style: normal;
+  font-size: 11px;
+  color: #fff;
+  background: var(--hud-edge-soft);
+  border: 2px solid var(--hud-edge);
+}
+
+.moveSelected .check {
+  background: #2f7a3f;
+}
+
+.moveStats {
+  font-size: 14px;
+  color: var(--hud-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.effect {
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 6px;
+  letter-spacing: 0.04em;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+/* tons de lib/moves.ts */
+.heal,
+.buff { background: #2f7a3f; }
+.ailment,
+.debuff { background: #963434; }
+.info { background: var(--hud-ink-soft); }
+
+.moveActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: flex-end;
+}
+
+/* ---------- rodapé ---------- */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .detail { grid-template-columns: 1fr; }
+  .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab, .moveCard { transition: none; }
+}

@@ -1,0 +1,213 @@
+﻿.page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 10px clamp(10px, 2.5vw, 24px) 18px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.brand b { color: var(--poke-red); }
+
+.ball {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+  border: 2px solid var(--poke-black);
+}
+
+.room {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  color: var(--text-faint);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ---------- espera sincronizada ---------- */
+.waiting {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 380px;
+  text-align: center;
+  padding: 30px;
+  background: var(--bg-panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+}
+
+.waiting h2 {
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.waiting p {
+  font-size: 16px;
+  color: var(--text-faint);
+}
+
+.waitingBall {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 4px solid var(--poke-black);
+  background: linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+  animation: wobble 1.4s ease-in-out infinite;
+}
+@keyframes wobble {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(14deg); }
+}
+
+/* ---------- layout principal ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.commandBtn {
+  width: 100%;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  min-height: 44px;
+}
+
+.backBtn {
+  width: 100%;
+  margin-top: 7px;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+
+.drawer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  animation: drawerIn 0.22s ease both;
+}
+@keyframes drawerIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.drawer:has(> :only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 900px) {
+  .drawer { grid-template-columns: 1fr; }
+}
+
+/* FX LAB: screen shake por trauma (variáveis alimentadas por lib/anim/fx.ts) */
+.stage {
+  translate: var(--fx-shake-x, 0px) var(--fx-shake-y, 0px);
+  rotate: var(--fx-shake-r, 0deg);
+  will-change: translate, rotate;
+}
+
+.stage {
+  position: relative;
+  /* mais baixo que antes: campo + caixa de mensagem + menu cabem numa tela,
+     como no jogo, sem obrigar a rolar para ver os golpes */
+  min-height: clamp(300px, 42vh, 440px);
+  overflow: hidden;
+  border: 3px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
+  /* fundo base escuro: garante contraste sob qualquer cenário */
+  background: var(--bg-base);
+}
+
+/* spots: coluna com os DOIS pares (círculo+sprite); HUDs ancorados nos cantos */
+.spots {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: var(--z-sprites);
+  pointer-events: none;
+}
+.spots > * { pointer-events: auto; }
+
+/* HUDs integrados aos cantos, fora do caminho dos sprites */
+.spots > :first-child { position: absolute; top: 10px; left: 10px; width: min(272px, 56%); }
+/* sprites e HUDs agora ficam em cantos opostos, então basta uma folga pequena */
+.spots > :nth-child(2) { margin-top: clamp(6px, 1.5vw, 14px); }
+.spots > :nth-child(3) { margin-bottom: clamp(6px, 1.5vw, 14px); }
+.spots > :last-child { position: absolute; bottom: 10px; right: 10px; width: min(272px, 56%); }
+
+/* dock do indicador de turno: fixo no rodapé do palco, linha única, não cobre sprites */
+.turnDock {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  translate: -50% 0;
+  z-index: var(--z-hud);
+  pointer-events: none;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .stage { min-height: clamp(240px, 46vw, 340px); }
+  .spots > :first-child,
+  .spots > :last-child { width: min(240px, 58%); }
+  .room { display: none; }
+}
+
+@media (max-width: 480px) {
+  .brand span { display: none; }
+  .spots > :first-child,
+  .spots > :last-child { width: 66%; }
+  .spots > :nth-child(2) { margin-top: 6px; }
+  .spots > :nth-child(3) { margin-bottom: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waitingBall { animation: none; }
+}

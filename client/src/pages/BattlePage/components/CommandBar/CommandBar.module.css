@@ -1,0 +1,194 @@
+/* Rodapé de batalha: caixa de mensagem à esquerda + menu de comandos 2×2 à
+   direita, com a borda dupla característica dos jogos. */
+
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 10px;
+  /* as duas caixas tem a mesma altura, como no jogo; o texto e que fica
+     alinhado ao topo (ver .message) em vez de centralizado */
+  align-items: stretch;
+}
+
+/* ---------- caixa de mensagem ---------- */
+.message {
+  position: relative;
+  display: flex;
+  /* o texto começa no topo, como nas caixas de diálogo do jogo */
+  align-items: flex-start;
+  min-height: 96px;
+  padding: 16px 30px 16px 18px;
+  background: var(--msg-face);
+  color: var(--hud-ink);
+  border: 3px solid var(--msg-edge);
+  border-radius: 10px;
+  /* borda interna clara = o "duplo contorno" das caixas de diálogo */
+  box-shadow:
+    inset 0 0 0 3px var(--msg-face),
+    inset 0 0 0 5px var(--msg-edge-inner),
+    0 4px 0 var(--hud-shadow);
+}
+
+.messageText {
+  font-size: 22px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: var(--hud-ink);
+  /* o texto entra letra a letra; reservar altura evita o layout pular */
+  min-height: 2.7em;
+}
+
+/* seta piscando que pede "continuar" */
+.cursor {
+  position: absolute;
+  right: 12px;
+  bottom: 9px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--msg-edge);
+  animation: blink 0.9s steps(2, end) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ---------- menu de comandos 2×2 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+  background: var(--menu-face);
+  border: 3px solid var(--menu-edge);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 3px var(--menu-face),
+    inset 0 0 0 5px #b8cce8,
+    0 4px 0 var(--hud-shadow);
+}
+
+/* mesma moldura da grade, mas para um painel inteiro (menu de golpes) */
+.panel {
+  display: block;
+  padding: 10px;
+  background: var(--menu-face);
+  border: 3px solid var(--menu-edge);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 3px var(--menu-face),
+    inset 0 0 0 5px #b8cce8,
+    0 4px 0 var(--hud-shadow);
+}
+
+/* losango decorativo do canto (assinatura do menu original) */
+.diamond {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .bar { grid-template-columns: 1fr; }
+  .panel { padding: 8px; }
+  .message { min-height: 76px; }
+  .messageText { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; }
+}
+
+/* ---------- ficha do golpe destacado (ocupa a caixa de mensagem) ---------- */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.previewHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-bottom: 7px;
+  border-bottom: 2px solid var(--hud-edge-soft);
+}
+
+.previewName {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--hud-ink);
+}
+
+.category {
+  font-family: var(--font-display);
+  font-size: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: var(--hud-face);
+  background: var(--hud-ink-soft);
+}
+
+.previewStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+}
+
+.previewStats div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.previewStats dt {
+  font-family: var(--font-display);
+  font-size: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hud-ink-soft);
+}
+
+.previewStats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--hud-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.previewEffects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.previewEffects li {
+  font-family: var(--font-display);
+  font-size: 6px;
+  letter-spacing: 0.04em;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+/* tons de lib/moves.ts */
+.heal,
+.buff { background: #2f7a3f; }
+.ailment,
+.debuff { background: #963434; }
+.info { background: var(--hud-ink-soft); }
+
+.previewDesc {
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--hud-ink-soft);
+}

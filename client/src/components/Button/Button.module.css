@@ -1,0 +1,90 @@
+.button {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius);
+  border: 2px solid var(--poke-black);
+  box-shadow: var(--shadow-2);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    filter var(--dur-fast),
+    box-shadow var(--dur-fast);
+  text-transform: uppercase;
+}
+
+.button:not(:disabled):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.button:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-1);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.primary {
+  background: linear-gradient(180deg, var(--accent-strong), var(--poke-red-dark));
+  color: var(--on-accent);
+}
+
+.ghost {
+  background: var(--bg-panel-2);
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.danger {
+  background: linear-gradient(180deg, #5c1f16, #3c130d);
+  color: #ffd9d2;
+  border-color: #7a2c1e;
+}
+
+.sm {
+  font-size: 10px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.md {
+  padding: var(--space-3) var(--space-4);
+}
+
+.lg {
+  font-size: 14px;
+  padding: var(--space-4) var(--space-5);
+}
+
+/* ---- variantes GBA (grade de comandos da referencia) ---- */
+/* ---------- comandos de batalha (LUTAR / POKÉMON / TERA / FUGIR) ----------
+   Cores do menu clássico: vermelho para lutar, verde para a equipe,
+   roxo para Terastal e azul para fugir. Contorno escuro + sombra dura. */
+.fight,
+.party,
+.bag,
+.run {
+  color: #fff;
+  border: 3px solid var(--hud-edge);
+  border-radius: 8px;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.28), inset 0 -3px 0 rgba(0, 0, 0, 0.25), var(--shadow-2);
+}
+
+.fight { background: linear-gradient(180deg, #f0674a 0 50%, #d13a22 50% 100%); }
+.fight:hover:not(:disabled) { background: linear-gradient(180deg, #ff7d60 0 50%, #e04a30 50% 100%); }
+
+.party { background: linear-gradient(180deg, #5fc46a 0 50%, #3d9448 50% 100%); }
+.party:hover:not(:disabled) { background: linear-gradient(180deg, #74d97f 0 50%, #48a854 50% 100%); }
+
+.bag { background: linear-gradient(180deg, #a978e0 0 50%, #7d4cbd 50% 100%); }
+.bag:hover:not(:disabled) { background: linear-gradient(180deg, #bd8df0 0 50%, #8f5cd0 50% 100%); }
+
+.run { background: linear-gradient(180deg, #56a8e8 0 50%, #2f7ec4 50% 100%); }
+.run:hover:not(:disabled) { background: linear-gradient(180deg, #6bbcf8 0 50%, #3a90d8 50% 100%); }

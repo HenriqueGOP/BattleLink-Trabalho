@@ -1,0 +1,147 @@
+/* ============================================================
+   Pokémon Battle — Design System
+   Identidade: pixel-art moderna · acento vermelho Pokébola
+   ============================================================ */
+
+:root {
+  /* Paleta base (noite de estádio) */
+  --bg-deep: #070a14;
+  --bg-base: #0d1122;
+  --bg-panel: #131a30;
+  --bg-panel-2: #1a2340;
+  --bg-raised: #202b4d;
+  --line: #2c3860;
+  --line-strong: #3d4c7d;
+
+  --text: #e9edff;
+  --text-dim: #a7b2d8;
+  --text-faint: #6d7aa6;
+
+  /* Acento Pokébola */
+  --poke-red: #e8452c;
+  --poke-red-dark: #b32d18;
+  --poke-white: #f6f7fb;
+  --poke-black: #12141c;
+  --accent: var(--poke-red);
+  --accent-strong: #ff5a3d;
+  --on-accent: #ffffff;
+
+  /* ---- HUD de batalha (referência: caixa de status dos jogos) ----
+     Caixa creme com contorno escuro, barra de HP segmentada e etiqueta "HP"
+     dourada. Estes tokens existem para que HUD, barra e menus compartilhem
+     exatamente a mesma paleta. */
+  --hud-face: #f8f8e8;
+  --hud-face-2: #e8e8d0;
+  --hud-ink: #384058;
+  --hud-ink-soft: #6b7490;
+  --hud-edge: #202840;
+  --hud-edge-soft: #b8b8a0;
+  --hud-shadow: rgba(16, 20, 34, 0.55);
+
+  /* Barra de HP: trilho escuro + preenchimento em 3 faixas (verde/amarelo/vermelho) */
+  --hpbar-track: #303848;
+  --hpbar-green-1: #78f0a0;
+  --hpbar-green-2: #38c858;
+  --hpbar-yellow-1: #f8e878;
+  --hpbar-yellow-2: #f0c018;
+  --hpbar-red-1: #f89078;
+  --hpbar-red-2: #e04028;
+  --hpbar-label: #f8d030;
+
+  /* Caixa de mensagem e menu de comandos */
+  --msg-face: #f8f8f0;
+  --msg-edge: #384058;
+  --msg-edge-inner: #8890a8;
+  --menu-face: #ffffff;
+  --menu-edge: #4870b0;
+
+  /* Estados de jogo */
+  --hp-green: #3fd068;
+  --hp-yellow: #f4c531;
+  --hp-red: #ef5350;
+  --energy: #4aa8ff;
+
+  /* Tipos — mesma paleta de TYPE_COLORS (lib) */
+  --type-normal: #9fa19f;
+  --type-fire: #e8532b;
+  --type-water: #4a7ddb;
+  --type-electric: #e8b918;
+  --type-grass: #4faa54;
+  --type-ice: #5fc7c7;
+  --type-fighting: #bf3f38;
+  --type-poison: #8f4199;
+  --type-ground: #b58a3c;
+  --type-flying: #7f8fd6;
+  --type-psychic: #dc4569;
+  --type-bug: #8fa832;
+  --type-rock: #a68b3c;
+  --type-ghost: #66517f;
+  --type-dragon: #5a50c8;
+  --type-dark: #5c4f43;
+  --type-steel: #8b93a8;
+  --type-fairy: #e28fb4;
+  --type-stellar: #49d0c0;
+
+  /* Status */
+  --status-burn: #f08a3c;
+  --status-poison: #a44fd0;
+  --status-bad-poison: #6d2f96;
+  --status-paralysis: #e8c93a;
+  --status-sleep: #8a93ad;
+  --status-freeze: #52c8e8;
+  --status-confusion: #e87ab0;
+
+  /* Clima / terreno */
+  --weather-rain-1: #17233f;
+  --weather-rain-2: #2c4a75;
+  --weather-sun-1: #4a2e10;
+  --weather-sun-2: #b97a24;
+  --weather-sand-1: #4a3a1c;
+  --weather-sand-2: #a8874a;
+  --weather-snow-1: #243a52;
+  --weather-snow-2: #9fc3dd;
+  --terrain-electric: #e8c93a;
+  --terrain-grassy: #4faa54;
+  --terrain-misty: #d88ab8;
+  --terrain-psychic: #9b6fe8;
+
+  /* Tipografia */
+  --font-display: 'Press Start 2P', monospace;
+  --font-body: 'VT323', monospace;
+
+  /* Espaçamentos */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Raios — pixel style: cantos pequenos e consistentes */
+  --radius-sm: 3px;
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  /* Sombras duras estilo game-boy sofisticado */
+  --shadow-1: 0 2px 0 rgba(0, 0, 0, 0.45);
+  --shadow-2: 0 4px 0 rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 6px 0 rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 18px rgba(232, 69, 44, 0.35);
+
+  /* Movimento */
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 400ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Camadas */
+  --z-scene: 0;
+  --z-sprites: 10;
+  --z-hud: 20;
+  --z-effects: 30;
+  --z-overlays: 40;
+  --z-toasts: 50;
+  --z-settings: 60;
+}

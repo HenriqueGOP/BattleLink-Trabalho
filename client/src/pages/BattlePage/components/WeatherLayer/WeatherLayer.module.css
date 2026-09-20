@@ -1,0 +1,298 @@
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+/* --- Céu por clima (transição suave) --- */
+.sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0e1630 0%, #1d2c52 55%, #31486e 100%);
+  transition: background 1s ease;
+  overflow: hidden;
+}
+
+.weather-rain .sky {
+  background: linear-gradient(180deg, #0a1226 0%, #182c4e 55%, #27405f 100%);
+}
+
+.weather-sun .sky {
+  background: linear-gradient(180deg, #241a0e 0%, #6e4a1e 55%, #b97a24 100%);
+}
+
+.weather-sandstorm .sky {
+  background: linear-gradient(180deg, #241d10 0%, #5c4a26 55%, #a8874a 100%);
+}
+
+.weather-snow .sky {
+  background: linear-gradient(180deg, #101c2e 0%, #2a4560 55%, #6d94b4 100%);
+}
+
+.sun {
+  position: absolute;
+  right: 8%;
+  top: 6%;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9a8 0%, #f4c531 60%, rgba(244, 197, 49, 0) 70%);
+  opacity: 0;
+  transition: opacity 1s ease;
+  filter: drop-shadow(0 0 30px rgba(244, 197, 49, 0.8));
+}
+
+.weather-sun .sun {
+  opacity: 1;
+}
+
+/* --- Nuvens parallax (animação contínua sutil) --- */
+.cloud {
+  position: absolute;
+  background: rgba(233, 239, 255, 0.12);
+  border-radius: 999px;
+  animation: driftCloud linear infinite;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.cloudOne {
+  width: 220px;
+  height: 44px;
+  top: 18%;
+  animation-duration: 90s;
+}
+
+.cloudOne::before {
+  width: 80px;
+  height: 80px;
+  top: -42px;
+  left: 40px;
+}
+
+.cloudTwo {
+  width: 160px;
+  height: 30px;
+  top: 36%;
+  animation-duration: 130s;
+  animation-delay: -40s;
+  opacity: 0.6;
+}
+
+.cloudTwo::before {
+  width: 56px;
+  height: 56px;
+  top: -30px;
+  left: 30px;
+}
+
+.cloudThree {
+  width: 110px;
+  height: 22px;
+  top: 10%;
+  animation-duration: 150s;
+  animation-delay: -90s;
+  opacity: 0.4;
+}
+
+@keyframes driftCloud {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(1100%);
+  }
+}
+
+/* --- Partículas (canvas único) --- */
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* --- Solo por terreno --- */
+.terrainFx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ground {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: -2%;
+  height: 34%;
+  background: linear-gradient(180deg, #223057 0%, #121a33 100%);
+  transform: perspective(500px) rotateX(22deg);
+  transform-origin: top center;
+  border-radius: 50% 50% 0 0 / 34% 34% 0 0;
+  box-shadow: inset 0 24px 40px rgba(0, 0, 0, 0.5);
+  transition: background 1s ease;
+}
+
+.terrain-electric .ground {
+  background: linear-gradient(180deg, #3a3422 0%, #181412 100%);
+}
+
+.terrain-grassy .ground {
+  background: linear-gradient(180deg, #1e4a2a 0%, #0f2416 100%);
+}
+
+.terrain-misty .ground {
+  background: linear-gradient(180deg, #3c2a38 0%, #180f17 100%);
+}
+
+.terrain-psychic .ground {
+  background: linear-gradient(180deg, #33224a 0%, #160f22 100%);
+}
+
+.plank {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.025) 0 4px,
+    transparent 4px 60px
+  );
+}
+
+/* --- Acentos por terreno --- */
+.spark {
+  position: absolute;
+  bottom: 22%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--terrain-electric);
+  box-shadow: 0 0 12px 3px rgba(232, 201, 58, 0.9);
+  animation: zap 2.4s ease-out infinite;
+}
+
+@keyframes zap {
+  0%,
+  80% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px) scale(1.6);
+  }
+}
+
+.grass {
+  position: absolute;
+  inset: auto 0 24% 0;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 30px,
+    var(--terrain-grassy) 30px 32px,
+    transparent 32px 60px
+  );
+  filter: drop-shadow(0 0 10px rgba(79, 170, 84, 0.6));
+}
+
+.fog {
+  position: absolute;
+  inset: auto -10% -6% -10%;
+  height: 60%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(216, 138, 184, 0.35), transparent 70%);
+  animation: fogPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes fogPulse {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ring {
+  position: absolute;
+  width: 90px;
+  height: 30px;
+  border: 3px solid rgba(155, 111, 232, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 0 16px rgba(155, 111, 232, 0.5);
+  animation: ringPulse 3s ease-out infinite;
+}
+
+@keyframes ringPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+/* --- Plataformas elípticas com perspectiva --- */
+.platform {
+  position: absolute;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 30%, #39466e, #161d33 75%);
+  box-shadow:
+    inset 0 6px 12px rgba(255, 255, 255, 0.08),
+    0 10px 0 rgba(0, 0, 0, 0.35);
+}
+
+.platformOpponent {
+  width: 250px;
+  height: 56px;
+  right: 8%;
+  top: 26%;
+}
+
+.platformPlayer {
+  width: 290px;
+  height: 62px;
+  left: 7%;
+  bottom: 16%;
+}
+
+/* --- Vinheta para contraste do HUD (AA) --- */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5, 8, 18, 0.42), transparent 26%, transparent 70%, rgba(5, 8, 18, 0.55)),
+    radial-gradient(ellipse at center, transparent 55%, rgba(5, 8, 18, 0.5) 100%);
+}
+
+@media (max-width: 700px) {
+  .platformOpponent {
+    width: 170px;
+    right: 2%;
+    top: 22%;
+  }
+
+  .platformPlayer {
+    width: 200px;
+    bottom: 12%;
+    left: 2%;
+  }
+}
