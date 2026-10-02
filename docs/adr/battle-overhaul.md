@@ -88,6 +88,31 @@ ou enfraquecido sem justificativa. Não afirmar que as fases futuras estão impl
 
 ## Critérios de validação
 
+### Registro da fase 2B
+
+A fachada BattleSession e o manifesto foram implementados separadamente da Room.
+São 954 entradas de golpes, com 792 compatíveis e 162 bloqueadas por motivo. A montagem
+valida o learnset nacional Gen 9 (incluindo golpes legados); compatibilidade de execução
+não substitui aprendibilidade. Hyperspace Fury é excluído por exigir Hoopa-Unbound.
+Golpes como Weather Ball, Thief e Tera Blast mantêm sua semântica nativa sem clima,
+itens e Terastalização. Metronome usa apenas o pool compatível; chamadas indiretas
+também passam pelos bloqueios do adapter.
+
+PP usa o valor base, sem PP Ups. Double-Edge preserva a razão nativa 33/100. Gênero é
+o fixo da espécie ou M e felicidade é 255, sem nova tela de configuração. As equipes
+do motor aceitam um a seis Pokémon base distintos; a sala continuará exigindo seis.
+
+As solicitações incluem lockedMoveId para concluir cargas mesmo com zero PP ou quando
+o golpe foi chamado indiretamente. Eventos privados podem deixar lacunas na sequência
+de uma perspectiva; a integração usará o watermark do snapshot. A idempotência retém
+256 recibos, e requisições antigas são rejeitadas após sua expiração. Falhas de contrato
+durante a execução invalidam a instância para impedir continuidade de estado parcial.
+
+Detalhes, evidências e limites: [relatório da fase 2B](../FASE_2B_MOTOR.md).
+O motor permanece sem conexão ao protocolo atual até a fase 3.
+
+### Critérios gerais
+
 - Sanidade de dano 31–37; todos os 16 rolls; atributos, estágios, críticos, STAB,
   Adaptability, Burn, imunidades e tabela 18×18 contra `@smogon/calc`.
 - Entradas imutáveis, repetição determinística, limites de HP/estágios e RNG forçado

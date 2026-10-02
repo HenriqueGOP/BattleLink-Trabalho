@@ -7,6 +7,7 @@ import {
 } from "./index";
 import type { Combatant, DamageContext, DamageRoll, NatureId, PokemonTypes, RNG, RngSeed, Stats, TypeId } from "./index";
 import { simulatorPrng } from "./adapters/showdown-rng";
+import { runBattleTests } from "./battle.test";
 
 const gen = Generations.get(9);
 const seed: RngSeed = [1, 2, 3, 4];
@@ -265,3 +266,4 @@ testDamageExamples();
 const damageSamples = testDamageOracle();
 testIsolation();
 console.log(`Engine 2A tests passed: ${statSamples} stat builds, 324 type pairs, ${damageSamples} damage samples x 16 rolls, RNG and isolation.`);
+runBattleTests();
