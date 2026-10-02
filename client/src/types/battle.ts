@@ -1,6 +1,6 @@
 ﻿import type { Player } from './player'
 
-export type GamePhase = 'battle' | 'finished'
+export type GamePhase = 'setup' | 'battle' | 'finished'
 export type Weather = 'rain' | 'sun' | 'sandstorm' | 'snow'
 export type Terrain = 'electric' | 'grassy' | 'misty' | 'psychic'
 
@@ -11,9 +11,27 @@ export interface FieldHazards {
 
 export type BackgroundId = 'meadow' | 'forest' | 'cave' | 'night' | 'beach' | 'city'
 export type BattleEventType =
-  | 'battle_start' | 'turn_change' | 'damage' | 'miss' | 'immune' | 'effective' | 'resisted'
-  | 'heal' | 'stat_up' | 'stat_down' | 'status_apply' | 'status_cure' | 'flinch'
-  | 'residual' | 'faint' | 'switch_in' | 'tera' | 'substitute_needed' | 'victory' | 'defeat' | 'draw'
+  | 'battle_start'
+  | 'turn_change'
+  | 'damage'
+  | 'miss'
+  | 'immune'
+  | 'effective'
+  | 'resisted'
+  | 'heal'
+  | 'stat_up'
+  | 'stat_down'
+  | 'status_apply'
+  | 'status_cure'
+  | 'flinch'
+  | 'residual'
+  | 'faint'
+  | 'switch_in'
+  | 'tera'
+  | 'substitute_needed'
+  | 'victory'
+  | 'defeat'
+  | 'draw'
 
 export interface ServerBattleEvent {
   id: number
@@ -50,4 +68,5 @@ export interface GameState {
   logOffset: number
   events: ServerBattleEvent[]
   winner: string | null
+  finishReason: 'knockout' | 'disconnect' | null
 }

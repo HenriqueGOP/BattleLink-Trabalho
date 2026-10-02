@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { TypeBadge } from '../../components/TypeBadge'
 import { Sprite } from '../../components/Sprite'
@@ -17,7 +17,6 @@ const MAX_MOVES = 4
 export function TeamSetupPage() {
   const { state, playerId, setMoves, acceptTeam, resetTeam, leave } = useBattleContext()
   const { myPlayer } = useBattle()
-  const navigate = useNavigate()
   const audioPrefs = useAudio()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [chosenByPokemon, setChosenByPokemon] = useState<Record<string, string[]>>({})
@@ -25,12 +24,10 @@ export function TeamSetupPage() {
   const team = myPlayer?.team ?? []
   const selected = team[selectedIndex]
 
-  // O servidor trava reset_team assim que a batalha comeca (as duas equipes
-  // cheias), senao remontar a equipe zeraria o estado de combate do oponente.
-  // Refletimos isso aqui para nao mandar um pedido que ja se sabe invalido.
-  const opponentReady = Boolean(
-    state?.players.some(player => player.id !== playerId && player.team.length === 6),
-  )
+  const validMoves = team.every((member) => {
+    const moves = chosenByPokemon[member.pokemon] ?? member.selectedMoves
+    return moves.length > 0 && moves.length <= MAX_MOVES
+  })
 
   useEffect(() => {
     audioPrefs.playMusic('menu')
@@ -39,10 +36,11 @@ export function TeamSetupPage() {
 
   const chosen = useMemo(
     () => (selected ? (chosenByPokemon[selected.pokemon] ?? selected.selectedMoves) : []),
-    [selected, chosenByPokemon],
+    [selected, chosenByPokemon]
   )
 
   if (!state || !playerId) return <Navigate to="/" replace />
+  if (state.phase !== 'setup' || myPlayer?.ready) return <Navigate to="/batalha" replace />
   if (team.length < 6) return <Navigate to="/selecao" replace />
 
   function selectMember(index: number) {
@@ -53,10 +51,10 @@ export function TeamSetupPage() {
   function toggle(moveName: string) {
     if (!selected) return
     audio.play('click')
-    setChosenByPokemon(current => {
+    setChosenByPokemon((current) => {
       const currentChosen = current[selected.pokemon] ?? selected.selectedMoves
       const next = currentChosen.includes(moveName)
-        ? currentChosen.filter(name => name !== moveName)
+        ? currentChosen.filter((name) => name !== moveName)
         : currentChosen.length < MAX_MOVES
           ? [...currentChosen, moveName]
           : currentChosen
@@ -67,12 +65,12 @@ export function TeamSetupPage() {
   function keepSuggested() {
     if (!selected) return
     audio.play('select')
-    setChosenByPokemon(current => ({ ...current, [selected.pokemon]: selected.selectedMoves }))
+    setChosenByPokemon((current) => ({ ...current, [selected.pokemon]: selected.selectedMoves }))
     setMoves(selected.pokemon, selected.selectedMoves)
   }
 
   function saveMoves() {
-    if (!selected || chosen.length !== MAX_MOVES) return
+    if (!selected || chosen.length === 0 || chosen.length > MAX_MOVES) return
     audio.play('select')
     setMoves(selected.pokemon, chosen)
   }
@@ -104,7 +102,12 @@ export function TeamSetupPage() {
             aria-current={index === selectedIndex ? 'true' : undefined}
           >
             <span className={styles.tabIndex}>{index + 1}</span>
-            <Sprite src={member.image} name={member.pokemon} size={40} className={styles.tabSprite} />
+            <Sprite
+              src={member.image}
+              name={member.pokemon}
+              size={40}
+              className={styles.tabSprite}
+            />
             <span className={styles.tabName}>{member.pokemon}</span>
           </button>
         ))}
@@ -114,15 +117,21 @@ export function TeamSetupPage() {
         <section className={styles.detail}>
           <article className={styles.infoCard}>
             <h2 className={styles.pokemonName}>{selected.pokemon}</h2>
-            <Sprite src={selected.image} name={selected.pokemon} size={108} className={styles.sprite} loading="eager" />
+            <Sprite
+              src={selected.image}
+              name={selected.pokemon}
+              size={108}
+              className={styles.sprite}
+              loading="eager"
+            />
             <div className={styles.types}>
-              {selected.types.map(type => (
+              {selected.types.map((type) => (
                 <TypeBadge key={type} type={type} />
               ))}
             </div>
             <p className={styles.subtitle}>Habilidades possíveis</p>
             <ul className={styles.abilities}>
-              {selected.abilities.map(ability => (
+              {selected.abilities.map((ability) => (
                 <li key={ability}>{ability}</li>
               ))}
             </ul>
@@ -141,16 +150,18 @@ export function TeamSetupPage() {
             </div>
 
             <div className={styles.chosenRow} aria-label="Golpes escolhidos">
-              {chosen.map(name => (
+              {chosen.map((name) => (
                 <span key={name} className={styles.chosen}>
                   {name}
                 </span>
               ))}
-              {chosen.length === 0 && <span className={styles.chosenHint}>Escolha 4 golpes abaixo</span>}
+              {chosen.length === 0 && (
+                <span className={styles.chosenHint}>Escolha de 1 a 4 golpes abaixo</span>
+              )}
             </div>
 
             <div className={styles.moveGrid}>
-              {selected.moves.map(move => {
+              {selected.moves.map((move) => {
                 const isSelected = chosen.includes(move.name)
                 const disabled = !isSelected && chosen.length >= MAX_MOVES
                 return (
@@ -176,8 +187,11 @@ export function TeamSetupPage() {
                     <span className={styles.effects}>
                       {moveEffects(move)
                         .slice(0, 3)
-                        .map(effect => (
-                          <em key={effect.label} className={`${styles.effect} ${styles[effect.tone]}`}>
+                        .map((effect) => (
+                          <em
+                            key={effect.label}
+                            className={`${styles.effect} ${styles[effect.tone]}`}
+                          >
                             {effect.label}
                           </em>
                         ))}
@@ -191,7 +205,10 @@ export function TeamSetupPage() {
               <Button variant="ghost" onClick={keepSuggested}>
                 Manter sugeridos
               </Button>
-              <Button onClick={saveMoves} disabled={chosen.length !== MAX_MOVES}>
+              <Button
+                onClick={saveMoves}
+                disabled={chosen.length === 0 || chosen.length > MAX_MOVES}
+              >
                 Salvar golpes
               </Button>
             </div>
@@ -200,26 +217,21 @@ export function TeamSetupPage() {
       )}
 
       <footer className={styles.footer}>
-        <Button size="lg" onClick={() => {
-          audio.play('start')
-          acceptTeam()
-          navigate('/batalha')
-        }}>
-          Aceitar equipe e batalhar ▶
-        </Button>
         <Button
-          variant="ghost"
-          disabled={opponentReady}
-          title={
-            opponentReady
-              ? 'O oponente já montou a equipe — a batalha começou e a equipe não pode mais ser refeita.'
-              : undefined
-          }
+          size="lg"
+          disabled={!validMoves}
           onClick={() => {
-            resetTeam()
-            navigate('/selecao')
+            audio.play('start')
+            for (const member of team) {
+              const moves = chosenByPokemon[member.pokemon]
+              if (moves) setMoves(member.pokemon, moves)
+            }
+            acceptTeam()
           }}
         >
+          Aceitar equipe e batalhar ▶
+        </Button>
+        <Button variant="ghost" onClick={resetTeam}>
           ← Voltar e refazer a equipe
         </Button>
       </footer>

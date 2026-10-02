@@ -24,7 +24,9 @@ meu-jogo/
     src/styles/                tokens.css (design system) e global.css (reset/base)
     src/assets/images/         arte local (hero)
   server/                      processo oficial da partida
-    src/index.ts               adaptadores TCP/WebSocket/HTTP e ciclo de conexao
+    src/index.ts               inicialização e encerramento do processo
+    src/application.ts         adaptadores TCP/WebSocket/HTTP e ciclo de conexão
+    src/security.ts            origem, chave de acesso e limites de uso
     src/config.ts              portas, host e limites configuraveis
     src/protocol.ts            validacao das mensagens recebidas
     src/client.ts              cliente CLI para a apresentacao
@@ -49,7 +51,7 @@ Arquivos de suporte importantes:
 
 ## 2. Inicializacao do servidor
 
-`server/src/index.ts` abre tres servicos para o mesmo dominio:
+`server/src/index.ts` inicializa a aplicação; `server/src/application.ts` abre três serviços para o mesmo domínio:
 
 1. `node:net` escuta TCP em `PORT` (padrao `3001`). Cada mensagem termina em newline.
 2. `ws` escuta WebSocket em `WEB_PORT` (padrao `3002`). O navegador usa esta ponte porque a Web API nao permite abrir TCP bruto.
@@ -65,7 +67,7 @@ Para adicionar uma nova mensagem:
 
 1. Adicione o formato em `ClientMessage` ou `ServerMessage`, em `game/types.ts`.
 2. Adicione a validacao correspondente em `parseClientMessage`.
-3. Trate a mensagem no handler do `index.ts`.
+3. Trate a mensagem no handler do `application.ts`.
 4. Cubra a entrada invalida e valida em `protocol.test.ts`.
 5. Atualize `docs/protocolo.md`.
 
@@ -73,15 +75,18 @@ Para adicionar uma nova mensagem:
 
 `server/src/game/room.ts` e a autoridade da partida. `GameState` contem:
 
-- `players`: identidade, equipe de seis, Pokemon ativo, HP, energia, status, estagios, golpes e Tera;
+- `players`: identidade, equipe de seis, Pokémon ativo, HP, PP, status, estágios, golpes e Tera;
 - `field`: clima (`rain`/`sun`/`sandstorm`/`snow`), terreno (`electric`/`grassy`/`misty`/`psychic`) e hazards;
 - `pendingSwitch`: indica quem precisa escolher um novo Pokemon apos nocaute;
 - `turn`: indice `0` ou `1` do jogador autorizado;
-- `phase`: batalha ou partida finalizada;
-- `log`: historico legivel (as strings seguem padroes fixos, parseados pelo front);
+- `phase`: preparação (`setup`), batalha (`battle`) ou partida finalizada (`finished`);
+- `ready`: confirmação da equipe de cada jogador; os golpes ficam travados após confirmar;
+- `finishReason`: nocaute ou desconexão;
+- `log`: histórico legível, com preparação privada e quantidade limitada de entradas;
+- `events`: eventos estruturados e ordenados para animações, sons e estatísticas;
 - `winner`: jogador vencedor ou `null`.
 
-O cliente nunca envia `damage`, `hp`, `turn` ou `winner`. Ele envia intencoes como `action: { type: "attack" }` e `switch_pokemon`. A sala valida turno e energia, calcula dano, atualiza HP, regenera energia, troca o turno e detecta vitoria quando nao ha reservas vivas.
+O cliente nunca envia `damage`, `hp`, `turn` ou `winner`. Ele envia intenções como `action: { type: "attack" }` e `switch_pokemon`. A sala valida fase, turno, golpes equipados e PP, calcula dano, atualiza HP, troca o turno e detecta vitória quando não há reservas vivas.
 
 ## 5. Fila e salas
 
@@ -90,11 +95,11 @@ O cliente nunca envia `damage`, `hp`, `turn` ou `winner`. Ele envia intencoes co
 - `queue`: jogadores aguardando um oponente;
 - `rooms`: `playerId` para `Room`, permitindo localizar a sala rapidamente.
 
-Quando o segundo jogador entra, o manager cria uma sala, preserva os nomes e registra os dois IDs. Quando alguem sai, remove a sala dos dois indices e o outro processo recebe `opponent_left`.
+Quando o segundo jogador entra, o manager cria uma sala, preserva os nomes e registra os dois IDs. Quando alguém sai antes do fim, o servidor confirma a vitória por desconexão e transmite o estado final antes de remover a sala dos índices e enviar `opponent_left`.
 
 ## 6. Exclusao mutua
 
-O recurso compartilhado e `room.state`. A regiao critica e qualquer escolha de Pokemon ou acao que modifique esse objeto. `AsyncMutex` funciona como uma fila FIFO:
+O recurso compartilhado é `room.state`. A região crítica inclui as mutações de escolhas, confirmações, ações e desconexões. As buscas externas ocorrem antes do lock; ao confirmar a escolha, a sala revalida a fase, os limites e a versão da equipe. `AsyncMutex` funciona como uma fila FIFO:
 
 ```ts
 const unlock = await room.mutex.acquire();
@@ -115,9 +120,9 @@ O `finally` e essencial: mesmo uma excecao de validacao libera o bloqueio. Se do
 
 O front-end e organizado em camadas, com React Router nas rotas `/` (lobby), `/selecao` (equipe), `/equipe` (golpes) e `/batalha`:
 
-- `services/socket.ts` e um singleton tipado: nenhum componente fala com o WebSocket bruto;
+- `services/socket.ts` expõe o singleton tipado de `socketService.ts`, com timeout de conexão, cancelamento e descarte de callbacks antigos;
 - `context/BattleProvider.tsx` converte mensagens do servidor em estado React e expoe as acoes do protocolo;
-- `lib/eventEngine.ts` deriva eventos comparando snapshots consecutivos (HP, status, trocas, clima, turno, vitoria) e cruzando com as novas linhas do `log`;
+- `lib/eventEngine.ts` prioriza os eventos estruturados do servidor, resolve a perspectiva por IDs e mantém o diff de snapshots/log como fallback;
 - `hooks/useBattleEvents.ts` transforma a fila de eventos em teatro sequencial: `BattleEffects` (GSAP: lunge, flash, shake, particulas), `DamageNumbers` (numeros flutuantes), `WeatherLayer` (particulas de clima em canvas) e sons via `lib/audio`;
 - `lib/audio/AudioManager.ts` separa musica e efeitos com volumes/mutes persistidos em `localStorage`; SFX e musica sao procedurais (Web Audio) e cries usam Howler com os arquivos da PokeAPI.
 
@@ -125,14 +130,14 @@ O React nao calcula dano nem troca turno. O estado recebido em `state` substitui
 
 ## 9. Configuracao e ambientes
 
-`server/src/config.ts` centraliza `HOST`, `PORT` (TCP), `WEB_PORT` (WebSocket), versao do protocolo e limite de nome; `HTTP_PORT` e lido em `index.ts`. O cliente aceita `VITE_WS_URL` e `VITE_API_URL`. Copie os exemplos:
+`server/src/config.ts` carrega `server/.env` e centraliza portas, hosts, origens permitidas, chave de acesso, cache e limites de conexão/mensagens. O cliente aceita `VITE_WS_URL` e `VITE_API_URL`. Copie os exemplos:
 
 ```powershell
 Copy-Item server/.env.example server/.env
 Copy-Item client/.env.example client/.env
 ```
 
-Em producao, troque `127.0.0.1` por um host apropriado e configure a origem permitida na ponte WebSocket antes de expor o processo.
+Fora de loopback, configure `BATTLE_ACCESS_TOKEN` de 32 a 256 caracteres e `ALLOWED_ORIGINS`. Origens externas usam HTTPS; publique WebSocket por proxy TLS (`wss`). TCP continua restrito a loopback. A chave é informada no lobby e nunca persistida no navegador.
 
 ## 10. Fluxo completo de uma acao
 
@@ -141,7 +146,7 @@ React/CLI
   -> JSON action
 transporte TCP ou WebSocket
   -> parseClientMessage
-index.ts / handler
+application.ts / handler
   -> RoomManager.roomOf
   -> AsyncMutex.acquire
   -> Room.applyAction
@@ -153,7 +158,7 @@ Esse fluxo e o melhor ponto para depurar: primeiro confirme a mensagem enviada, 
 
 ## 11. Testes e evolucao
 
-`npm test` (raiz) roda os testes do servidor: regras basicas da sala, ordem do mutex e validacao do protocolo. Ao modificar uma regra, escreva primeiro um caso no teste de dominio. Ao modificar uma mensagem, atualize o teste do protocolo e a documentacao.
+`npm test` (raiz) roda testes offline de domínio, eventos, privacidade, confirmação de equipe, curas, cache persistente, segurança, ciclo do socket do cliente e integração real TCP/WebSocket/HTTP. Ao modificar uma regra ou mensagem, atualize os casos de regressão e a documentação.
 
 Comandos da raiz:
 

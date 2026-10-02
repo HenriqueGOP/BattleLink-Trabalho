@@ -17,6 +17,8 @@ async function newRoom(): Promise<Room> {
   room.setName("p2", "Bob");
   for (const pokemon of TEAM_A) await room.choosePokemon("p1", pokemon);
   for (const pokemon of TEAM_B) await room.choosePokemon("p2", pokemon);
+  room.acceptTeam("p1");
+  room.acceptTeam("p2");
   return room;
 }
 

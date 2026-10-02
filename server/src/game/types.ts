@@ -5,7 +5,7 @@ export type PlayerId = string;
 export type ActionType = "attack" | "defend" | "special";
 
 export interface PlayerAction { type: ActionType; move?: string }
-export type GamePhase = "battle" | "finished";
+export type GamePhase = "setup" | "battle" | "finished";
 export type BattleEventType =
   | "battle_start" | "turn_change" | "damage" | "miss" | "immune" | "effective" | "resisted"
   | "heal" | "stat_up" | "stat_down" | "status_apply" | "status_cure" | "flinch"
@@ -53,6 +53,7 @@ export interface ActivePokemonData {
 
 export interface PlayerState {
   id: PlayerId; name: string; pokemon: string | null;
+  ready: boolean;
   hp: number; maxHp: number;
   team: TeamMemberState[];
   pokemonData?: ActivePokemonData;
@@ -69,14 +70,16 @@ export interface GameState {
   phase: GamePhase; players: [PlayerState, PlayerState]; turn: 0 | 1;
   pendingSwitch: [boolean, boolean]; field: FieldState; log: string[]; logOffset: number;
   events: BattleEvent[]; winner: PlayerId | null;
+  finishReason: "knockout" | "disconnect" | null;
 }
 
 export type ClientMessage =
-  | { type: "join"; name: string }
+  | { type: "join"; name: string; token?: string }
   | { type: "leave" }
   | { type: "choose_pokemon"; pokemon: string }
   | { type: "set_moves"; pokemon: string; moves: string[] }
   | { type: "reset_team" }                          // ⬅ adicione
+  | { type: "accept_team" }
   | { type: "terastallize" }
   | { type: "switch_pokemon"; pokemon: string }
   | { type: "action"; action: PlayerAction };

@@ -14,6 +14,7 @@ export function HomePage() {
   const { state, connected, status, connect, leave } = useBattleContext()
   const audio_ = useAudio()
   const [name, setName] = useState('Treinador')
+  const [accessKey, setAccessKey] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export function HomePage() {
     if (!trimmed) return
     audio.unlock()
     audio.play('select')
-    connect(trimmed)
+    connect(trimmed, accessKey)
   }
 
   return (
@@ -63,7 +64,7 @@ export function HomePage() {
 
         <form
           className={styles.form}
-          onSubmit={event => {
+          onSubmit={(event) => {
             event.preventDefault()
             submit()
           }}
@@ -78,11 +79,32 @@ export function HomePage() {
             value={name}
             maxLength={MAX_NAME_LENGTH}
             placeholder="Ex.: Ash"
-            onChange={event => setName(event.target.value)}
+            onChange={(event) => setName(event.target.value)}
             autoComplete="off"
             spellCheck={false}
           />
-          <Button type="submit" variant="fight" size="lg" disabled={!name.trim()} className={styles.cta}>
+          <details>
+            <summary>O servidor exige uma chave de acesso?</summary>
+            <label className={styles.label} htmlFor="access-key">
+              Chave de acesso
+            </label>
+            <input
+              id="access-key"
+              className={styles.input}
+              type="password"
+              value={accessKey}
+              maxLength={256}
+              autoComplete="off"
+              onChange={(event) => setAccessKey(event.target.value)}
+            />
+          </details>
+          <Button
+            type="submit"
+            variant="fight"
+            size="lg"
+            disabled={connected || !name.trim()}
+            className={styles.cta}
+          >
             ENTRAR NA FILA ▶
           </Button>
         </form>

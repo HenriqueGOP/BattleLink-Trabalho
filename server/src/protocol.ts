@@ -10,7 +10,11 @@ export function parseClientMessage(raw: unknown): ClientMessage {
   if (!raw || typeof raw !== "object") throw new Error("Mensagem inválida.");
   const message = raw as Record<string, unknown>;
   switch (message.type) {
-    case "join": return { type: "join", name: asString(message.name, "name").slice(0, 24) };
+    case "join": {
+      const token = message.token === undefined ? undefined : asString(message.token, "token");
+      if (token && token.length > 256) throw new Error('Campo "token" grande demais.');
+      return { type: "join", name: asString(message.name, "name").slice(0, 24), ...(token ? { token } : {}) };
+    }
     case "leave": return { type: "leave" };
     case "choose_pokemon": return { type: "choose_pokemon", pokemon: asString(message.pokemon, "pokemon") };
     case "set_moves": {
@@ -22,6 +26,7 @@ export function parseClientMessage(raw: unknown): ClientMessage {
       };
     }
     case "reset_team": return { type: "reset_team" };
+    case "accept_team": return { type: "accept_team" };
     case "terastallize": return { type: "terastallize" };
     case "switch_pokemon": return { type: "switch_pokemon", pokemon: asString(message.pokemon, "pokemon") };
     case "action": {
@@ -32,6 +37,6 @@ export function parseClientMessage(raw: unknown): ClientMessage {
       const move = record.type === "attack" ? asString(record.move, "action.move") : undefined;
       return { type: "action", action: { type: record.type, move } };
     }
-    default: throw new Error("Mensagem desconhecida. Tipos aceitos: join, leave, choose_pokemon, set_moves, terastallize, switch_pokemon, action.");
+    default: throw new Error("Mensagem desconhecida. Tipos aceitos: join, leave, choose_pokemon, set_moves, accept_team, reset_team, terastallize, switch_pokemon, action.");
   }
 }

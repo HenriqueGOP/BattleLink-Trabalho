@@ -21,7 +21,7 @@ src/
   components/   UI compartilhada (1 pasta por componente, com CSS Module)
   pages/        telas: HomePage, SelectionPage, TeamSetupPage, BattlePage
   hooks/        useSocket, useBattle, useBattleEvents, useCatalog, useAudio
-  services/     socket.ts (WebSocket tipado) e api.ts (REST)
+  services/     socket.ts + socketService.ts (WebSocket tipado) e api.ts (REST)
   lib/          eventEngine (diff de snapshots), anim/ (GSAP), audio/ (AudioManager)
   types/        protocolo, batalha, jogador, pokemon e eventos
   styles/       tokens.css + global.css
@@ -29,7 +29,7 @@ src/
 
 ## Reacao aos eventos do servidor
 
-O servidor envia snapshots completos; `lib/eventEngine.ts` deriva eventos por diff (HP, status, trocas, nocaute, Tera, clima, terreno, turno, vitoria) e cruza com as novas linhas do log. Cada evento dispara uma animacao GSAP e um som, em fila sequencial:
+O servidor envia snapshots na perspectiva de cada jogador, com eventos estruturados e ordenados. `lib/eventEngine.ts` usa os IDs desses eventos, traduz vitória/derrota para o jogador local e mantém o diff de snapshots/log como fallback. Cada evento dispara uma animação GSAP e um som, em fila sequencial:
 
 | Evento | Visual | Som |
 | --- | --- | --- |
@@ -55,4 +55,6 @@ npm run format     # Prettier
 
 O servidor precisa estar rodando (`npm start --prefix server`). Variaveis (veja `.env.example`): `VITE_WS_URL` (padrao `ws://127.0.0.1:3002`) e `VITE_API_URL` (padrao `http://127.0.0.1:3003`).
 
-Para testar com duas pessoas: abra duas abas com nomes diferentes — o servidor emparelha aos pares.
+Para testar com duas pessoas: abra duas abas com nomes diferentes. Cada jogador monta seis Pokémon, ajusta de um a quatro golpes e confirma a equipe. A batalha só começa quando ambos confirmam; o servidor trava os golpes durante o combate. O cliente exige `pokemon-battle/2`.
+
+Se o servidor exigir uma chave, informe-a no campo de acesso do lobby. A chave permanece apenas em memória. Para um servidor remoto, configure URLs HTTPS/WSS e a origem do frontend na lista permitida do backend. O fechamento manual ou remoto da conexão desabilita as ações; a desconexão do adversário produz o resultado final, inclusive durante a preparação.

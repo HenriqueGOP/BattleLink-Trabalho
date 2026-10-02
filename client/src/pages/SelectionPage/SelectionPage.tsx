@@ -61,29 +61,33 @@ export function SelectionPage() {
 
   // equipe completa → configurar golpes
   useEffect(() => {
-    if (team.length >= TEAM_SIZE) navigate('/equipe')
-  }, [team.length, navigate])
+    if (state?.phase === 'setup' && !myPlayer?.ready && team.length >= TEAM_SIZE)
+      navigate('/equipe')
+  }, [team.length, navigate, state?.phase, myPlayer?.ready])
 
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase()
-    const chosen = new Set(team.map(member => member.pokemon))
+    const chosen = new Set(team.map((member) => member.pokemon))
     return catalog
-      .filter(pokemon => pokemon.name.includes(term))
-      .map(pokemon => ({ pokemon, chosen: chosen.has(pokemon.name) }))
+      .filter((pokemon) => pokemon.name.includes(term))
+      .map((pokemon) => ({ pokemon, chosen: chosen.has(pokemon.name) }))
   }, [catalog, query, team])
 
   function draw(count: number) {
-    const available = catalog.filter(pokemon => !team.some(member => member.pokemon === pokemon.name))
+    const available = catalog.filter(
+      (pokemon) => !team.some((member) => member.pokemon === pokemon.name)
+    )
     audio.play('select')
     for (let drawn = 0; drawn < count && available.length > 0; drawn++) {
       const index = Math.floor(Math.random() * available.length)
       const [pokemon] = available.splice(index, 1)
       choosePokemon(pokemon.name)
     }
-    setDrawKey(key => key + 1)
+    setDrawKey((key) => key + 1)
   }
 
   if (!state || !playerId) return <Navigate to="/" replace />
+  if (state.phase !== 'setup' || myPlayer?.ready) return <Navigate to="/batalha" replace />
 
   return (
     <main className={styles.page}>
@@ -109,20 +113,34 @@ export function SelectionPage() {
       </header>
 
       <section className={`gb-panel ${styles.teamRow}`} aria-label="Pokémon escolhidos">
-        {team.map(member => (
+        {team.map((member) => (
           <span className={styles.chip} key={member.pokemon}>
-            <Sprite src={member.image} name={member.pokemon} size={32} className={styles.chipSprite} />
+            <Sprite
+              src={member.image}
+              name={member.pokemon}
+              size={32}
+              className={styles.chipSprite}
+            />
             <span className={styles.chipName}>{member.pokemon}</span>
           </span>
         ))}
-        {team.length === 0 && <span className={styles.chipHint}>Nenhum Pokémon escolhido ainda</span>}
+        {team.length === 0 && (
+          <span className={styles.chipHint}>Nenhum Pokémon escolhido ainda</span>
+        )}
       </section>
 
       <div className={styles.actions}>
-        <Button variant="ghost" onClick={() => draw(1)} disabled={team.length >= TEAM_SIZE || loading}>
+        <Button
+          variant="ghost"
+          onClick={() => draw(1)}
+          disabled={team.length >= TEAM_SIZE || loading}
+        >
           🎲 Sortear 1
         </Button>
-        <Button onClick={() => draw(TEAM_SIZE - team.length)} disabled={team.length >= TEAM_SIZE || loading}>
+        <Button
+          onClick={() => draw(TEAM_SIZE - team.length)}
+          disabled={team.length >= TEAM_SIZE || loading}
+        >
           🎲 Sortear equipe inteira
         </Button>
         <label className={styles.searchWrap}>
@@ -131,7 +149,7 @@ export function SelectionPage() {
             className={styles.search}
             placeholder="Procurar Pokémon pelo nome…"
             value={query}
-            onChange={event => setQuery(event.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
           />
         </label>
       </div>
@@ -159,7 +177,12 @@ export function SelectionPage() {
       {!loading && !error && (
         <div className={styles.grid} data-count={visible.length}>
           {visible.map(({ pokemon, chosen }) => (
-            <PokemonCard key={pokemon.id} pokemon={pokemon} chosen={chosen} onChoose={choosePokemon} />
+            <PokemonCard
+              key={pokemon.id}
+              pokemon={pokemon}
+              chosen={chosen}
+              onChoose={choosePokemon}
+            />
           ))}
           {visible.length === 0 && (
             <p className={styles.empty}>Nenhum Pokémon encontrado com esse nome.</p>

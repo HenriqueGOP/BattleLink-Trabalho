@@ -17,10 +17,13 @@ export interface EndOverlayProps {
 export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const winner = state.winner
-  const result = opponentLeft ? 'interrupted' : winner == null ? 'draw' : winner === myId ? 'victory' : 'defeat'
+  const result =
+    winner === myId ? 'victory' : winner ? 'defeat' : opponentLeft ? 'interrupted' : 'draw'
   const title =
     result === 'victory'
-      ? 'VOCÊ VENCEU!'
+      ? state.finishReason === 'disconnect'
+        ? 'VITÓRIA POR DESISTÊNCIA!'
+        : 'VOCÊ VENCEU!'
       : result === 'defeat'
         ? 'VOCÊ FOI DERROTADO…'
         : result === 'interrupted'
@@ -28,11 +31,13 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
           : 'EMPATE!'
   const detail =
     result === 'defeat' && winner
-      ? `${state.players.find(player => player.id === winner)?.name ?? 'O oponente'} venceu a batalha.`
+      ? `${state.players.find((player) => player.id === winner)?.name ?? 'O oponente'} venceu a batalha.`
       : result === 'interrupted'
         ? 'O oponente desconectou da partida.'
         : result === 'victory'
-          ? 'A arena é sua, treinador!'
+          ? state.finishReason === 'disconnect'
+            ? 'O oponente desconectou. A partida foi encerrada.'
+            : 'A arena é sua, treinador!'
           : 'Nenhum lado prevaleceu.'
 
   useEffect(() => {

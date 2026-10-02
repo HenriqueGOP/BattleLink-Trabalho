@@ -1,6 +1,6 @@
 import type { GameState } from './battle'
 
-/** Protocolo pokemon-battle/1 — CONGELADO (docs/protocolo.md). */
+/** Protocolo pokemon-battle/2 (docs/protocolo.md). */
 
 export type ActionType = 'attack' | 'defend' | 'special'
 
@@ -10,11 +10,12 @@ export interface PlayerAction {
 }
 
 export type ClientMessage =
-  | { type: 'join'; name: string }
+  | { type: 'join'; name: string; token?: string }
   | { type: 'leave' }
   | { type: 'choose_pokemon'; pokemon: string }
   | { type: 'set_moves'; pokemon: string; moves: string[] }
   | { type: 'reset_team' }
+  | { type: 'accept_team' }
   | { type: 'terastallize' }
   | { type: 'switch_pokemon'; pokemon: string }
   | { type: 'action'; action: PlayerAction }

@@ -28,7 +28,8 @@ import type { PokemonMove } from '../../types/pokemon'
  * (nenhum timeout no cliente).
  */
 export function BattlePage() {
-  const { state, playerId, roomId, status, opponentLeft, leave, attack, terastallize, switchTo } = useBattleContext()
+  const { state, playerId, roomId, status, opponentLeft, leave, attack, terastallize, switchTo } =
+    useBattleContext()
   const { myIndex, myPlayer, opponent, myTurn, blocked, canChoose, canSetupMoves } = useBattle()
   const audioApi = useAudio()
   const navigate = useNavigate()
@@ -44,11 +45,11 @@ export function BattlePage() {
 
   const getPlayer = useCallback(
     (side: 'me' | 'opponent') => (side === 'me' ? mySpriteRef.current : oppSpriteRef.current),
-    [],
+    []
   )
   const getPlayerState = useCallback(
     (side: 'me' | 'opponent') => (side === 'me' ? myPlayer : opponent),
-    [myPlayer, opponent],
+    [myPlayer, opponent]
   )
 
   const { current, totals, logEntries } = useBattleEvents(state, myIndex, roomId)
@@ -67,7 +68,7 @@ export function BattlePage() {
   const lastLogMessage = state.log.at(-1) ?? ''
   // cena pronta = ambos com Pokémon ativo e HP real; antes disso, espera sincronizada
   const sceneReady = Boolean(myPlayer?.pokemon && opponent?.pokemon && (opponent.maxHp ?? 0) > 0)
-  const iAmReady = Boolean(myPlayer?.team.length === 6)
+  const iAmReady = Boolean(myPlayer?.ready)
 
   function leaveAndHome() {
     audioApi.play('click')
@@ -96,27 +97,38 @@ export function BattlePage() {
       {!sceneReady ? (
         <section className={styles.waiting} aria-live="polite">
           <span className={styles.waitingBall} aria-hidden="true" />
-          <h2>{iAmReady ? 'Aguardando o oponente terminar a escolha…' : 'Preparando a batalha…'}</h2>
+          <h2>
+            {iAmReady ? 'Aguardando o oponente confirmar a equipe…' : 'Preparando a batalha…'}
+          </h2>
           <p>O campo é liberado para os dois jogadores ao mesmo tempo, direto do servidor.</p>
         </section>
       ) : (
         <>
           <div className={styles.layout}>
-            <section className={styles.stage} ref={stageRef} aria-label="Campo de batalha" data-fx-stage>
+            <section
+              className={styles.stage}
+              ref={stageRef}
+              aria-label="Campo de batalha"
+              data-fx-stage
+            >
               {/* profundidade: cenário → clima → spots(círculos+sprites) → efeitos → HUD */}
               <BattleBackground background={state.field.background} />
               <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
               <div className={styles.spots}>
                 <HudCard player={opponent} opponent />
                 <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} />
-                <BattleSpot player={myPlayer} opponent={false} spriteRef={mySpriteRef} urgent={blocked} />
+                <BattleSpot
+                  player={myPlayer}
+                  opponent={false}
+                  spriteRef={mySpriteRef}
+                  urgent={blocked}
+                />
                 <HudCard player={myPlayer} opponent={false} />
               </div>
               <div className={styles.turnDock}>
                 <TurnIndicator myTurn={myTurn} finished={finished} turnEvent={current} />
               </div>
             </section>
-
           </div>
 
           <CommandBar
@@ -136,7 +148,12 @@ export function BattlePage() {
                   onPreview={setPreviewMove}
                   bare
                 />
-                <Button variant="ghost" size="sm" className={styles.backBtn} onClick={() => setPanel(null)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={styles.backBtn}
+                  onClick={() => setPanel(null)}
+                >
                   ◀ VOLTAR
                 </Button>
               </>
@@ -154,11 +171,16 @@ export function BattlePage() {
                   variant="party"
                   className={styles.commandBtn}
                   aria-expanded={activePanel === 'party'}
-                  onClick={() => setPanel(open => (open === 'party' ? null : 'party'))}
+                  onClick={() => setPanel((open) => (open === 'party' ? null : 'party'))}
                 >
                   POKÉMON
                 </Button>
-                <Button variant="bag" className={styles.commandBtn} disabled={teraUsed} onClick={terastallize}>
+                <Button
+                  variant="bag"
+                  className={styles.commandBtn}
+                  disabled={teraUsed || !myTurn || blocked}
+                  onClick={terastallize}
+                >
                   TERA
                 </Button>
                 <Button variant="run" className={styles.commandBtn} onClick={leaveAndHome}>
@@ -170,24 +192,33 @@ export function BattlePage() {
 
           <div className={styles.drawer}>
             {activePanel === 'party' && (
-              <BattleControls player={myPlayer} myTurn={myTurn} blocked={blocked} onSwitch={switchTo} />
+              <BattleControls
+                player={myPlayer}
+                myTurn={myTurn}
+                blocked={blocked}
+                onSwitch={switchTo}
+              />
             )}
             <BattleLog entries={logEntries} />
           </div>
 
-          <BattleEffects event={current} stageRef={stageRef} getPlayer={getPlayer} getPlayerState={getPlayerState} />
+          <BattleEffects
+            event={current}
+            stageRef={stageRef}
+            getPlayer={getPlayer}
+            getPlayerState={getPlayerState}
+          />
           <DamageNumbers event={current} getTarget={getPlayer} />
-
-          {finished && (
-            <EndOverlay
-              state={state}
-              myId={playerId}
-              totals={totals}
-              opponentLeft={opponentLeft}
-              onLeave={leaveAndHome}
-            />
-          )}
         </>
+      )}
+      {finished && (
+        <EndOverlay
+          state={state}
+          myId={playerId}
+          totals={totals}
+          opponentLeft={opponentLeft}
+          onLeave={leaveAndHome}
+        />
       )}
     </main>
   )

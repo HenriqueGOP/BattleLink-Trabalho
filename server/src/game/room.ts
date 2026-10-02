@@ -1,7 +1,7 @@
 ﻿// server/src/game/room.ts — v4
 import { ActionType, ActivePokemonData, BattleEvent, BattleEventType, GameState, PlayerAction, PlayerId, PlayerState, StatStages, TeamMemberState } from "./types";
 import { AsyncMutex } from "./mutex";
-import { fetchPokemonDetail, isKnownPokemon, MoveData } from "./pokeapi";
+import { fetchPokemonDetail, isKnownPokemon, MoveData, PokemonDetail } from "./pokeapi";
 import { effectiveness, mapStatKey, stageMultiplier, STAGE_LABEL } from "./battle";
 
 const TEAM_SIZE = 6;
@@ -26,21 +26,28 @@ let nextRoomNumber = 1;
 function pick<T>(list: T[]): T { return list[Math.floor(Math.random() * list.length)]; }
 function freshStages(): StatStages { return { attack: 0, defense: 0, specialAttack: 0, specialDefense: 0, speed: 0, accuracy: 0, evasion: 0 }; }
 
+export interface PreparedPokemonSelection {
+  actorId: PlayerId;
+  name: string;
+  detail: PokemonDetail;
+  teamVersion: number;
+}
+
 export class Room {
   public readonly id: string;
   public state: GameState;
   public readonly mutex = new AsyncMutex();
-  private battleBegun = false;
+  private teamVersions = new Map<PlayerId, number>();
   private teraUsed: [boolean, boolean] = [false, false];
   private nextEventId = 1;
 
   constructor(player1: PlayerId, player2: PlayerId) {
     this.id = `room-${Date.now()}-${nextRoomNumber++}`;
     this.state = {
-      phase: "battle",
+      phase: "setup",
       players: [
-        { id: player1, name: "Jogador 1", pokemon: null, hp: 0, maxHp: 0, team: [] },
-        { id: player2, name: "Jogador 2", pokemon: null, hp: 0, maxHp: 0, team: [] },
+        { id: player1, name: "Jogador 1", pokemon: null, hp: 0, maxHp: 0, team: [], ready: false },
+        { id: player2, name: "Jogador 2", pokemon: null, hp: 0, maxHp: 0, team: [], ready: false },
       ],
       turn: 0,
       pendingSwitch: [false, false],
@@ -49,6 +56,7 @@ export class Room {
       logOffset: 0,
       events: [],
       winner: null,
+      finishReason: null,
     };
   }
 
@@ -65,7 +73,7 @@ export class Room {
       this.state.logOffset += removed;
     }
     const viewerIndex = this.state.players.findIndex(item => item.id === viewerId);
-    if (viewerIndex < 0) return this.state;
+    if (viewerIndex < 0) throw new Error("Jogador não pertence à partida.");
     const foeIndex = 1 - viewerIndex;
     const players = [...this.state.players] as [PlayerState, PlayerState];
     players[foeIndex] = Room.hideSecrets(this.state.players[foeIndex]);
@@ -116,12 +124,26 @@ export class Room {
   }
 
   public async choosePokemon(actorId: PlayerId, pokemon: string): Promise<void> {
-    const player = this.requirePlayer(actorId);
-    if (player.team.length >= TEAM_SIZE) throw new Error("Sua equipe já está completa (6 Pokémon).");
+    const prepared = await this.preparePokemon(actorId, pokemon);
+    const unlock = await this.mutex.acquire();
+    try { this.commitPokemon(prepared); }
+    finally { unlock(); }
+  }
+
+  /** Busca externa sem mutar estado nem ocupar o mutex. */
+  public async preparePokemon(actorId: PlayerId, pokemon: string): Promise<PreparedPokemonSelection> {
     const name = String(pokemon).toLowerCase().trim();
+    this.validateSelection(actorId, name);
+    const teamVersion = this.teamVersions.get(actorId) ?? 0;
     if (!await isKnownPokemon(name)) throw new Error(`Pokémon "${name}" não existe na PokéAPI.`);
-    if (player.team.some(member => member.pokemon === name)) throw new Error("Este Pokémon já está na sua equipe.");
     const detail = await fetchPokemonDetail(name);
+    return { actorId, name, detail, teamVersion };
+  }
+
+  /** Chamado sob o mutex: revalida tudo após a busca assíncrona. */
+  public commitPokemon({ actorId, name, detail, teamVersion }: PreparedPokemonSelection): void {
+    const player = this.validateSelection(actorId, name);
+    if ((this.teamVersions.get(actorId) ?? 0) !== teamVersion) throw new Error("A equipe mudou durante a seleção. Escolha novamente.");
     const pp: Record<string, number> = {};
     for (const move of detail.moves) pp[move.name] = move.pp ?? 10;
     const maxHp = 60 + (detail.stats.hp ?? 50);
@@ -137,13 +159,13 @@ export class Room {
       pp,
       stats: detail.stats, sprites: detail.sprites, cries: detail.cries,
     });
-    this.state.log.push(`${player.name} escolheu ${name} (nº ${detail.id}).`);
-    if (isShiny) this.state.log.push(`✨ Incrível! O ${name} de ${player.name} é SHINY!`);
-    if (this.state.players.every(item => item.team.length >= TEAM_SIZE)) this.startBattle();
+    // O histórico é público: espécies e shiny do banco permanecem só na visão do dono.
+    this.state.log.push(`${player.name} adicionou um Pokémon à equipe (${player.team.length}/${TEAM_SIZE}).`);
   }
 
   public setMoves(actorId: PlayerId, pokemon: string, moves: unknown): void {
     const player = this.requirePlayer(actorId);
+    this.requireSetup(player);
     const member = this.requireMember(player, pokemon);
     if (!Array.isArray(moves) || moves.length === 0 || moves.length > MAX_SELECTED_MOVES) throw new Error(`Envie entre 1 e ${MAX_SELECTED_MOVES} golpes.`);
     const names = moves.map(move => typeof move === "string" ? move.trim() : "");
@@ -154,7 +176,29 @@ export class Room {
     }
     member.selectedMoves = [...new Set(names)];
     if (player.pokemon === member.pokemon && player.pokemonData) player.pokemonData.selectedMoves = [...member.selectedMoves];
-    this.state.log.push(`${player.name} definiu os golpes de ${member.pokemon}.`);
+    this.state.log.push(`${player.name} atualizou os golpes da equipe.`);
+  }
+
+  public acceptTeam(actorId: PlayerId): void {
+    const player = this.requirePlayer(actorId);
+    this.requireSetup(player);
+    if (player.team.length !== TEAM_SIZE) throw new Error("Monte uma equipe de 6 Pokémon antes de confirmar.");
+    player.ready = true;
+    this.state.log.push(`${player.name} confirmou a equipe.`);
+    if (this.state.players.every(item => item.ready)) this.startBattle();
+  }
+
+  public forfeit(actorId: PlayerId): void {
+    this.requirePlayer(actorId);
+    if (this.state.phase === "finished") return;
+    const winner = this.state.players.find(player => player.id !== actorId)!;
+    this.state.phase = "finished";
+    this.state.finishReason = "disconnect";
+    this.state.winner = winner.id;
+    this.state.pendingSwitch = [false, false];
+    const message = `${winner.name} venceu por desconexão do oponente.`;
+    this.state.log.push(message);
+    this.emit("victory", message, { actorId: winner.id, targetId: actorId });
   }
 
   /** TERASTALIZAÇÃO — mecânica oficial Gen 9:
@@ -164,7 +208,7 @@ export class Room {
    * 4. golpes do tipo Tera com BP < 60 viram BP 60 (não multi-hit, não priority>0).
    */
   public terastallize(actorId: PlayerId): void {
-    if (this.state.phase === "finished") throw new Error("A partida já terminou.");
+    this.requireBattle();
     this.requireCurrentTurn(actorId);
     const player = this.state.players[this.state.turn];
     const data = this.requireActive(player);
@@ -172,7 +216,6 @@ export class Room {
     this.requireOpponentReady();
     const index = this.state.turn;
     if (this.teraUsed[index]) throw new Error("Você já terastalizou nesta partida.");
-    this.battleBegun = true;
     data.isTerastallized = true;
     this.teraUsed[index] = true;
     const member = this.requireMember(player, player.pokemon ?? "");
@@ -184,7 +227,7 @@ export class Room {
   }
 
   public switchPokemon(actorId: PlayerId, pokemon: string): void {
-    if (this.state.phase === "finished") throw new Error("A partida já terminou.");
+    this.requireBattle();
     const player = this.requirePlayer(actorId);
     const index = this.state.players.indexOf(player) as 0 | 1;
     const member = this.requireMember(player, pokemon);
@@ -195,7 +238,6 @@ export class Room {
       this.requireCurrentTurn(actorId);
       this.requireOpponentReady();
     }
-    this.battleBegun = true;
     this.syncActiveToMember(player);
     player.pokemon = member.pokemon;
     player.maxHp = member.maxHp;
@@ -211,7 +253,7 @@ export class Room {
   /** Ação "defend" foi REMOVIDA do protocolo novo. Mantida no union por compatibilidade
    *  com clientes antigos, mas o servidor responde com erro orientando o novo fluxo. */
   public applyAction(actorId: PlayerId, action: PlayerAction): void {
-    if (this.state.phase === "finished") throw new Error("A partida já terminou.");
+    this.requireBattle();
     this.requireCurrentTurn(actorId);
     if (this.state.pendingSwitch[this.state.turn]) throw new Error("Escolha um substituto primeiro (clique numa pokébola).");
     this.requireOpponentReady();
@@ -225,14 +267,15 @@ export class Room {
       throw new Error("Ação inválida. Use um golpe equipado.");
     }
 
-    this.battleBegun = true;
     this.useMove(current, opponent, action.move);
     this.endTurn();
   }
 
   public resetTeam(actorId: PlayerId): void {
     const player = this.requirePlayer(actorId);
-    if (this.battleBegun) throw new Error("A batalha já começou — não é possível refazer a equipe.");
+    if (this.state.phase !== "setup") throw new Error("A batalha já começou ou terminou — não é possível refazer a equipe.");
+    this.teamVersions.set(actorId, (this.teamVersions.get(actorId) ?? 0) + 1);
+    player.ready = false;
     player.team = [];
     player.pokemon = null;
     player.hp = 0;
@@ -251,10 +294,8 @@ export class Room {
   // ---------- motor interno ----------
 
   private startBattle(): void {
-    // A partir daqui a partida esta valendo: reset_team nao pode mais remontar
-    // a equipe (remontar chamaria startBattle() de novo e zeraria o estado de
-    // combate do ADVERSARIO — status, stat stages, Terastal e PP).
-    this.battleBegun = true;
+    // Só duas confirmações oficiais iniciam o combate; a partir daqui a equipe é imutável.
+    this.state.phase = "battle";
     for (const player of this.state.players) {
       const member = player.team[0];
       player.pokemon = member.pokemon;
@@ -273,7 +314,7 @@ export class Room {
       return player.pokemonData?.status === "paralysis" ? base / 2 : base;
     };
     this.state.turn = speedOf(this.state.players[1]) > speedOf(this.state.players[0]) ? 1 : 0;
-    this.state.log.push("As duas equipes estão completas — a batalha vai começar!");
+    this.state.log.push("As duas equipes estão confirmadas — a batalha vai começar!");
     this.state.log.push(`${this.state.players[this.state.turn].name} age primeiro (Pokémon mais veloz).`);
     this.emit("battle_start", "A batalha vai começar!");
     this.emit("turn_change", `${this.state.players[this.state.turn].name} começa.`, { targetId: this.state.players[this.state.turn].id });
@@ -384,7 +425,7 @@ export class Room {
       if (Math.random() < CONFUSION_SELF_HIT_CHANCE) {
         const selfAttack = (data.stats.attack ?? 80) * stageMultiplier(data.statStages.attack);
         const selfDefense = Math.max(1, (data.stats.defense ?? 80) * stageMultiplier(data.statStages.defense));
-        const selfDamage = Math.max(1, Math.floor(((22 * CONFUSION_BASE_POWER * selfAttack) / selfDefense) / 50 + 2));
+        const selfDamage = Math.min(attacker.hp, Math.max(1, Math.floor(((22 * CONFUSION_BASE_POWER * selfAttack) / selfDefense) / 50 + 2)));
         this.setHp(attacker, attacker.hp - selfDamage);
         const message = `${attacker.pokemon} se machucou na confusão (-${selfDamage} HP)!`;
         this.state.log.push(message);
@@ -405,19 +446,6 @@ export class Room {
       const message = `${attacker.name} usou ${label}, mas ${defender.name} ESQUIVOU!`;
       this.state.log.push(message);
       this.emit("miss", message, { actorId: attacker.id, targetId: defender.id, pokemon: defender.pokemon ?? undefined, move: label });
-      return;
-    }
-
-    // 5. cura (Recover etc.)
-    if (move && move.power == null && (move.metaCategory === "heal" || (move as any).healing > 0)) {
-      const healing = (move as any).healing ?? 50;
-      const fraction = healing > 0 ? healing / 100 : 0.5;
-      const before = attacker.hp;
-      this.setHp(attacker, Math.min(attacker.maxHp, attacker.hp + Math.floor(attacker.maxHp * fraction)));
-      const amount = attacker.hp - before;
-      const message = `${attacker.name}: ${attacker.pokemon} usou ${label} e recuperou ${amount} HP. ${move.description ?? ""}`;
-      this.state.log.push(message);
-      this.emit("heal", message, { actorId: attacker.id, targetId: attacker.id, pokemon: attacker.pokemon ?? undefined, amount, move: label });
       return;
     }
 
@@ -470,16 +498,18 @@ export class Room {
 
     const hits = this.rollHits(move);
     let totalDamage = 0;
+    let actualHits = 0;
     for (let hit = 0; hit < hits && defender.hp > 0; hit++) {
       const randomFactor = 0.85 + Math.random() * 0.15;
-      const dmg = Math.max(1, Math.floor(baseDamage * stab * multiplier * randomFactor * burnPenalty * (isCrit ? 1.5 : 1)));
+      const dmg = Math.min(defender.hp, Math.max(1, Math.floor(baseDamage * stab * multiplier * randomFactor * burnPenalty * (isCrit ? 1.5 : 1))));
       this.setHp(defender, defender.hp - dmg);
       totalDamage += dmg;
+      actualHits++;
     }
     if (isCrit) this.state.log.push("Acerto crítico!");
-    const damageMessage = `${attacker.name} usou ${label}${hits > 1 ? ` — acertou ${hits} vezes` : ""} (-${totalDamage} HP). ${stab > 1.5 ? `[STAB ×2 (Tera)]` : ""} ${(move as any).description ?? ""}`;
+    const damageMessage = `${attacker.name} usou ${label}${actualHits > 1 ? ` — acertou ${actualHits} vezes` : ""} (-${totalDamage} HP). ${stab > 1.5 ? `[STAB ×2 (Tera)]` : ""} ${(move as any).description ?? ""}`;
     this.state.log.push(damageMessage);
-    this.emit("damage", damageMessage, { actorId: attacker.id, targetId: defender.id, pokemon: defender.pokemon ?? undefined, amount: totalDamage, move: label, crit: isCrit, hits });
+    this.emit("damage", damageMessage, { actorId: attacker.id, targetId: defender.id, pokemon: defender.pokemon ?? undefined, amount: totalDamage, move: label, crit: isCrit, hits: actualHits });
     if (multiplier > 1) {
       this.state.log.push("Foi super efetivo!");
       this.emit("effective", "Foi super efetivo!", { actorId: attacker.id, targetId: defender.id });
@@ -567,23 +597,59 @@ export class Room {
   }
 
   private applyStatusMove(attacker: PlayerState, defender: PlayerState, move: MoveData | undefined, label: string): void {
-    const asAny = move as any;
+    if (!move) return;
+    const isSelfTarget = ["self", "user", "allySide", "allyTeam", "allies", "adjacentAllyOrSelf"].includes(move.target ?? "");
+    const target = isSelfTarget ? attacker : defender;
+    const data = this.requireActive(target);
     let didSomething = false;
 
+    // Rest é um efeito composto: cura total + cura do status + dois turnos de sono.
+    if (move.selfSleepTurns && (target.hp >= target.maxHp || data.status === "sleep")) {
+      this.state.log.push(`${attacker.name} usou ${label}, mas o golpe falhou.`);
+      return;
+    }
+    if (move.cureStatus && data.status) {
+      data.status = null;
+      data.sleepTurns = 0;
+      data.poisonCounter = 1;
+      this.syncStatus(target);
+      const message = `${target.name}: ${target.pokemon} foi curado do status!`;
+      this.state.log.push(message);
+      this.emit("status_cure", message, { actorId: attacker.id, targetId: target.id, pokemon: target.pokemon ?? undefined, move: label });
+      didSomething = true;
+    }
+    if (move.healing > 0) {
+      const before = target.hp;
+      this.setHp(target, target.hp + Math.round(target.maxHp * move.healing / 100));
+      const amount = target.hp - before;
+      const message = `${target.name}: ${target.pokemon} usou ${label} e recuperou ${amount} HP.`;
+      this.state.log.push(message);
+      this.emit("heal", message, { actorId: attacker.id, targetId: target.id, pokemon: target.pokemon ?? undefined, amount, move: label });
+      didSomething = amount > 0 || didSomething;
+    }
+    if (move.selfSleepTurns) {
+      this.applyStatus(attacker, "sleep");
+      attacker.pokemonData!.sleepTurns = move.selfSleepTurns;
+      this.syncStatus(attacker);
+      didSomething = true;
+    }
+
     // buffs/debuffs — alvo decide pelo target do golpe
-    if (asAny.statChanges && asAny.statChanges.length > 0) {
-     const isSelfTarget = Boolean(move && (move.target === "self" || move.target === "user" || move.target === "allySide"));
-      didSomething = this.applyStatChanges(isSelfTarget ? attacker : defender, asAny.statChanges, isSelfTarget) || didSomething;
+    if (move.statChanges && move.statChanges.length > 0) {
+      didSomething = this.applyStatChanges(target, move.statChanges, isSelfTarget) || didSomething;
+    }
+    if (move.selfStatChanges.length > 0) {
+      didSomething = this.applyStatChanges(attacker, move.selfStatChanges, true) || didSomething;
     }
 
     // status
-    const ailment = asAny.ailment;
+    const ailment = move.ailment;
     if (ailment && ailment !== "none") {
-      didSomething = this.applyStatus(defender, ailment) || didSomething;
+      didSomething = this.applyStatus(target, ailment) || didSomething;
     }
 
     if (!didSomething) {
-      this.state.log.push(`${attacker.name} usou ${label}, mas nada aconteceu. ${asAny?.description ?? ""}`);
+      this.state.log.push(`${attacker.name} usou ${label}, mas nada aconteceu. ${move.description ?? ""}`);
     }
   }
 
@@ -612,6 +678,7 @@ export class Room {
     data.status = status;
     if (status === "sleep") data.sleepTurns = 1 + Math.floor(Math.random() * 3);
     if (status === "bad_poison") data.poisonCounter = 1;
+    this.syncStatus(target);
     const messages: Record<string, string> = {
       burn: "foi QUEIMADO!", poison: "foi ENVENENADO!", bad_poison: "foi gravemente ENVENENADO!",
       paralysis: "ficou PARALISADO!", sleep: "adormeceu!", freeze: "foi CONGELADO!",
@@ -659,6 +726,7 @@ export class Room {
         data.poisonCounter = Math.min(15, data.poisonCounter + 1);
       }
       if (residual > 0) {
+        residual = Math.min(player.hp, residual);
         this.setHp(player, player.hp - residual);
         const message = `${player.name} sofreu dano residual (-${residual} HP).`;
         this.state.log.push(message);
@@ -690,6 +758,7 @@ export class Room {
     const wiped = this.state.players.map(player => player.team.length > 0 && player.team.every(member => member.hp <= 0));
     if (wiped[0] && wiped[1]) {
       this.state.phase = "finished";
+      this.state.finishReason = "knockout";
       this.state.winner = null;
       this.state.log.push("As duas equipes caíram ao mesmo tempo — EMPATE!");
       this.emit("draw", "As duas equipes caíram ao mesmo tempo — EMPATE!");
@@ -706,6 +775,7 @@ export class Room {
       const alive = player.team.filter(item => item.hp > 0);
       if (alive.length === 0) {
         this.state.phase = "finished";
+        this.state.finishReason = "knockout";
         this.state.winner = this.state.players[1 - index].id;
         const message = `${this.state.players[1 - index].name} VENCEU a batalha!`;
         this.state.log.push(message);
@@ -723,6 +793,21 @@ export class Room {
     const player = this.state.players.find(item => item.id === actorId);
     if (!player) throw new Error("Jogador não pertence à partida.");
     return player;
+  }
+  private requireSetup(player: PlayerState): void {
+    if (this.state.phase !== "setup") throw new Error("A batalha já começou ou terminou — os golpes e a equipe estão travados.");
+    if (player.ready) throw new Error("Sua equipe já foi confirmada. Use reset_team antes da batalha para refazê-la.");
+  }
+  private validateSelection(actorId: PlayerId, name: string): PlayerState {
+    const player = this.requirePlayer(actorId);
+    this.requireSetup(player);
+    if (player.team.length >= TEAM_SIZE) throw new Error("Sua equipe já está completa (6 Pokémon).");
+    if (player.team.some(member => member.pokemon === name)) throw new Error("Este Pokémon já está na sua equipe.");
+    return player;
+  }
+  private requireBattle(): void {
+    if (this.state.phase === "finished") throw new Error("A partida já terminou.");
+    if (this.state.phase !== "battle") throw new Error("Aguarde os dois jogadores confirmarem as equipes.");
   }
   private requireCurrentTurn(actorId: PlayerId): void {
     if (actorId !== this.state.players[this.state.turn].id) throw new Error("Não é sua vez!");

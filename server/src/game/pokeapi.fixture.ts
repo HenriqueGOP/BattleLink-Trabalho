@@ -1,5 +1,5 @@
 // server/src/game/pokeapi.fixture.ts
-import { setPokeApiTransport } from "./pokeapi";
+import { setPokeApiTransport, PokeApiTransport } from "./pokeapi";
 
 /**
  * Fixture offline da PokeAPI para os testes.
@@ -11,8 +11,18 @@ import { setPokeApiTransport } from "./pokeapi";
  */
 
 export const FIXTURE_NAMES = [
-  "charizard", "blastoise", "venusaur", "pikachu", "snorlax", "gyarados",
-  "gengar", "machamp", "lapras", "eevee", "dragonite", "mewtwo",
+  "charizard",
+  "blastoise",
+  "venusaur",
+  "pikachu",
+  "snorlax",
+  "gyarados",
+  "gengar",
+  "machamp",
+  "lapras",
+  "eevee",
+  "dragonite",
+  "mewtwo",
 ];
 
 /** Golpes servidos a todos: um fisico com PP, um de status. Ids reais do Showdown. */
@@ -41,30 +51,36 @@ function pokemonPayload(name: string, index: number) {
       // velocidade decrescente: torna a ordem do primeiro turno deterministica
       { base_stat: 120 - index, stat: { name: "speed" } },
     ],
-    moves: MOVE_NAMES.map(move => ({
+    moves: MOVE_NAMES.map((move) => ({
       move: { name: move },
       version_group_details: [
-        { version_group: { name: "scarlet-violet" }, move_learn_method: { name: "level-up" }, level_learned_at: 5 },
+        {
+          version_group: { name: "scarlet-violet" },
+          move_learn_method: { name: "level-up" },
+          level_learned_at: 5,
+        },
       ],
     })),
   };
 }
 
 /** Liga o fixture. Chame no inicio do teste; `setPokeApiTransport(null)` desliga. */
+export const fixturePokeApiTransport: PokeApiTransport = async (url) => {
+  if (url.includes("/pokemon?limit=")) {
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ results: FIXTURE_NAMES.map((name) => ({ name })) }),
+    };
+  }
+  const match = url.match(/\/pokemon\/([a-z0-9-]+)$/);
+  const index = match ? FIXTURE_NAMES.indexOf(match[1]) : -1;
+  if (index >= 0) {
+    return { ok: true, status: 200, json: async () => pokemonPayload(FIXTURE_NAMES[index], index) };
+  }
+  return { ok: false, status: 404, json: async () => ({ error: "not found" }) };
+};
+
 export function installPokeApiFixture(): void {
-  setPokeApiTransport(async url => {
-    if (url.includes("/pokemon?limit=")) {
-      return {
-        ok: true,
-        status: 200,
-        json: async () => ({ results: FIXTURE_NAMES.map(name => ({ name })) }),
-      };
-    }
-    const match = url.match(/\/pokemon\/([a-z0-9-]+)$/);
-    const index = match ? FIXTURE_NAMES.indexOf(match[1]) : -1;
-    if (index >= 0) {
-      return { ok: true, status: 200, json: async () => pokemonPayload(FIXTURE_NAMES[index], index) };
-    }
-    return { ok: false, status: 404, json: async () => ({ error: "not found" }) };
-  });
+  setPokeApiTransport(fixturePokeApiTransport);
 }

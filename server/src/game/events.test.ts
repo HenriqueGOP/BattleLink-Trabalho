@@ -22,6 +22,8 @@ async function newRoom(): Promise<Room> {
   room.setName("p2", "Bob");
   for (const pokemon of TEAM_A) await room.choosePokemon("p1", pokemon);
   for (const pokemon of TEAM_B) await room.choosePokemon("p2", pokemon);
+  room.acceptTeam("p1");
+  room.acceptTeam("p2");
   return room;
 }
 
@@ -206,6 +208,21 @@ async function run(): Promise<void> {
       if (deltaA[i].amount != null) assert.equal(deltaA[i].amount, deltaB[i].amount, `dano do evento ${i} divergiu`);
     }
     void cursor;
+  }
+
+  // Resultado oficial espelhado: o mesmo evento é vitória apenas para o vencedor.
+  for (const winnerIndex of [0, 1] as const) {
+    const room = await newRoom();
+    const previous = { ...room.state, events: [...room.state.events] } as unknown as GameState;
+    room.forfeit(room.state.players[1 - winnerIndex].id);
+    assert.equal(diffState(previous, room.state as unknown as GameState, winnerIndex, () => 0)
+      .find(event => event.type === "victory")?.actor, "me");
+    assert.equal(diffState(previous, room.state as unknown as GameState, 1 - winnerIndex, () => 0)
+      .find(event => event.type === "defeat")?.actor, "opponent");
+    // O tipo legado "defeat" também traz actorId do vencedor, sem mudar a perspectiva.
+    room.state.events.at(-1)!.type = "defeat";
+    assert.ok(diffState(previous, room.state as unknown as GameState, winnerIndex, () => 0)
+      .some(event => event.type === "victory"));
   }
 
   console.log("Event tests passed.");

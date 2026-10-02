@@ -13,13 +13,7 @@ export interface PokemonCries {
 }
 
 export type StatKey =
-  | 'attack'
-  | 'defense'
-  | 'specialAttack'
-  | 'specialDefense'
-  | 'speed'
-  | 'accuracy'
-  | 'evasion'
+  'attack' | 'defense' | 'specialAttack' | 'specialDefense' | 'speed' | 'accuracy' | 'evasion'
 
 export type StatStages = Record<StatKey, number>
 
@@ -60,6 +54,7 @@ export interface ActivePokemonData {
 
 /** Jogador no snapshot (server PlayerState). */
 export interface Player {
+  ready: boolean
   id: string
   name: string
   pokemon: string | null

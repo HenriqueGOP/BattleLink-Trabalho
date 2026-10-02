@@ -337,7 +337,9 @@ function mapServerEvent(
   const type: BattleEventType =
     serverEvent.type === 'damage' && !!serverEvent.actorId && serverEvent.actorId === serverEvent.targetId
       ? 'confusion_hit'
-      : serverEvent.type
+      : serverEvent.type === 'victory' || serverEvent.type === 'defeat'
+        ? sideOf(ctx, serverEvent.actorId) === 'me' ? 'victory' : 'defeat'
+        : serverEvent.type
   return {
     type,
     actor: sideOf(ctx, serverEvent.actorId),

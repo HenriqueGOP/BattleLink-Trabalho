@@ -13,6 +13,6 @@
                     "format":  "npm run format --prefix client"
                 },
     "engines":  {
-                    "node":  "\u003e=20"
+                    "node":  "\u003e=20.19"
                 }
 }

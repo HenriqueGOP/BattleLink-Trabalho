@@ -1,9 +1,10 @@
 import { createConnection } from "node:net";
 import { createInterface } from "node:readline";
 import { GameState, PlayerState, ServerMessage } from "./game/types";
+import { config } from "./config";
 
 const name = process.argv[2] ?? `Jogador-${Math.floor(Math.random() * 100)}`;
-const socket = createConnection({ host: process.env.HOST ?? "127.0.0.1", port: Number(process.env.PORT ?? 3001) });
+const socket = createConnection({ host: config.tcpHost, port: config.tcpPort });
 const input = createInterface({ input: process.stdin, output: process.stdout, prompt: "ação> " });
 
 let myId = "";
@@ -12,6 +13,7 @@ const HELP = [
   "Comandos:",
   "  choose <pokemon>            adiciona um Pokémon à equipe (precisa de 6)",
   "  moves <pokemon> <g1,g2,..>  define até 4 golpes equipados",
+  "  ready                       confirma a equipe e trava os golpes",
   "  attack <golpe>              usa um golpe equipado no seu turno",
   "  switch <pokemon>            troca o Pokémon em campo",
   "  tera                        terastaliza (uma vez por partida)",
@@ -85,6 +87,8 @@ function render(state: GameState): void {
   console.log("═".repeat(58));
   if (state.phase === "finished") {
     console.log(state.winner == null ? "EMPATE!" : state.winner === myId ? "VOCÊ VENCEU!" : "Você perdeu…");
+  } else if (state.phase === "setup") {
+    console.log(me.ready ? "Equipe confirmada. Aguardando o oponente…" : "Monte a equipe, configure os golpes e use: ready");
   } else if (state.pendingSwitch[myIndex]) {
     console.log("Seu Pokémon caiu! Use: switch <pokemon>");
   } else {
@@ -98,7 +102,7 @@ function print(message: ServerMessage): void {
     myId = message.playerId;
     console.log(`Conectado via TCP. Protocolo ${message.protocol}`);
     console.log(HELP);
-    send({ type: "join", name });
+    send({ type: "join", name, ...(process.env.BATTLE_ACCESS_TOKEN ? { token: process.env.BATTLE_ACCESS_TOKEN } : {}) });
   } else if (message.type === "waiting") console.log(message.message);
   else if (message.type === "match_found") {
     console.log(`Partida ${message.roomId} encontrada.`);
@@ -130,6 +134,7 @@ input.on("line", line => {
   } else if (command === "attack") send({ type: "action", action: { type: "attack", move: argument } });
   else if (command === "switch" && argument) send({ type: "switch_pokemon", pokemon: argument });
   else if (command === "tera") send({ type: "terastallize" });
+  else if (command === "ready") send({ type: "accept_team" });
   else if (command === "reset") send({ type: "reset_team" });
   else if (command === "state") {
     if (lastState) render(lastState);

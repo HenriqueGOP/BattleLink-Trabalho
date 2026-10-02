@@ -16,7 +16,7 @@ export interface BattleContextValue {
   roomId: string | null
   teamAccepted: boolean
   opponentLeft: boolean
-  connect: (name: string) => void
+  connect: (name: string, token?: string) => void
   leave: () => void
   choosePokemon: (name: string) => void
   setMoves: (pokemon: string, moves: string[]) => void
@@ -38,7 +38,8 @@ const BattleContext = createContext<BattleContextValue | null>(null)
 function normalizeState(raw: GameState): GameState {
   return {
     ...raw,
-    phase: raw.phase ?? 'battle',
+    phase: raw.phase ?? 'setup',
+    finishReason: raw.finishReason ?? null,
     turn: raw.turn ?? 0,
     pendingSwitch: Array.isArray(raw.pendingSwitch) ? raw.pendingSwitch : [false, false],
     log: Array.isArray(raw.log) ? raw.log : [],
@@ -48,10 +49,13 @@ function normalizeState(raw: GameState): GameState {
       weather: raw.field?.weather ?? null,
       terrain: raw.field?.terrain ?? null,
       background: raw.field?.background ?? null,
-      hazards: raw.field?.hazards ?? [{ stealthRock: false, spikes: 0 }, { stealthRock: false, spikes: 0 }],
+      hazards: raw.field?.hazards ?? [
+        { stealthRock: false, spikes: 0 },
+        { stealthRock: false, spikes: 0 },
+      ],
     },
     players: Array.isArray(raw.players)
-      ? ([raw.players[0], raw.players[1]].map(player => ({
+      ? ([raw.players[0], raw.players[1]].map((player) => ({
           ...player,
           team: Array.isArray(player?.team) ? player.team : [],
         })) as GameState['players'])
@@ -65,23 +69,35 @@ export function BattleProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState('Digite seu nome para entrar na fila.')
   const [state, setState] = useState<GameState | null>(null)
   const [roomId, setRoomId] = useState<string | null>(null)
-  const [teamAccepted, setTeamAccepted] = useState(false)
   const [opponentLeft, setOpponentLeft] = useState(false)
   const nameRef = useRef('')
+  const tokenRef = useRef('')
+  const attemptRef = useRef(0)
+  const teamAccepted = Boolean(state?.players.find((player) => player.id === playerId)?.ready)
 
   const sendMessage = useCallback(
     (message: ClientMessage) => {
-      socketService.send(message)
+      if (!socketService.send(message))
+        toast.toast('Sem conexão. Entre novamente para jogar.', 'error')
     },
-    [],
+    [toast]
   )
 
   const handleMessage = useCallback(
     (message: ServerMessage) => {
       switch (message.type) {
         case 'welcome':
+          if (message.protocol !== 'pokemon-battle/2') {
+            toast.toast('Atualize o servidor e o cliente para a mesma versão.', 'error')
+            socketService.close()
+            break
+          }
           setPlayerId(message.playerId)
-          sendMessage({ type: 'join', name: nameRef.current.trim() || 'Jogador' })
+          sendMessage({
+            type: 'join',
+            name: nameRef.current.trim() || 'Jogador',
+            ...(tokenRef.current ? { token: tokenRef.current } : {}),
+          })
           break
         case 'waiting':
           setStatus(message.message)
@@ -110,41 +126,59 @@ export function BattleProvider({ children }: { children: ReactNode }) {
           break
       }
     },
-    [sendMessage, toast],
+    [sendMessage, toast]
   )
 
-  const { connected, connect: openSocket, send, close } = useSocket({
+  const {
+    connected,
+    connect: openSocket,
+    send,
+    close,
+  } = useSocket({
     onMessage: handleMessage,
     onError: () => {
       setStatus('Sem conexão com o servidor.')
     },
+    onClose: () => {
+      setStatus('Conexão encerrada. Entre novamente para jogar.')
+      setState((current) => (current?.phase === 'finished' ? current : null))
+    },
   })
 
   const connect = useCallback(
-    (name: string) => {
+    (name: string, token = '') => {
+      const attempt = ++attemptRef.current
       nameRef.current = name
+      tokenRef.current = token.trim()
+      setPlayerId('')
+      setState(null)
+      setRoomId(null)
+      setOpponentLeft(false)
+      const opening = openSocket()
       setStatus('Conectando ao servidor…')
-      openSocket().then(
+      opening.then(
         () => {
+          if (attemptRef.current !== attempt) return
           setStatus('Conectado. Procurando um oponente…')
         },
         () => {
+          if (attemptRef.current !== attempt) return
           setStatus('Sem conexão.')
           audio.play('error')
           toast.toast('Não foi possível conectar. Inicie o servidor primeiro.', 'error')
-        },
+        }
       )
     },
-    [openSocket, toast],
+    [openSocket, toast]
   )
 
   const leave = useCallback(() => {
+    attemptRef.current++
     send({ type: 'leave' })
     close()
     setPlayerId('')
     setState(null)
     setRoomId(null)
-    setTeamAccepted(false)
     setOpponentLeft(false)
     setStatus('Digite seu nome para entrar na fila.')
   }, [close, send])
@@ -160,21 +194,30 @@ export function BattleProvider({ children }: { children: ReactNode }) {
       opponentLeft,
       connect,
       leave,
-      choosePokemon: name => sendMessage({ type: 'choose_pokemon', pokemon: name }),
-      setMoves: (pokemon, moves) => send({ type: 'set_moves', pokemon, moves }),
-      acceptTeam: () => setTeamAccepted(true),
+      choosePokemon: (name) => sendMessage({ type: 'choose_pokemon', pokemon: name }),
+      setMoves: (pokemon, moves) => sendMessage({ type: 'set_moves', pokemon, moves }),
+      acceptTeam: () => sendMessage({ type: 'accept_team' }),
       resetTeam: () => {
-        setTeamAccepted(false)
         sendMessage({ type: 'reset_team' })
       },
-      attack: move => {
-        setOpponentLeft(false)
+      attack: (move) => {
         sendMessage({ type: 'action', action: { type: 'attack', move } })
       },
       terastallize: () => sendMessage({ type: 'terastallize' }),
-      switchTo: pokemon => sendMessage({ type: 'switch_pokemon', pokemon }),
+      switchTo: (pokemon) => sendMessage({ type: 'switch_pokemon', pokemon }),
     }),
-    [connected, playerId, status, state, roomId, teamAccepted, opponentLeft, connect, leave, send, sendMessage],
+    [
+      connected,
+      playerId,
+      status,
+      state,
+      roomId,
+      teamAccepted,
+      opponentLeft,
+      connect,
+      leave,
+      sendMessage,
+    ]
   )
 
   return <BattleContext.Provider value={value}>{children}</BattleContext.Provider>

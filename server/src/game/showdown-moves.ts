@@ -52,6 +52,8 @@ export interface ImportedMove {
   drain: number;
   flinchChance: number;
   healing: number;
+  cureStatus: boolean;
+  selfSleepTurns: number;
   statChance: number;
   ailment?: string;
   ailmentChance?: number;
@@ -128,6 +130,12 @@ function loadMoves(): Map<string, ImportedMove> {
     let healing = 0;
     if (Array.isArray(healArray)) healing = Math.round((healArray[0] / healArray[1]) * 100);
     else if (typeof healArray === "number") healing = healArray * 100; // raro
+    // Estes efeitos usam callbacks no Showdown; o JSON não contém a implementação.
+    const cureStatus = ["rest", "junglehealing", "lunarblessing", "healbell", "aromatherapy"].includes(id);
+    const selfSleepTurns = id === "rest" ? 2 : 0;
+    if (id === "rest") healing = 100;
+    if (["junglehealing", "lunarblessing", "lifedew"].includes(id)) healing = 25;
+    if (id === "healpulse") healing = 50;
 
     // drain: [1,2] = 50%
     const drain = Array.isArray(move.drain) ? Math.round((move.drain[0] / move.drain[1]) * 100) : 0;
@@ -189,7 +197,7 @@ function loadMoves(): Map<string, ImportedMove> {
 
     // ---- mecânicas ainda NÃO suportadas pelo motor (flags para a UI) ----
     if (move.flags?.contact && secondary?.volatileStatus && secondary.volatileStatus !== "flinch" && secondary.volatileStatus !== "confusion") unsupported.push(secondary.volatileStatus);
-    if (move.target && ["allySide", "allyTeam", "allies", "adjacentAlly", "allySide"].includes(move.target)) unsupported.push("efeito em aliado (singles)");
+    if (move.target && ["allySide", "allyTeam", "allies", "adjacentAlly"].includes(move.target)) unsupported.push("efeito na equipe reserva não implementado");
     if (["sunny-day", "rain-dance", "sandstorm", "snowscape", "hail", "electric-terrain", "grassy-terrain", "misty-terrain", "psychic-terrain"].includes(id)) unsupported.push("mudança de campo");
     if (["stealth-rock", "spikes", "toxic-spikes", "sticky-web", "rapid-spin", "defog"].includes(id)) unsupported.push("hazards");
     if (["taunt", "torment", "encore", "disable", "embargo", "imprison"].includes(id)) unsupported.push("bloqueio de golpe");
@@ -217,6 +225,8 @@ function loadMoves(): Map<string, ImportedMove> {
       drain,
       flinchChance,
       healing,
+      cureStatus,
+      selfSleepTurns,
       statChance,
       ailment,
       ailmentChance: ailmentChance ?? 0,

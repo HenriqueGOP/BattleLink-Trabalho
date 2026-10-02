@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { socketService } from '../services/socket'
+import { socketService, WS_URL } from '../services/socket'
 import type { ServerMessage } from '../types/protocol'
 
 export interface SocketHandlers {
@@ -19,7 +19,7 @@ export function useSocket(handlers: SocketHandlers) {
   })
 
   useEffect(() => {
-    const offMessage = socketService.onMessage(message => handlersRef.current.onMessage(message))
+    const offMessage = socketService.onMessage((message) => handlersRef.current.onMessage(message))
     const offOpen = socketService.onOpen(() => {
       setConnected(true)
       handlersRef.current.onOpen?.()
@@ -28,7 +28,7 @@ export function useSocket(handlers: SocketHandlers) {
       setConnected(false)
       handlersRef.current.onClose?.()
     })
-    const offError = socketService.onError(cause => handlersRef.current.onError?.(cause))
+    const offError = socketService.onError((cause) => handlersRef.current.onError?.(cause))
     return () => {
       offMessage()
       offOpen()
@@ -37,9 +37,9 @@ export function useSocket(handlers: SocketHandlers) {
     }
   }, [])
 
-  const connect = useCallback((url?: string) => socketService.connect(url), [])
+  const connect = useCallback((url: string = WS_URL) => socketService.connect(url), [])
   const send = useCallback((message: Parameters<typeof socketService.send>[0]) => {
-    socketService.send(message)
+    return socketService.send(message)
   }, [])
   const close = useCallback(() => socketService.close(), [])
 

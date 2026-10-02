@@ -1,5 +1,7 @@
 // server/src/game/pokeapi.ts
 import { getShowdownMove } from "./showdown-moves";
+import { config } from "../config";
+import { PersistentJsonCache } from "./json-cache";
 const API = "https://pokeapi.co/api/v2";
 export const MAX_MOVE_POOL = 24;
 
@@ -13,6 +15,7 @@ export interface MoveData {
   critRate: number;
   minHits: number | null; maxHits: number | null;
   drain: number; flinchChance: number; healing: number; statChance: number;
+  cureStatus?: boolean; selfSleepTurns?: number;
   description: string | null;
   unsupported: string[];
   selfStatChanges: Array<{ stat: string; change: number }>;
@@ -28,7 +31,8 @@ export interface PokemonDetail {
   moves: MoveData[];
 }
 
-const cache = new Map<string, unknown>();
+const cacheDirectory = config.pokeApiCacheDir;
+let cache = new PersistentJsonCache(cacheDirectory);
 
 /**
  * Transporte HTTP injetavel. Producao usa fetch; os testes trocam por um
@@ -48,19 +52,63 @@ let transport: PokeApiTransport = defaultTransport;
 /** Troca o transporte e limpa os caches. `null` restaura o fetch real. */
 export function setPokeApiTransport(next: PokeApiTransport | null): void {
   transport = next ?? defaultTransport;
-  cache.clear();
+  // Fixtures nunca leem ou sobrescrevem o cache de produção.
+  cache = new PersistentJsonCache(next ? null : cacheDirectory);
   knownNames = null;
   namesPromise = null;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isNamedResource(value: unknown): boolean {
+  return isRecord(value) && typeof value.name === "string" && /^[a-z0-9-]+$/.test(value.name);
+}
+
+/** Valida também os campos aninhados consumidos pelo motor antes de persistir. */
+function validateResponse(path: string, data: unknown): void {
+  if (!isRecord(data)) throw new Error("Resposta inválida da PokéAPI.");
+  if (path.includes("?")) {
+    if (!Array.isArray(data.results) || data.results.length === 0 || data.results.some(item =>
+      !isNamedResource(item) || (item.url !== undefined && typeof item.url !== "string"))) {
+      throw new Error("Catálogo inválido da PokéAPI.");
+    }
+    return;
+  }
+  const validStats = Array.isArray(data.stats) && data.stats.length > 0 && data.stats.every(item =>
+    isRecord(item) && typeof item.base_stat === "number" && Number.isFinite(item.base_stat) &&
+    item.base_stat >= 0 && isNamedResource(item.stat));
+  const validTypes = Array.isArray(data.types) && data.types.length > 0 && data.types.every(item =>
+    isRecord(item) && isNamedResource(item.type));
+  const validMoves = Array.isArray(data.moves) && data.moves.every(item =>
+    isRecord(item) && isNamedResource(item.move) && Array.isArray(item.version_group_details) &&
+    item.version_group_details.every(group => isRecord(group) && isNamedResource(group.version_group) &&
+      isNamedResource(group.move_learn_method) && typeof group.level_learned_at === "number" &&
+      Number.isFinite(group.level_learned_at) && group.level_learned_at >= 0));
+  const validAbilities = data.abilities === undefined || (Array.isArray(data.abilities) &&
+    data.abilities.every(item => isRecord(item) && isNamedResource(item.ability)));
+  if (!isNamedResource(data) || !Number.isInteger(data.id) || Number(data.id) < 1 ||
+    !validStats || !validTypes || !validMoves || !validAbilities) {
+    throw new Error("Dados inválidos de Pokémon.");
+  }
+}
+
 async function cachedJson<T>(path: string): Promise<T> {
-  const hit = cache.get(path);
-  if (hit) return hit as T;
-  const response = await transport(`${API}${path}`);
-  if (!response.ok) throw new Error(`PokeAPI respondeu ${response.status} em ${path}`);
-  const data = (await response.json()) as T;
-  cache.set(path, data);
-  return data;
+  const fetchData = transport;
+  return cache.get<T>(path, async () => {
+    const response = await fetchData(`${API}${path}`);
+    if (!response.ok) throw new Error(`PokeAPI respondeu ${response.status} em ${path}`);
+    return response.json();
+  }, data => validateResponse(path, data));
+}
+
+export async function fetchPokemonCatalog(): Promise<Array<{ id: number; name: string; image: string }>> {
+  const list = await cachedJson<{ results: Array<{ name: string; url?: string }> }>("/pokemon?limit=1025");
+  return list.results.map((entry, index) => {
+    const id = Number(entry.url?.match(/\/pokemon\/(\d+)\/?$/)?.[1] ?? index + 1);
+    return { id, name: entry.name, image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png` };
+  });
 }
 
 let knownNames: Set<string> | null = null;
@@ -169,6 +217,8 @@ export async function fetchPokemonDetail(name: string): Promise<PokemonDetail> {
       drain: imported?.drain ?? 0,
       flinchChance: imported?.flinchChance ?? 0,
       healing: imported?.healing ?? 0,
+      cureStatus: imported?.cureStatus ?? false,
+      selfSleepTurns: imported?.selfSleepTurns ?? 0,
       statChance: imported?.statChance ?? 0,
       ailment: imported?.ailment ?? "none",
       ailmentChance: imported?.ailmentChance ?? 0,

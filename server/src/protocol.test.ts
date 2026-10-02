@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { parseClientMessage } from "./protocol";
 
 assert.deepEqual(parseClientMessage({ type: "join", name: "Alice" }), { type: "join", name: "Alice" });
+assert.deepEqual(parseClientMessage({ type: "accept_team" }), { type: "accept_team" });
+assert.deepEqual(parseClientMessage({ type: "join", name: "Alice", token: "secret" }), { type: "join", name: "Alice", token: "secret" });
+assert.throws(() => parseClientMessage({ type: "join", name: "Alice", token: "x".repeat(257) }), /grande demais/i);
 assert.deepEqual(parseClientMessage({ type: "action", action: { type: "attack", move: "tackle" } }), {
   type: "action",
   action: { type: "attack", move: "tackle" },

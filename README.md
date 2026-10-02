@@ -2,11 +2,11 @@
 
 Projeto academico de Sistemas Operacionais sobre comunicacao entre processos, sockets TCP, concorrencia e sincronizacao de estado.
 
-Jogo local de batalha por turnos (estilo competitivo simplificado, com Terastalizacao e clima) para demonstrar comunicacao entre processos em Sistemas Operacionais. O funcionamento basico usa TCP, JSON e dados locais; nenhuma API externa e obrigatoria para o servidor (o catalogo vem da PokeAPI com cache). O React e opcional: o jogo completo tambem funciona em terminais.
+Jogo local de batalha por turnos (estilo competitivo simplificado, com Terastalizacao e clima) para demonstrar comunicacao entre processos em Sistemas Operacionais. Golpes vêm do dataset local; catálogo e detalhes de Pokémon são consultados na PokéAPI na primeira utilização e persistidos em `data/pokeapi-cache/`. Os dados já armazenados funcionam sem internet, inclusive após reiniciar o servidor. Espécies ainda não armazenadas exigem uma primeira consulta online. O React é opcional: o jogo completo também funciona em terminais.
 
 ## Requisitos
 
-- Node.js 20 ou superior;
+- Node.js 20.19 ou superior;
 - npm;
 - Windows, Linux ou macOS.
 
@@ -50,6 +50,7 @@ Nos dois clientes, monte a equipe e lute. O cliente desenha o estado (barras de 
 | --- | --- |
 | `choose <pokemon>` | adiciona um Pokemon a equipe (sao necessarios 6) |
 | `moves <pokemon> <g1,g2,g3,g4>` | define ate 4 golpes equipados |
+| `ready` | confirma a equipe e trava os golpes; o combate começa após os dois confirmarem |
 | `attack <golpe>` | usa um golpe equipado no seu turno |
 | `switch <pokemon>` | troca o Pokemon em campo (obrigatorio apos um nocaute) |
 | `tera` | terastaliza (uma vez por partida) |
@@ -82,7 +83,7 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:5173`. Para jogar no navegador, abra duas abas e informe nomes diferentes. Cada aba entra na fila, monta a equipe de seis, ajusta os golpes e recebe os snapshots sincronizados pelo servidor — com animacoes, sons e HUD reativos aos eventos da batalha.
+Abra `http://localhost:5173`. Para jogar no navegador, abra duas abas e informe nomes diferentes. Cada aba entra na fila, monta a equipe de seis, ajusta os golpes e confirma a equipe. O servidor só libera a batalha quando os dois confirmam. A partir daí, os golpes ficam travados e os snapshots oficiais conduzem as animações, sons e HUD.
 
 Para gerar o front-end executavel:
 
@@ -108,11 +109,24 @@ npm run preview
 | `PORT` | server | `3001` | TCP dos clientes CLI |
 | `WEB_PORT` | server | `3002` | WebSocket do front-end |
 | `HTTP_PORT` | server | `3003` | API REST do catalogo |
-| `HOST` | server | `127.0.0.1` | Interface de escuta |
+| `HOST` | server | `127.0.0.1` | Interface de escuta HTTP/WebSocket |
+| `TCP_HOST` | server | `127.0.0.1` | Interface TCP, restrita a loopback |
+| `ALLOWED_ORIGINS` | server | localhost/127.0.0.1 nas portas 5173 e 4173 | Origens exatas permitidas no HTTP/WebSocket |
+| `BATTLE_ACCESS_TOKEN` | server | vazio no modo local | Chave obrigatória para acesso fora de loopback; informada no lobby |
+| `MAX_CONNECTIONS` / `MAX_CONNECTIONS_PER_IP` | server | `128` / `16` | Limites compartilhados entre TCP e WebSocket |
+| `MAX_MESSAGES_PER_SECOND` / `MAX_PENDING_MESSAGES` | server | `30` / `16` | Limites por conexão |
+| `JOIN_TIMEOUT_MS` | server | `10000` | Prazo para entrar na fila após conectar |
+| `POKEAPI_CACHE_DIR` | server | `data/pokeapi-cache` | Cache persistente, ignorado pelo Git |
 | `VITE_WS_URL` | client | `ws://127.0.0.1:3002` | Endereco do WebSocket |
 | `VITE_API_URL` | client | `http://127.0.0.1:3003` | Endereco da API do catalogo |
 
 Copie os exemplos antes de rodar: `Copy-Item server/.env.example server/.env` e `Copy-Item client/.env.example client/.env`.
+
+O servidor carrega `server/.env` automaticamente, preservando variáveis já exportadas pelo shell. Clientes e servidor devem usar o protocolo `pokemon-battle/2`. No terminal, confirme a equipe com `ready`.
+
+Para acesso pela rede, configure uma chave de 32 a 256 caracteres e uma lista explícita de origens. Origens externas usam HTTPS e a ponte deve ser publicada por um proxy TLS (`wss://`). O TCP permanece local. A chave não é gravada no navegador nem enviada em URLs, snapshots ou logs.
+
+Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo mesmo proxy/NAT. O cache guarda os dados já consultados; sprites e sons remotos ainda podem depender de internet, com os fallbacks visuais existentes.
 
 ## Estrutura da entrega
 
