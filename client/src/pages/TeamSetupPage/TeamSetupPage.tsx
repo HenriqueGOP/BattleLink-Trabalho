@@ -163,7 +163,8 @@ export function TeamSetupPage() {
             <div className={styles.moveGrid}>
               {selected.moves.map((move) => {
                 const isSelected = chosen.includes(move.name)
-                const disabled = !isSelected && chosen.length >= MAX_MOVES
+                const disabled =
+                  Boolean(move.unsupported?.length) || (!isSelected && chosen.length >= MAX_MOVES)
                 return (
                   <button
                     key={move.name}
@@ -178,13 +179,14 @@ export function TeamSetupPage() {
                       <i className={styles.check} aria-hidden="true">
                         {isSelected ? '✓' : ''}
                       </i>
-                      {move.name}
+                      {move.displayName ?? move.name}
                     </span>
                     <TypeBadge type={move.type} small />
                     <span className={styles.moveStats}>
                       PODER {move.power ?? '—'} · PREC {move.accuracy ?? '—'} · PP {move.pp ?? '—'}
                     </span>
                     <span className={styles.effects}>
+                      {move.unsupported?.length ? <em>{move.unsupported.join(', ')}</em> : null}
                       {moveEffects(move)
                         .slice(0, 3)
                         .map((effect) => (

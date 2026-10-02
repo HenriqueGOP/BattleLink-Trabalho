@@ -1,6 +1,7 @@
-/** Golpe exatamente como o servidor envia (server/src/game/pokeapi.ts MoveData). */
+/** Modelo visual derivado do catálogo local de golpes. */
 export interface PokemonMove {
   name: string
+  displayName?: string
   power: number | null
   accuracy: number | null
   pp: number | null
@@ -24,7 +25,7 @@ export interface PokemonMove {
   metaCategory?: string | null
 }
 
-/** Entrada do catálogo REST GET /api/pokemon (servidor, index.ts). */
+/** Entrada visual do catálogo empacotado, com recurso local validado. */
 export interface PokemonSummary {
   id: number
   name: string

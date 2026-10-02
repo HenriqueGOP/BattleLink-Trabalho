@@ -1,5 +1,9 @@
 # Correções da auditoria técnica
 
+Registro da linha de base anterior à reformulação, preservada no commit `34db709`.
+Os contratos e testes foram posteriormente migrados conforme o
+[relatório da fase 3](FASE_3_INTEGRACAO.md), que documenta as equivalências de cobertura.
+
 ## Oito apontamentos corrigidos
 
 | # | Problema | Correção | Evidência de regressão |

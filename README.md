@@ -2,7 +2,9 @@
 
 Projeto academico de Sistemas Operacionais sobre comunicacao entre processos, sockets TCP, concorrencia e sincronizacao de estado.
 
-Jogo local de batalha por turnos (estilo competitivo simplificado, com Terastalizacao e clima) para demonstrar comunicacao entre processos em Sistemas Operacionais. Golpes vêm do dataset local; catálogo e detalhes de Pokémon são consultados na PokéAPI na primeira utilização e persistidos em `data/pokeapi-cache/`. Os dados já armazenados funcionam sem internet, inclusive após reiniciar o servidor. Espécies ainda não armazenadas exigem uma primeira consulta online. O React é opcional: o jogo completo também funciona em terminais.
+Jogo de batalha Pokémon singles: dois jogadores, seis Pokémon por equipe e escolhas simultâneas privadas. As regras Gen 9 são executadas por `@pkmn/sim@0.10.11` exclusivamente no servidor. O catálogo, sprites, fontes e cries são locais; partidas não consultam PokéAPI ou CDNs. Nível 50, IVs 31, EVs 0 e natureza neutra; somente Adaptability tem efeito quando a espécie permite. Sem itens, Terastalização, clima/terreno de combate, hazards ou formas alternativas.
+
+**Reformulação concluída até a fase 3:** motor, protocolo `pokemon-battle/3`, terminal e React integrados. A nova direção de animação, revisão visual dos menus e seis arenas originais seguem nas fases 4–6. Consulte [o relatório da fase 3](docs/FASE_3_INTEGRACAO.md) e [o ADR](docs/adr/battle-overhaul.md).
 
 ## Requisitos
 
@@ -21,7 +23,7 @@ npm test
 npm run lint
 ```
 
-> Os testes rodam **offline**: `server/src/game/pokeapi.fixture.ts` serve os dados da PokeAPI de memoria, entao a suite nao depende de internet nem do rate limit da API.
+> Os testes rodam **offline**, incluindo integração TCP/WebSocket/HTTP, privacidade, recursos locais e matemática contra uma calculadora independente. Os testes históricos do cache usam respostas em memória.
 
 ## Executar a demonstracao (terminais)
 
@@ -44,27 +46,28 @@ cd server
 npm run client -- Bob
 ```
 
-Nos dois clientes, monte a equipe e lute. O cliente desenha o estado (barras de HP, pokebolas da equipe, golpes com PP) em vez de despejar o JSON cru. Comandos:
+Nos dois clientes, monte a equipe e lute. O cliente mostra equipes, HP, solicitações privadas e golpes com PP. Comandos:
 
 | Comando | Efeito |
 | --- | --- |
-| `choose <pokemon>` | adiciona um Pokemon a equipe (sao necessarios 6) |
+| `choose <id>` | adiciona um Pokemon a equipe (sao necessarios 6) |
 | `moves <pokemon> <g1,g2,g3,g4>` | define ate 4 golpes equipados |
 | `ready` | confirma a equipe e trava os golpes; o combate começa após os dois confirmarem |
-| `attack <golpe>` | usa um golpe equipado no seu turno |
+| `attack <id>` | envia a escolha privada de um golpe disponível |
 | `switch <pokemon>` | troca o Pokemon em campo (obrigatorio apos um nocaute) |
-| `tera` | terastaliza (uma vez por partida) |
+| `random [quantidade]` | sorteia no servidor os espaços restantes, ou a quantidade indicada |
+| `retry` | reenvia a ação pendente com o mesmo identificador |
 | `reset` | refaz a equipe (so antes da batalha comecar) |
 | `state` | reimprime o estado atual |
 | `help` / `quit` | ajuda / sair |
 
-O servidor imprime conexoes, locks, validacoes, mudancas de turno e desconexoes.
+Use IDs canônicos: `charizard`, `icebeam`, `willowisp`. Os golpes escolhidos precisam pertencer ao learnset da espécie e estar disponíveis no formato. O servidor imprime conexões, locks e desconexões.
 
-> As acoes `defend` e `special` foram removidas das regras: o servidor responde com erro orientando a usar golpes equipados (os ataques consomem PP).
+> Cada rodada aguarda as escolhas dos jogadores necessários. Prioridade, velocidade e RNG determinam a ordem de resolução; ordem de chegada na rede não dá vantagem.
 
 ## Front-end React
 
-O front-end fica em `client/` (React 19 + Vite + TypeScript + React Router + GSAP + Howler). O navegador usa WebSocket em `127.0.0.1:3002`, porque browsers nao abrem sockets TCP brutos; a ponte fica no mesmo processo do servidor. O catalogo de Pokemon vem da API HTTP em `127.0.0.1:3003`.
+O front-end fica em `client/` (React 19 + Vite + TypeScript + React Router + GSAP + Howler). O navegador usa WebSocket em `127.0.0.1:3002`, porque browsers nao abrem sockets TCP brutos; a ponte fica no mesmo processo do servidor. O catálogo é empacotado no frontend. A API HTTP local em `127.0.0.1:3003` permanece disponível para consultar IDs, nomes e números.
 
 Em um terminal, inicie o servidor:
 
@@ -83,7 +86,7 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:5173`. Para jogar no navegador, abra duas abas e informe nomes diferentes. Cada aba entra na fila, monta a equipe de seis, ajusta os golpes e confirma a equipe. O servidor só libera a batalha quando os dois confirmam. A partir daí, os golpes ficam travados e os snapshots oficiais conduzem as animações, sons e HUD.
+Abra `http://localhost:5173`. Para jogar no navegador, abra duas abas e informe nomes diferentes. Cada aba entra na fila, monta a equipe de seis, ajusta os golpes e confirma a equipe. O servidor libera a batalha após a confirmação das equipes e a preparação dos dois clientes (preload local com limite de três segundos). A partir daí, os golpes ficam travados e os snapshots oficiais conduzem as animações, sons e HUD.
 
 Para gerar o front-end executavel:
 
@@ -116,17 +119,16 @@ npm run preview
 | `MAX_CONNECTIONS` / `MAX_CONNECTIONS_PER_IP` | server | `128` / `16` | Limites compartilhados entre TCP e WebSocket |
 | `MAX_MESSAGES_PER_SECOND` / `MAX_PENDING_MESSAGES` | server | `30` / `16` | Limites por conexão |
 | `JOIN_TIMEOUT_MS` | server | `10000` | Prazo para entrar na fila após conectar |
-| `POKEAPI_CACHE_DIR` | server | `data/pokeapi-cache` | Cache persistente, ignorado pelo Git |
+| `PREPARATION_TIMEOUT_MS` | server | `8000` | Prazo para os clientes confirmarem recursos prontos |
 | `VITE_WS_URL` | client | `ws://127.0.0.1:3002` | Endereco do WebSocket |
-| `VITE_API_URL` | client | `http://127.0.0.1:3003` | Endereco da API do catalogo |
 
 Copie os exemplos antes de rodar: `Copy-Item server/.env.example server/.env` e `Copy-Item client/.env.example client/.env`.
 
-O servidor carrega `server/.env` automaticamente, preservando variáveis já exportadas pelo shell. Clientes e servidor devem usar o protocolo `pokemon-battle/2`. No terminal, confirme a equipe com `ready`.
+O servidor carrega `server/.env` automaticamente, preservando variáveis já exportadas pelo shell. Clientes e servidor devem usar o protocolo `pokemon-battle/3`. No terminal, confirme a equipe com `ready`.
 
 Para acesso pela rede, configure uma chave de 32 a 256 caracteres e uma lista explícita de origens. Origens externas usam HTTPS e a ponte deve ser publicada por um proxy TLS (`wss://`). O TCP permanece local. A chave não é gravada no navegador nem enviada em URLs, snapshots ou logs.
 
-Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo mesmo proxy/NAT. O cache guarda os dados já consultados; sprites e sons remotos ainda podem depender de internet, com os fallbacks visuais existentes.
+Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo mesmo proxy/NAT. Recursos locais ausentes usam fallback local; o pacote completo deve acompanhar `client/dist`. A origem e os avisos de direitos estão em [créditos dos recursos](client/public/pokemon/CREDITS.md).
 
 ## Estrutura da entrega
 
@@ -134,7 +136,11 @@ Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo me
 - `client/dist`: versao de producao do front-end, gerada por `npm run build --prefix client`;
 - `client/src`: front-end organizado em `pages/`, `components/`, `hooks/`, `services/`, `lib/`, `types/` e `styles/` (detalhes em [client/README.md](client/README.md));
 - `server/src/game`: dominio, estado oficial, fila e mutex;
-- `data/moves.json`: dataset publico de golpes do Pokemon Showdown, resolvido a partir do proprio modulo (o servidor sobe de qualquer diretorio);
+- `server/src/contracts`: protocolo, decoder, catálogo e textos de eventos compartilhados;
+- `server/src/game/engine`: fachada isolada do simulador;
+- `server/src/data`: catálogo gerado da versão fixada;
+- `client/public/pokemon`: 5.125 recursos locais (19,01 MB), manifesto e licenças;
+- `data/moves.json` e o importador antigo permanecem apenas para regressões históricas; não atendem partidas;
 - `docs`: protocolo, arquitetura e [guia explicado do codigo](docs/GUIA_DO_CODIGO.md).
 
 ## Troubleshooting
@@ -154,6 +160,5 @@ Nesse caso, configure tambem o front-end antes de iniciar o Vite:
 
 ```powershell
 $env:VITE_WS_URL="ws://127.0.0.1:3102"
-$env:VITE_API_URL="http://127.0.0.1:3103"
 npm run dev --prefix client
 ```

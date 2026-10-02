@@ -23,14 +23,14 @@ export function useCatalog(): CatalogApi {
   useEffect(() => {
     let alive = true
     fetchCatalog()
-      .then(data => {
+      .then((data) => {
         if (alive) {
           setCatalog(data)
           setError(null)
         }
       })
       .catch(() => {
-        if (alive) setError('Não foi possível carregar o catálogo da PokéAPI.')
+        if (alive) setError('Não foi possível carregar o catálogo local.')
       })
       .finally(() => {
         if (alive) setLoading(false)
@@ -42,7 +42,7 @@ export function useCatalog(): CatalogApi {
 
   const retry = useCallback(() => {
     setLoading(true)
-    setAttempt(value => value + 1)
+    setAttempt((value) => value + 1)
   }, [])
 
   return { catalog, loading, error, retry }

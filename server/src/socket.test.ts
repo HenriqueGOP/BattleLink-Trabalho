@@ -34,6 +34,21 @@ async function run(): Promise<void> {
   sockets[0].open();
   await connection;
   assert.equal(service.isOpen, true);
+  let received = 0,
+    errors = 0;
+  service.onMessage(() => received++);
+  service.onError(() => errors++);
+  sockets[0].onmessage!({
+    data: JSON.stringify({ type: "state", state: { roomId: "bad" } }),
+  });
+  sockets[0].onmessage!({ data: "not-json" });
+  assert.equal(errors, 2);
+  assert.equal(received, 0);
+  sockets[0].onmessage!({
+    data: JSON.stringify({ type: "waiting", message: "Aguardando" }),
+  });
+  assert.equal(received, 1);
+  const oldMessage = sockets[0].onmessage!;
   assert.equal(service.send({ type: "accept_team" }), true);
   const oldClose = sockets[0].onclose!;
   service.close();
@@ -46,7 +61,19 @@ async function run(): Promise<void> {
   sockets[1].open();
   await next;
   oldClose();
-  assert.equal(service.isOpen, true, "close obsoleto não derruba a conexão nova");
+  oldMessage({
+    data: JSON.stringify({ type: "waiting", message: "Obsoleto" }),
+  });
+  assert.equal(
+    received,
+    1,
+    "Mensagem de socket obsoleto não altera a sala nova",
+  );
+  assert.equal(
+    service.isOpen,
+    true,
+    "close obsoleto não derruba a conexão nova",
+  );
   assert.equal(closes, 1);
   sockets[1].close();
   assert.equal(closes, 2);

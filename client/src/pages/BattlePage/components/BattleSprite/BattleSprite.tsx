@@ -12,14 +12,12 @@ export interface BattleSpriteProps {
   spriteRef: React.RefObject<HTMLDivElement | null>
 }
 
-/** Sprite em campo: entrada slide+fade+poeira, idle bobbing, sombra, sparkle shiny, glow Tera. */
+/** Sprite local em campo: entrada, sombra e brilho shiny. */
 export function BattleSprite({ player, opponent, spriteRef }: BattleSpriteProps) {
   const { src, mirrored } = resolveSprite(player, opponent)
   const previousSrc = useRef<string | null>(null)
-  // Nem todo Pokemon tem sprite para todas as formas e a PokeAPI as vezes
-  // devolve 404. Sem isto, o <img> quebrado esticava o texto alternativo por
-  // cima do campo de batalha. Guardamos QUAL src falhou (estado derivado), o
-  // que dispensa um efeito so para limpar a flag quando o Pokemon troca.
+  // Falhas do recurso local usam um placeholder sem esticar texto sobre a arena.
+  // Guardar o src permite recuperar naturalmente quando o Pokémon troca.
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
   const broken = src !== null && failedSrc === src
 
@@ -46,14 +44,7 @@ export function BattleSprite({ player, opponent, spriteRef }: BattleSpriteProps)
     }
   }, [src, opponent, spriteRef])
 
-  const teraType = player?.pokemonData?.teraType
-  const imgClasses = [
-    styles.sprite,
-    mirrored ? styles.mirrored : '',
-    player?.pokemonData?.isTerastallized ? styles.tera : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const imgClasses = [styles.sprite, mirrored ? styles.mirrored : ''].filter(Boolean).join(' ')
 
   return (
     <div
@@ -80,20 +71,13 @@ export function BattleSprite({ player, opponent, spriteRef }: BattleSpriteProps)
         <span
           className={styles.placeholder}
           role="img"
-          aria-label={player?.pokemon ? `${player.pokemon} (sprite indisponível)` : 'Pokémon em campo'}
+          aria-label={
+            player?.pokemon ? `${player.pokemon} (sprite indisponível)` : 'Pokémon em campo'
+          }
         />
       )}
       {player?.pokemonData?.isShiny && (
         <span className={styles.sparkle} role="img" aria-label="Pokémon shiny" />
-      )}
-      {player?.pokemonData?.isTerastallized && (
-        <span
-          className={styles.teraAura}
-          style={{
-            background: `radial-gradient(circle, var(--type-${teraType}, var(--type-stellar)) 0%, transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
       )}
     </div>
   )

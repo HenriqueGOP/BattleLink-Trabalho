@@ -37,7 +37,8 @@ export function moveEffects(move: PokemonMove): MoveEffect[] {
   if ((move.healing ?? 0) > 0) effects.push({ label: 'Recupera HP', tone: 'heal' })
   if ((move.drain ?? 0) > 0) effects.push({ label: 'Drena HP do alvo', tone: 'heal' })
 
-  const ailment = move.ailment && move.ailment !== 'none' ? (AILMENT_NAMES[move.ailment] ?? move.ailment) : null
+  const ailment =
+    move.ailment && move.ailment !== 'none' ? (AILMENT_NAMES[move.ailment] ?? move.ailment) : null
   if (ailment) {
     const sure = (move.ailmentChance ?? 0) >= 100
     effects.push({ label: sure ? `Causa ${ailment}` : `Pode causar ${ailment}`, tone: 'ailment' })
@@ -58,12 +59,13 @@ export function moveEffects(move: PokemonMove): MoveEffect[] {
     })
   }
   if ((move.flinchChance ?? 0) > 0) effects.push({ label: 'Pode fazer vacilar', tone: 'info' })
-  if ((move.minHits ?? 1) > 1 || (move.maxHits ?? 1) > 1) effects.push({ label: 'Golpe múltiplo', tone: 'info' })
+  if ((move.minHits ?? 1) > 1 || (move.maxHits ?? 1) > 1)
+    effects.push({ label: 'Golpe múltiplo', tone: 'info' })
   if ((move.priority ?? 0) > 0) effects.push({ label: 'Age primeiro', tone: 'info' })
   if ((move.priority ?? 0) < 0) effects.push({ label: 'Age por último', tone: 'info' })
   if ((move.critRate ?? 0) > 0) effects.push({ label: 'Maior chance de crítico', tone: 'info' })
   if (effects.length === 0) {
-    effects.push({ label: move.power == null ? 'Golpe de status' : 'Só causa dano', tone: 'info' })
+    effects.push({ label: move.power == null ? 'Golpe de status' : 'Causa dano', tone: 'info' })
   }
   return effects
 }

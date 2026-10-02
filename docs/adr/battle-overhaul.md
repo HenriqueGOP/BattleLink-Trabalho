@@ -109,7 +109,34 @@ de uma perspectiva; a integração usará o watermark do snapshot. A idempotênc
 durante a execução invalidam a instância para impedir continuidade de estado parcial.
 
 Detalhes, evidências e limites: [relatório da fase 2B](../FASE_2B_MOTOR.md).
-O motor permanece sem conexão ao protocolo atual até a fase 3.
+Na conclusão da fase 2B, o motor ainda não estava conectado ao protocolo da aplicação.
+
+### Registro da fase 3
+
+O motor foi ativado na Room, e servidor, React e terminal migraram juntos para
+`pokemon-battle/3`. Ações possuem solicitação e chave idempotente; escolhas pendentes
+e equipes não reveladas permanecem privadas. Snapshots usam watermark e janela de
+240 sequências; falhas internas encerram a partida sem regredir a sequência publicada.
+
+O catálogo local contém 1.025 espécies base e o manifesto da fase 2B. Seleção e sorteio
+não dependem da PokeAPI; o sorteio usa um fluxo privado por lado. TERA e terreno de
+combate foram removidos. A preparação usa preload de três segundos, seis tarefas
+concorrentes e fallback local, com timeout da sala de oito segundos configuráveis.
+
+Foram empacotados 5.125 sprites/cries, somando 19.008.688 bytes, com hashes, revisões
+fixadas e avisos de licença preservados. O custo é armazenamento e distribuição local;
+a batalha pré-carrega apenas os recursos pertinentes. Catálogo, golpes e registro de
+recursos têm chunks próprios, ainda carregados inicialmente. O build rejeita inclusão
+do simulador ou da calculadora de referência no bundle do navegador.
+
+Build, lint (zero erros/dois avisos anteriores), suítes do motor, integração de rede,
+dois processos de terminal e integridade dos recursos passaram. Duas abas do navegador
+de produção percorreram montagem, escolhas, troca e desconexão. O encerramento natural
+completo foi exercitado na integração TCP/WebSocket. Não houve medição de FPS real.
+
+A sincronização de estado apresentado com conclusão das animações continua como
+entrega da fase 4. As seis novas arenas e a revisão completa de acessibilidade continuam
+nas fases correspondentes. Detalhes e evidências: [relatório da fase 3](../FASE_3_INTEGRACAO.md).
 
 ### Critérios gerais
 
@@ -122,6 +149,7 @@ O motor permanece sem conexão ao protocolo atual até a fase 3.
   commit React por frame; modal acessível, contraste AA e largura mínima de 360 px.
 - Recursos sem rede externa; arenas até 600 KB e preload com timeout de três segundos
   antes de fallback local. A sala também limita a espera por cliente ausente.
-- [VERIFICAR nas fases correspondentes] Partida em dois navegadores, recursos locais
-  e suas licenças, screenshots e 60 FPS em celular intermediário real. Emulação não
-  substitui medição em aparelho.
+- Recursos locais, avisos de licença e screenshots foram registrados na fase 3.
+  [VERIFICAR nas fases correspondentes] Percurso completo em navegadores distintos,
+  apresentação e 60 FPS em celular intermediário real. Emulação não substitui medição
+  em aparelho.

@@ -18,7 +18,15 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
   const overlayRef = useRef<HTMLDivElement>(null)
   const winner = state.winner
   const result =
-    winner === myId ? 'victory' : winner ? 'defeat' : opponentLeft ? 'interrupted' : 'draw'
+    winner === myId
+      ? 'victory'
+      : winner
+        ? 'defeat'
+        : opponentLeft ||
+            state.finishReason === 'engine_error' ||
+            state.finishReason === 'preparation_timeout'
+          ? 'interrupted'
+          : 'draw'
   const title =
     result === 'victory'
       ? state.finishReason === 'disconnect'
@@ -30,15 +38,19 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
           ? 'PARTIDA INTERROMPIDA'
           : 'EMPATE!'
   const detail =
-    result === 'defeat' && winner
-      ? `${state.players.find((player) => player.id === winner)?.name ?? 'O oponente'} venceu a batalha.`
-      : result === 'interrupted'
-        ? 'O oponente desconectou da partida.'
-        : result === 'victory'
-          ? state.finishReason === 'disconnect'
-            ? 'O oponente desconectou. A partida foi encerrada.'
-            : 'A arena é sua, treinador!'
-          : 'Nenhum lado prevaleceu.'
+    state.finishReason === 'engine_error'
+      ? 'Não foi possível concluir a partida. Volte ao lobby para tentar novamente.'
+      : state.finishReason === 'preparation_timeout'
+        ? 'O tempo de preparação terminou antes de os dois jogadores ficarem prontos.'
+        : result === 'defeat' && winner
+          ? `${state.players.find((player) => player.id === winner)?.name ?? 'O oponente'} venceu a batalha.`
+          : result === 'interrupted'
+            ? 'O oponente desconectou da partida.'
+            : result === 'victory'
+              ? state.finishReason === 'disconnect'
+                ? 'O oponente desconectou. A partida foi encerrada.'
+                : 'A arena é sua, treinador!'
+              : 'Nenhum lado prevaleceu.'
 
   useEffect(() => {
     if (result === 'victory' && overlayRef.current) confetti(overlayRef.current, 120)

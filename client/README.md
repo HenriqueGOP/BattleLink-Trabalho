@@ -1,60 +1,26 @@
-# Pokemon Battle - front-end (React)
+# Pokémon Battle — React
 
-Interface web do jogo de batalha Pokemon por turnos. O front-end e apenas apresentacao: envia **intenções** ao servidor e exibe os **snapshots oficiais** recebidos, reagindo a cada evento com animacoes e som.
+Interface React 19, TypeScript e Vite 8. Rotas preservadas: `/`, `/selecao`, `/equipe`, `/batalha`. O cliente envia escolhas e apresenta o estado oficial do servidor em `pokemon-battle/3`.
 
-## Stack
+## Executar
 
-- **React 19 + TypeScript + Vite 8**;
-- **React Router 7** — rotas `/` (lobby), `/selecao` (equipe), `/equipe` (golpes) e `/batalha`;
-- **GSAP** — coreografia de batalha (HP, impactos, numeros flutuantes, confete, shake);
-- **Howler** — cries dos Pokemon (arquivos da PokeAPI);
-- **Web Audio API** — SFX e musica procedurais (chiptune), sem assets externos;
-- **CSS Modules + design tokens** (`src/styles/tokens.css`) — identidade pixel-art moderna, self-hosted com `@fontsource` (Press Start 2P + VT323);
-- **ESLint + Prettier** — qualidade e formatacao.
+Na raiz: `npm start --prefix server` após build. Em outro terminal: `npm run dev --prefix client`. Abra duas abas em http://localhost:5173. Build: `npm run build --prefix client`; produção local: `npm run preview --prefix client`.
 
-> **Por que sem TanStack Query?** A unica chamada REST e o catalogo (`GET /api/pokemon`), endpoint estatico e cacheado pelo proprio servidor — um hook dedicado (`useCatalog`) cobre loading/erro/retry sem dependencia extra.
+Única variável de rede do frontend: `VITE_WS_URL`, padrão `ws://127.0.0.1:3002`. Para acesso remoto use WSS e origem explícita no backend. Chave do lobby permanece somente em memória. Catálogo e recursos são empacotados, sem REST/PokéAPI/CDN em runtime.
 
-## Estrutura
+## Integração
 
-```text
-src/
-  components/   UI compartilhada (1 pasta por componente, com CSS Module)
-  pages/        telas: HomePage, SelectionPage, TeamSetupPage, BattlePage
-  hooks/        useSocket, useBattle, useBattleEvents, useCatalog, useAudio
-  services/     socket.ts + socketService.ts (WebSocket tipado) e api.ts (REST)
-  lib/          eventEngine (diff de snapshots), anim/ (GSAP), audio/ (AudioManager)
-  types/        protocolo, batalha, jogador, pokemon e eventos
-  styles/       tokens.css + global.css
-```
+- `BattleProvider`: snapshot autoritativo, preparação, tentativas idempotentes e cancelamento ao sair.
+- `SocketService`: ciclo de conexão e decoder compartilhado com o terminal.
+- `battleView`: converte IDs em modelo visual e recursos locais, preservando reservas ocultas.
+- `eventEngine`: adapta eventos canônicos usando watermark e detecta perda da janela de eventos.
+- `assets` / `preloadBattle`: whitelist local, até seis downloads simultâneos, prazo de três segundos e fallback.
+- `AudioManager`: áudio desligado sem preferência salva; preserva escolhas anteriores. Cries locais via Howler; demais sons procedurais.
 
-## Reacao aos eventos do servidor
+O motor e a calculadora de referência são proibidos no bundle por verificação do Vite. Dados estáticos têm chunks próprios, que podem ser reutilizados pelo cache quando a interface mudar. Créditos, direitos, revisões e hashes: `public/pokemon`.
 
-O servidor envia snapshots na perspectiva de cada jogador, com eventos estruturados e ordenados. `lib/eventEngine.ts` usa os IDs desses eventos, traduz vitória/derrota para o jogador local e mantém o diff de snapshots/log como fallback. Cada evento dispara uma animação GSAP e um som, em fila sequencial:
+## Escopo visual
 
-| Evento | Visual | Som |
-| --- | --- | --- |
-| attack | lunge do atacante | por categoria |
-| damage/crit | flash + shake + numero + particulas | damage/crit |
-| heal | brilho verde + particulas subindo | heal |
-| faint | sprite desaba | faint |
-| switch_in | flash de Pokebola + entrada | switch |
-| tera | erupcao de particulas + glow | tera |
-| weather/terrain | camada de clima transiciona | field |
-| turn_change | banner SEU TURNO / OPONENTE | turn |
-| victory/defeat | confete / escurecer + overlay | jingle |
+GSAP, CSS Modules, tokens e fontes locais foram preservados. A fila atual ainda usa duração estimada e HP acompanha o snapshot imediatamente. O diretor sequencial/cancelável e a separação temporal da apresentação serão implementados na fase 4. Menus e novas arenas pertencem às fases 5 e 6.
 
-## Desenvolvimento
-
-```powershell
-npm install
-npm run dev        # Vite em http://localhost:5173
-npm run build      # tsc -b && vite build
-npm run lint       # ESLint
-npm run format     # Prettier
-```
-
-O servidor precisa estar rodando (`npm start --prefix server`). Variaveis (veja `.env.example`): `VITE_WS_URL` (padrao `ws://127.0.0.1:3002`) e `VITE_API_URL` (padrao `http://127.0.0.1:3003`).
-
-Para testar com duas pessoas: abra duas abas com nomes diferentes. Cada jogador monta seis Pokémon, ajusta de um a quatro golpes e confirma a equipe. A batalha só começa quando ambos confirmam; o servidor trava os golpes durante o combate. O cliente exige `pokemon-battle/2`.
-
-Se o servidor exigir uma chave, informe-a no campo de acesso do lobby. A chave permanece apenas em memória. Para um servidor remoto, configure URLs HTTPS/WSS e a origem do frontend na lista permitida do backend. O fechamento manual ou remoto da conexão desabilita as ações; a desconexão do adversário produz o resultado final, inclusive durante a preparação.
+Validação unificada: `npm test`, `npm run build`, `npm run lint` na raiz. Relatório: [fase 3](../docs/FASE_3_INTEGRACAO.md).

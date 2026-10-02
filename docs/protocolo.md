@@ -1,72 +1,75 @@
-# Protocolo pokemon-battle/2
+# Protocolo pokemon-battle/3
 
-Dois transportes ligam o cliente ao mesmo dominio (e um terceiro serve dados):
+A definição compartilhada está em `server/src/contracts/protocol.ts`; `parseClientMessage` valida entradas e `decodeServerMessage` valida respostas nos dois clientes. IDs canônicos são minúsculos e sem separadores: `pikachu`, `icebeam`. Servidor e clientes devem ser atualizados juntos; não há compatibilidade com v2.
 
-- **TCP em 127.0.0.1:3001** — cliente CLI (mensagens JSON delimitadas por newline);
-- **WebSocket em 127.0.0.1:3002** — navegador React (browsers nao abrem TCP bruto; a ponte fica no processo do servidor);
-- **HTTP em 127.0.0.1:3003** — API REST do catalogo, usada pelo front-end (`GET /api/pokemon`).
+## Transportes e confiança
 
-O servidor nunca aceita dano, HP, turno ou vencedor vindos do cliente. Ele recebe **intenções** e devolve **snapshots oficiais** do estado.
+- TCP local, porta 3001: JSON delimitado por newline, UTF-8 incremental.
+- WebSocket, porta 3002: JSON textual; origem exata e limites compartilhados com TCP.
+- HTTP, porta 3003: `GET /api/pokemon` devolve versão e lista local `{id,num,name}`. O React usa o catálogo empacotado, sem chamada REST.
+- O cliente envia intenções. HP, dano, RNG, lado, resultados e legalidade pertencem ao servidor. Nenhuma mensagem contém URLs de recursos, seed ou objetos mutáveis do simulador.
 
-Cada jogador recebe o snapshot **na visão dele** (`Room.getStateFor`): o que o adversário tem de secreto — os golpes equipados, o PP e o moveset do banco — não é enviado. O que uma batalha revela (Pokemon em campo, HP, status, stat stages, Terastal e quantos Pokemon ainda estão de pé) continua visível.
+## Ciclo de sala
 
-O histórico de preparação registra apenas contagens e confirmações: nomes das espécies e shiny do banco não são publicados. A identidade de quem consulta o snapshot deve pertencer à sala.
+`setup → preparing → battle → finished`. Desconexão também pode encerrar `setup` ou `preparing`.
 
-## Fases e confirmação
+Em setup cada jogador seleciona seis espécies distintas e de um a quatro golpes compatíveis por membro. `accept_team` trava a própria equipe. `reset_team` pode desfazer a confirmação apenas durante setup. As duas confirmações criam o motor e a preparação. O navegador carrega recursos locais por até três segundos, com até seis tarefas concorrentes; erros usam fallback. O terminal confirma imediatamente. Ambos devem enviar `battle_ready` com o identificador recebido.
 
-`setup` permite escolher seis Pokémon e configurar de um a quatro golpes por membro. `accept_team` confirma e trava a equipe do jogador; só a confirmação de ambos muda a fase para `battle`. Durante `setup`, `reset_team` pode desfazer uma confirmação e remontar a própria equipe. Em `battle` e `finished`, não é permitido alterar equipe ou golpes.
+Após oito segundos (configurável em `PREPARATION_TIMEOUT_MS`), uma preparação incompleta termina: quem confirmou vence; se nenhum confirmou, não há vencedor. Sair cancela o timer. A confirmação repetida da mesma preparação é inofensiva depois do início.
 
-## Cliente para servidor
+## Cliente → servidor
 
-| Mensagem | Efeito |
-| --- | --- |
-| `{"type":"join","name":"Alice","token":"..."}` | Entra na fila. `name` tem até 24 caracteres; `token` é opcional no modo local e obrigatório se o servidor exigir chave. |
-| `{"type":"choose_pokemon","pokemon":"garchomp"}` | Adiciona um Pokemon a equipe. |
-| `{"type":"set_moves","pokemon":"garchomp","moves":[...]}` | Define de 1 a 4 golpes durante `setup`, antes da confirmação do jogador. |
-| `{"type":"accept_team"}` | Confirma e trava a equipe; inicia a batalha quando ambos estão prontos. |
-| `{"type":"reset_team"}` | Zera a equipe e a confirmação. Só é aceito em `setup`. |
-| `{"type":"terastallize"}` | Ativa o Tera do Pokemon ativo (1x por jogador por partida). |
-| `{"type":"switch_pokemon","pokemon":"gengar"}` | Troca o Pokemon ativo. |
-| `{"type":"action","action":{"type":"attack","move":"ice-beam"}}` | Ataca com um golpe equipado. |
-| `{"type":"leave"}` | Encerra a conexao. |
+| Tipo | Campos além de type | Regra |
+|---|---|---|
+| join | name, protocol, catalogVersion, token opcional | Nome de 1–24 caracteres; versão exata; chave exigida conforme configuração. |
+| choose_pokemon | pokemon | ID de espécie conhecida, com golpes compatíveis, sem duplicar a equipe. |
+| random_team | count | Inteiro de 1–6, limitado aos espaços livres; RNG exclusivo de equipe, no servidor. |
+| set_moves | pokemon, moves | De 1–4 IDs distintos, aprendíveis e compatíveis; apenas equipe própria não confirmada. |
+| reset_team | — | Limpa equipe e confirmação durante setup. |
+| accept_team | — | Exige seis membros válidos. |
+| battle_ready | preparationId | Confirma preparo da solicitação atual. |
+| action | requestId, actionId, choice | Escolha privada da solicitação atual. |
+| resync | — | Snapshot completo na perspectiva do remetente. |
+| leave | — | Encerra conexão e, se necessário, a partida. |
 
-> As acoes `defend` e `special` foram removidas das regras: o servidor responde com erro orientando a usar golpes equipados. Os ataques consomem apenas os PP do golpe.
+`choice` é `{type:"move",moveId}` ou `{type:"switch",combatantId}`. `requestId` é inteiro positivo e `actionId` tem até 64 caracteres alfanuméricos, hífen ou sublinhado. IDs de combatentes são estáveis por lado/slot: `p1s0` a `p2s5`. O lado do comando é derivado da conexão; não é recebido do jogador.
 
-## Equipe
+## Solicitações e idempotência
 
-- 6 Pokemon por jogador, sem repeticao; qualquer um dos 1025 da PokeAPI;
-- HP real derivado da base stat; golpes do dataset publico do Pokemon Showdown (`data/moves.json`), com power/accuracy/PP/categoria/tipo e efeitos;
-- 5% de chance de cada Pokemon nascer **shiny**.
+A solicitação privada contém `id`, `kind` (move/switch/revive), `moves` com PP/disponibilidade, `switches`, `submitted` e `lockedMoveId`. O cliente só oferece escolhas da solicitação. Cargas, recarga, Struggle, revival e trocas forçadas usam esse mesmo contrato.
 
-## Terastalizacao (Gen 9, simplificada)
+O primeiro envio aceito recebe ACK e snapshot somente para seu autor; o oponente não recebe aviso de escolha pendente. O motor resolve quando reúne todas as escolhas necessárias. O turno é ordenado pelas regras Gen 9, e efeitos residuais ocorrem no fim da rodada.
 
-- Tipos defensivos viram APENAS o Tera Type;
-- STAB do tipo Tera (2.0x se Tera = tipo original, senao 1.5x) e mantem STAB nos tipos originais;
-- Golpes do tipo Tera com power < 60 sobem para 60 (exceto multi-hit e prioridade).
+O servidor retém 256 recibos por sessão. Repetir a mesma chave e conteúdo devolve o recibo sem gastar PP nem executar novamente. Reutilizar a chave com conteúdo diferente falha. Solicitações antigas falham mesmo após expirar o recibo. O React tenta até três envios da mesma ação, com intervalo de 1,5 segundo; após o limite solicita ressincronização. ACK sem snapshot não reabre os controles. O terminal oferece `retry` com a mesma chave.
 
-## Servidor para cliente
+## Servidor → cliente
 
-| Mensagem | Conteudo |
-| --- | --- |
-| `welcome` | `playerId` e versao do protocolo. |
-| `waiting` | Posicao na fila. |
-| `match_found` | `roomId` + estado inicial (`state`). |
-| `state` | Snapshot oficial apos toda escolha/acao valida. |
-| `error` | JSON/acao invalida com `code` e `message`. |
-| `opponent_left` | Aviso após o snapshot final de vitória por desconexão. |
+| Tipo | Conteúdo |
+|---|---|
+| welcome | playerId, protocol, catalogVersion |
+| waiting | message |
+| match_found | roomId, state |
+| state | state |
+| action_ack | requestId, actionId, duplicate, resolved |
+| error | code, message, actionId quando o comando validado era uma ação |
+| opponent_left | message, após o resultado por desconexão |
 
-Cada jogador tem `ready`. O estado final tem `finishReason: "knockout"` ou `"disconnect"`. A desconexão durante preparação ou combate produz `phase: "finished"`, limpa trocas pendentes e define o sobrevivente como vencedor antes de remover a sala. Sair após um resultado já finalizado não muda o vencedor. O sobrevivente pode enviar `join` para entrar novamente na fila.
+`RoomSnapshot` inclui sala/fase, viewer, metadados dos jogadores, equipe própria, arena, BattleView, eventos, sequência, eventFloor, shinies revelados, preparação privada, resultado e até 40 linhas de preparação sem nomes de espécies adversárias.
 
-Os eventos públicos usam IDs monotônicos e identificadores de jogador. Os clientes apenas espelham `victory`/`defeat` pela perspectiva, sem calcular o resultado. Dano, drenagem e contagens de multi-hit refletem somente HP efetivamente removido.
+`BattleView` revela equipe própria completa, ativos, condições públicas, resultado e solicitação própria. Reservas inimigas não reveladas são apenas `{id,hidden:true}`. Depois de entrar em campo, espécie/HP/status/tipos/estágios ficam públicos; golpes equipados, PP, atributos, habilidade e escolhas continuam privados.
 
-Rest restaura HP e remove o status anterior, depois impõe dois turnos de sono. Cura, status e mudanças de atributos são resolvidos em conjunto; efeitos não representáveis pelo dataset continuam identificados como suporte parcial.
+## Eventos e ressincronização
 
-## Mensagens invalidas
+`BattleEvent` é união discriminada com `sequence`, `round` e `audience`. Tipos: battle_start, round_start, move, damage, heal, critical, super_effective, resisted, immune, faint, miss, hit_count, switch, status, boost, unable, effect, state_sync e battle_end.
 
-`MALFORMED_JSON` para JSON quebrado; `INVALID_MESSAGE` para mensagem fora da ordem, Pokemon inexistente, golpe desconhecido, golpe sem PP, acao fora do turno, `reset_team` apos o inicio da batalha ou acao enquanto o **adversario** ainda deve uma troca forcada.
+Dano/cura informam HP anterior/final, máximo, quantidade, fonte e causa. Multi-hit produz uma transição por hit, com críticos separados. Troca inclui o Pokémon público de destino. Eventos usam lados/slots estáveis, sem IDs de conexão, horários, seed ou log bruto do simulador.
 
-A mensagem invalida **nao altera o estado**: toda validacao capaz de lancar erro acontece antes de qualquer mutacao (inclusive a de PP, que antes era conferida depois de consumir sono/congelamento/confusao).
+Snapshots incluem a janela das últimas 240 sequências globais. Eventos privados podem produzir lacunas naturais entre números visíveis; não se exige sequência contígua. O cliente usa `sequence` como watermark e `eventFloor` para detectar perda da janela: aplica o snapshot sem repetir animações antigas. Respostas de outra sala ou com watermark inferior são ignoradas. Falha interna encerra a partida preservando o último watermark publicado.
 
-`UNAUTHORIZED` rejeita uma chave inválida; `RATE_LIMITED` limita a frequência; `QUEUE_FULL` limita comandos pendentes; `JOIN_TIMEOUT` encerra conexões que não entram na fila no prazo; `PAYLOAD_TOO_LARGE` rejeita frames TCP acima de 64 KiB (WebSocket também limita payloads a 64 KiB). Origens WebSocket ausentes ou não permitidas são rejeitadas no handshake HTTP com 403; excesso de conexões recebe 503.
+Resultados: knockout, draw, disconnect, preparation_timeout ou engine_error. O evento nativo de desistência usa forfeit; a sala informa disconnect. Um resultado já concluído não é alterado pela saída posterior. O sobrevivente pode voltar à fila na mesma conexão quando a sala é removida.
 
-Há FIFO por conexão e mutex apenas durante a confirmação de mutações. Consultas à PokéAPI ocorrem fora do mutex, têm timeout de 10 segundos, compartilham requisições em voo e persistem dados válidos no cache local. Uma resposta atrasada não pode alterar uma equipe redefinida nem uma sala encerrada.
+## Validação e limites preservados
+
+Payloads até 64 KiB, fila FIFO limitada por conexão, mutex por sala, limites de conexões/IP/frequência, timeout de entrada, backpressure e heartbeat. Códigos: MALFORMED_JSON, INVALID_MESSAGE, NOT_IN_MATCH, INVALID_ACTION, STALE_REQUEST, ALREADY_SUBMITTED, FINISHED, ENGINE_CONTRACT, CATALOG_MISMATCH, UNAUTHORIZED, RATE_LIMITED, QUEUE_FULL, JOIN_TIMEOUT e PAYLOAD_TOO_LARGE. Handshake de origem inválida recebe 403; capacidade esgotada recebe 503.
+
+Escolha, preparação e combate não fazem I/O externo dentro do mutex. Rejeições de regra não mudam HP, PP, status ou solicitações; falhas internas invalidam o motor e produzem término explícito. TCP permanece em loopback; exposição de WebSocket requer chave e proxy TLS, conforme `security.ts`.

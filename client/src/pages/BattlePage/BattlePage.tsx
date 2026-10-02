@@ -28,7 +28,7 @@ import type { PokemonMove } from '../../types/pokemon'
  * (nenhum timeout no cliente).
  */
 export function BattlePage() {
-  const { state, playerId, roomId, status, opponentLeft, leave, attack, terastallize, switchTo } =
+  const { state, playerId, roomId, status, opponentLeft, leave, attack, switchTo } =
     useBattleContext()
   const { myIndex, myPlayer, opponent, myTurn, blocked, canChoose, canSetupMoves } = useBattle()
   const audioApi = useAudio()
@@ -64,10 +64,14 @@ export function BattlePage() {
   if (canSetupMoves) return <Navigate to="/equipe" replace />
 
   const finished = state.phase === 'finished'
-  const teraUsed = Boolean(myPlayer?.pokemonData?.isTerastallized)
-  const lastLogMessage = state.log.at(-1) ?? ''
+  const lastLogMessage = logEntries.at(-1)?.text ?? ''
   // cena pronta = ambos com Pokémon ativo e HP real; antes disso, espera sincronizada
-  const sceneReady = Boolean(myPlayer?.pokemon && opponent?.pokemon && (opponent.maxHp ?? 0) > 0)
+  const sceneReady = Boolean(
+    state.phase !== 'preparing' &&
+    myPlayer?.pokemon &&
+    opponent?.pokemon &&
+    (opponent.maxHp ?? 0) > 0
+  )
   const iAmReady = Boolean(myPlayer?.ready)
 
   function leaveAndHome() {
@@ -98,7 +102,11 @@ export function BattlePage() {
         <section className={styles.waiting} aria-live="polite">
           <span className={styles.waitingBall} aria-hidden="true" />
           <h2>
-            {iAmReady ? 'Aguardando o oponente confirmar a equipe…' : 'Preparando a batalha…'}
+            {state.phase === 'preparing'
+              ? 'Preparando a batalha…'
+              : iAmReady
+                ? 'Aguardando o oponente confirmar a equipe…'
+                : 'Preparando a batalha…'}
           </h2>
           <p>O campo é liberado para os dois jogadores ao mesmo tempo, direto do servidor.</p>
         </section>
@@ -144,6 +152,7 @@ export function BattlePage() {
                   player={myPlayer}
                   myTurn={myTurn}
                   blocked={blocked}
+                  request={state.wire.battle?.request ?? null}
                   onAttack={attack}
                   onPreview={setPreviewMove}
                   bare
@@ -175,14 +184,6 @@ export function BattlePage() {
                 >
                   POKÉMON
                 </Button>
-                <Button
-                  variant="bag"
-                  className={styles.commandBtn}
-                  disabled={teraUsed || !myTurn || blocked}
-                  onClick={terastallize}
-                >
-                  TERA
-                </Button>
                 <Button variant="run" className={styles.commandBtn} onClick={leaveAndHome}>
                   FUGIR
                 </Button>
@@ -196,6 +197,7 @@ export function BattlePage() {
                 player={myPlayer}
                 myTurn={myTurn}
                 blocked={blocked}
+                request={state.wire.battle?.request ?? null}
                 onSwitch={switchTo}
               />
             )}

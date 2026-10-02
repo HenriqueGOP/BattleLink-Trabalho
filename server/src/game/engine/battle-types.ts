@@ -155,5 +155,6 @@ export interface BattleUpdate {
 }
 export type BattleErrorCode = "INVALID_TEAM" | "INVALID_ACTION" | "STALE_REQUEST" | "ALREADY_SUBMITTED" | "FINISHED" | "ENGINE_CONTRACT";
 export class BattleRuleError extends Error {
-  constructor(readonly code: BattleErrorCode, message: string) { super(message); this.name = "BattleRuleError"; }
+  readonly code: BattleErrorCode;
+  constructor(code: BattleErrorCode, message: string) { super(message); this.code = code; this.name = "BattleRuleError"; }
 }

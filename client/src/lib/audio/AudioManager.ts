@@ -1,15 +1,11 @@
 import { Howl } from 'howler'
-import {
-  createMusicEngine,
-  createSfxEngine,
-  type SfxName,
-  type ThemeName,
-} from './procedural'
+import { safeAsset } from '../assets'
+import { createMusicEngine, createSfxEngine, type SfxName, type ThemeName } from './procedural'
 
 /**
  * AudioManager: canais music/sfx com volume + mute persistidos em
- * localStorage ('pm-audio-prefs'). Cries usam Howler (arquivos da PokéAPI);
- * todo o resto é procedural (Web Audio), então NUNCA fica sem som.
+ * localStorage ('pm-audio-prefs'). Cries usam Howler (arquivos empacotados localmente);
+ * todo o resto é procedural (Web Audio). Áudio inicia desligado sem preferência salva.
  */
 
 const STORAGE_KEY = 'pm-audio-prefs'
@@ -26,8 +22,8 @@ export type AudioChannel = 'music' | 'sfx'
 const DEFAULT_PREFS: AudioPrefs = {
   musicVolume: 0.4,
   sfxVolume: 0.7,
-  musicMuted: false,
-  sfxMuted: false,
+  musicMuted: true,
+  sfxMuted: true,
 }
 
 function loadPrefs(): AudioPrefs {
@@ -113,7 +109,7 @@ class AudioManager {
 
   /** Cry do Pokémon (PokéAPI) — roteado pelo canal sfx. */
   playCry(url: string | null | undefined): void {
-    if (!url || this.prefs.sfxMuted) return
+    if (!safeAsset(url) || !url || this.prefs.sfxMuted) return
     let sound = this.cries.get(url)
     if (!sound) {
       sound = new Howl({ src: [url], volume: 0.6 * this.prefs.sfxVolume, html5: true })

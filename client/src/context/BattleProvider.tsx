@@ -1,12 +1,15 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useSocket } from '../hooks/useSocket'
 import { socketService } from '../services/socket'
 import { useToast } from '../components/Toast'
 import { audio } from '../lib/audio'
-import type { ServerMessage } from '../types/protocol'
+import { catalog } from '../lib/catalog'
+import { presentSnapshot } from '../lib/battleView'
+import { preloadBattle } from '../lib/preloadBattle'
+import { PROTOCOL_VERSION } from '../types/protocol'
+import type { BattleChoice, ClientMessage, RoomSnapshot, ServerMessage } from '../types/protocol'
 import type { GameState } from '../types/battle'
-import type { ClientMessage } from '../types/protocol'
 
 export interface BattleContextValue {
   connected: boolean
@@ -16,65 +19,44 @@ export interface BattleContextValue {
   roomId: string | null
   teamAccepted: boolean
   opponentLeft: boolean
+  actionPending: boolean
   connect: (name: string, token?: string) => void
   leave: () => void
   choosePokemon: (name: string) => void
+  randomTeam: (count: number) => void
   setMoves: (pokemon: string, moves: string[]) => void
   acceptTeam: () => void
   resetTeam: () => void
   attack: (move: string) => void
-  terastallize: () => void
   switchTo: (pokemon: string) => void
 }
-
 const BattleContext = createContext<BattleContextValue | null>(null)
+type Action = Extract<ClientMessage, { type: 'action' }>
 
-/**
- * Estado global da partida: conexão, snapshot atual e ações do protocolo.
- * Montado ACIMA das rotas para sobreviver à navegação. Nenhuma regra de jogo
- * mora aqui — o cliente só envia intenções e guarda snapshots.
- */
-/** Normalização defensiva do snapshot: garante campos estruturais mínimos. */
-function normalizeState(raw: GameState): GameState {
-  return {
-    ...raw,
-    phase: raw.phase ?? 'setup',
-    finishReason: raw.finishReason ?? null,
-    turn: raw.turn ?? 0,
-    pendingSwitch: Array.isArray(raw.pendingSwitch) ? raw.pendingSwitch : [false, false],
-    log: Array.isArray(raw.log) ? raw.log : [],
-    logOffset: Number.isSafeInteger(raw.logOffset) ? raw.logOffset : 0,
-    events: Array.isArray(raw.events) ? raw.events : [],
-    field: {
-      weather: raw.field?.weather ?? null,
-      terrain: raw.field?.terrain ?? null,
-      background: raw.field?.background ?? null,
-      hazards: raw.field?.hazards ?? [
-        { stealthRock: false, spikes: 0 },
-        { stealthRock: false, spikes: 0 },
-      ],
-    },
-    players: Array.isArray(raw.players)
-      ? ([raw.players[0], raw.players[1]].map((player) => ({
-          ...player,
-          team: Array.isArray(player?.team) ? player.team : [],
-        })) as GameState['players'])
-      : raw.players,
-  }
-}
-
+/** Snapshot autoritativo separado do modelo de apresentação e das intenções locais. */
 export function BattleProvider({ children }: { children: ReactNode }) {
   const toast = useToast()
   const [playerId, setPlayerId] = useState('')
   const [status, setStatus] = useState('Digite seu nome para entrar na fila.')
-  const [state, setState] = useState<GameState | null>(null)
-  const [roomId, setRoomId] = useState<string | null>(null)
+  const [snapshot, setSnapshot] = useState<RoomSnapshot | null>(null)
+  const snapshotRef = useRef<RoomSnapshot | null>(null)
   const [opponentLeft, setOpponentLeft] = useState(false)
-  const nameRef = useRef('')
-  const tokenRef = useRef('')
-  const attemptRef = useRef(0)
-  const teamAccepted = Boolean(state?.players.find((player) => player.id === playerId)?.ready)
-
+  const [actionPending, setActionPending] = useState(false)
+  const pending = useRef<Action | null>(null)
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const nameRef = useRef(''),
+    tokenRef = useRef(''),
+    attemptRef = useRef(0)
+  const updateSnapshot = useCallback((next: RoomSnapshot | null) => {
+    snapshotRef.current = next
+    setSnapshot(next)
+  }, [])
+  const clearAction = useCallback(() => {
+    if (retryTimer.current) clearTimeout(retryTimer.current)
+    retryTimer.current = null
+    pending.current = null
+    setActionPending(false)
+  }, [])
   const sendMessage = useCallback(
     (message: ClientMessage) => {
       if (!socketService.send(message))
@@ -87,7 +69,7 @@ export function BattleProvider({ children }: { children: ReactNode }) {
     (message: ServerMessage) => {
       switch (message.type) {
         case 'welcome':
-          if (message.protocol !== 'pokemon-battle/2') {
+          if (message.protocol !== PROTOCOL_VERSION || message.catalogVersion !== catalog.version) {
             toast.toast('Atualize o servidor e o cliente para a mesma versão.', 'error')
             socketService.close()
             break
@@ -96,6 +78,8 @@ export function BattleProvider({ children }: { children: ReactNode }) {
           sendMessage({
             type: 'join',
             name: nameRef.current.trim() || 'Jogador',
+            protocol: PROTOCOL_VERSION,
+            catalogVersion: catalog.version,
             ...(tokenRef.current ? { token: tokenRef.current } : {}),
           })
           break
@@ -103,30 +87,56 @@ export function BattleProvider({ children }: { children: ReactNode }) {
           setStatus(message.message)
           break
         case 'match_found':
-          setRoomId(message.roomId)
-          // passa pela mesma normalizacao de 'state': antes o primeiro snapshot
-          // entrava cru e podia chegar sem os campos estruturais minimos
-          setState(normalizeState(message.state))
-          setStatus(`Partida ${message.roomId}`)
+          clearAction()
+          updateSnapshot(message.state)
           setOpponentLeft(false)
+          setStatus(`Partida ${message.roomId}`)
           break
-        case 'state':
-          setState(normalizeState(message.state))
-          setStatus(message.state.phase === 'finished' ? 'Batalha encerrada' : 'Sincronizado')
+        case 'state': {
+          const previous = snapshotRef.current
+          if (
+            !previous ||
+            previous.roomId !== message.state.roomId ||
+            message.state.sequence < previous.sequence
+          )
+            break
+          const request = message.state.battle?.request
+          if (
+            pending.current &&
+            (!request || request.id !== pending.current.requestId || request.submitted)
+          )
+            clearAction()
+          updateSnapshot(message.state)
+          setStatus(
+            message.state.phase === 'finished'
+              ? 'Batalha encerrada'
+              : message.state.phase === 'preparing'
+                ? 'Preparando recursos locais…'
+                : 'Sincronizado'
+          )
+          break
+        }
+        // A confirmação do snapshot libera os controles. O ACK sozinho não pode
+        // reabrir a escolha enquanto a solicitação antiga ainda está na tela.
+        case 'action_ack':
           break
         case 'error':
+          if (message.actionId === pending.current?.actionId) {
+            clearAction()
+            sendMessage({ type: 'resync' })
+          }
           audio.play('error')
           toast.toast(message.message, 'error')
           break
         case 'opponent_left':
+          clearAction()
           setOpponentLeft(true)
           setStatus(message.message)
-          audio.play('error')
           toast.toast(message.message, 'error')
           break
       }
     },
-    [sendMessage, toast]
+    [clearAction, sendMessage, toast, updateSnapshot]
   )
 
   const {
@@ -136,93 +146,134 @@ export function BattleProvider({ children }: { children: ReactNode }) {
     close,
   } = useSocket({
     onMessage: handleMessage,
-    onError: () => {
-      setStatus('Sem conexão com o servidor.')
-    },
+    onError: () => setStatus('Sem conexão com o servidor.'),
     onClose: () => {
+      clearAction()
       setStatus('Conexão encerrada. Entre novamente para jogar.')
-      setState((current) => (current?.phase === 'finished' ? current : null))
+      if (snapshotRef.current?.phase !== 'finished') updateSnapshot(null)
     },
   })
-
   const connect = useCallback(
     (name: string, token = '') => {
       const attempt = ++attemptRef.current
       nameRef.current = name
       tokenRef.current = token.trim()
+      clearAction()
       setPlayerId('')
-      setState(null)
-      setRoomId(null)
+      updateSnapshot(null)
       setOpponentLeft(false)
-      const opening = openSocket()
       setStatus('Conectando ao servidor…')
-      opening.then(
-        () => {
-          if (attemptRef.current !== attempt) return
-          setStatus('Conectado. Procurando um oponente…')
-        },
-        () => {
-          if (attemptRef.current !== attempt) return
-          setStatus('Sem conexão.')
-          audio.play('error')
-          toast.toast('Não foi possível conectar. Inicie o servidor primeiro.', 'error')
-        }
-      )
+      void openSocket().catch(() => {
+        if (attemptRef.current !== attempt) return
+        setStatus('Sem conexão.')
+        toast.toast('Não foi possível conectar. Inicie o servidor primeiro.', 'error')
+      })
     },
-    [openSocket, toast]
+    [clearAction, openSocket, toast, updateSnapshot]
   )
-
   const leave = useCallback(() => {
     attemptRef.current++
+    clearAction()
     send({ type: 'leave' })
     close()
     setPlayerId('')
-    setState(null)
-    setRoomId(null)
+    updateSnapshot(null)
     setOpponentLeft(false)
     setStatus('Digite seu nome para entrar na fila.')
-  }, [close, send])
+  }, [clearAction, close, send, updateSnapshot])
 
+  const chooseAction = useCallback(
+    (choice: BattleChoice) => {
+      const current = snapshotRef.current,
+        request = current?.battle?.request
+      if (current?.phase !== 'battle' || !request || request.submitted || pending.current) return
+      const message: Action = {
+        type: 'action',
+        requestId: request.id,
+        actionId: crypto.randomUUID(),
+        choice,
+      }
+      pending.current = message
+      setActionPending(true)
+      let attempts = 0
+      const deliver = () => {
+        if (pending.current !== message) return
+        if (attempts++ >= 3) {
+          clearAction()
+          sendMessage({ type: 'resync' })
+          toast.toast('Atualizando a confirmação da ação…', 'info')
+          return
+        }
+        if (!socketService.send(message)) {
+          clearAction()
+          return
+        }
+        retryTimer.current = setTimeout(deliver, 1500)
+      }
+      deliver()
+    },
+    [clearAction, sendMessage, toast]
+  )
+
+  const preparationId = snapshot?.preparation?.id
+  useEffect(() => {
+    const current = snapshotRef.current
+    if (!preparationId || !current || current.preparation?.ready) return
+    const controller = new AbortController()
+    void preloadBattle(current, controller.signal).then(() => {
+      if (!controller.signal.aborted && snapshotRef.current?.preparation?.id === preparationId)
+        sendMessage({ type: 'battle_ready', preparationId })
+    })
+    return () => controller.abort()
+  }, [preparationId, sendMessage])
+  useEffect(
+    () => () => {
+      if (retryTimer.current) clearTimeout(retryTimer.current)
+      pending.current = null
+    },
+    []
+  )
+
+  const state = useMemo(() => (snapshot ? presentSnapshot(snapshot) : null), [snapshot])
   const value = useMemo<BattleContextValue>(
     () => ({
       connected,
       playerId,
       status,
       state,
-      roomId,
-      teamAccepted,
+      roomId: snapshot?.roomId ?? null,
+      teamAccepted: snapshot?.players[snapshot.viewer === 'p1' ? 0 : 1].ready ?? false,
       opponentLeft,
+      actionPending,
       connect,
       leave,
-      choosePokemon: (name) => sendMessage({ type: 'choose_pokemon', pokemon: name }),
+      choosePokemon: (pokemon) => sendMessage({ type: 'choose_pokemon', pokemon }),
+      randomTeam: (count) => sendMessage({ type: 'random_team', count }),
       setMoves: (pokemon, moves) => sendMessage({ type: 'set_moves', pokemon, moves }),
       acceptTeam: () => sendMessage({ type: 'accept_team' }),
-      resetTeam: () => {
-        sendMessage({ type: 'reset_team' })
+      resetTeam: () => sendMessage({ type: 'reset_team' }),
+      attack: (moveId) => chooseAction({ type: 'move', moveId }),
+      switchTo: (speciesId) => {
+        const member = snapshotRef.current?.team.find((member) => member.speciesId === speciesId)
+        if (member) chooseAction({ type: 'switch', combatantId: member.id })
       },
-      attack: (move) => {
-        sendMessage({ type: 'action', action: { type: 'attack', move } })
-      },
-      terastallize: () => sendMessage({ type: 'terastallize' }),
-      switchTo: (pokemon) => sendMessage({ type: 'switch_pokemon', pokemon }),
     }),
     [
       connected,
       playerId,
       status,
       state,
-      roomId,
-      teamAccepted,
+      snapshot,
       opponentLeft,
+      actionPending,
       connect,
       leave,
       sendMessage,
+      chooseAction,
     ]
   )
-
   return <BattleContext.Provider value={value}>{children}</BattleContext.Provider>
 }
-
 export function useBattleContext(): BattleContextValue {
   const context = useContext(BattleContext)
   if (!context) throw new Error('useBattleContext precisa estar dentro de <BattleProvider>.')

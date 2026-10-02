@@ -4,11 +4,13 @@ import { audio } from '../../../../lib/audio'
 import styles from './MoveMenu.module.css'
 import type { Player } from '../../../../types/player'
 import type { PokemonMove } from '../../../../types/pokemon'
+import type { ActionRequest } from '../../../../types/protocol'
 
 export interface MoveMenuProps {
   player: Player | null
   myTurn: boolean
   blocked: boolean
+  request: ActionRequest | null
   onAttack: (move: string) => void
   /** Sem moldura própria: quando vive dentro da caixa de comandos. */
   bare?: boolean
@@ -29,6 +31,7 @@ export const MoveMenu = memo(function MoveMenu({
   player,
   myTurn,
   blocked,
+  request,
   onAttack,
   bare = false,
   onPreview,
@@ -44,13 +47,18 @@ export const MoveMenu = memo(function MoveMenu({
       onMouseLeave={() => onPreview?.(null)}
     >
       <div className={styles.grid}>
-        {moves.map(moveName => {
-          const move = data?.moves.find(item => item.name === moveName)
+        {moves.map((moveName) => {
+          const move = data?.moves.find((item) => item.name === moveName)
           const current = data?.pp?.[moveName]
-          const total = move?.pp ?? null
-          const outOfPp = typeof current === 'number' && current <= 0
+          const legal = request?.moves.find((move) => move.id === moveName)
+          const total = legal?.maxPp ?? move?.pp ?? null
+          const outOfPp =
+            !legal ||
+            legal.disabled ||
+            (legal.pp <= 0 && moveName !== 'struggle' && request?.lockedMoveId !== moveName)
           const type = move?.type ?? 'normal'
-          const low = typeof current === 'number' && total != null && current > 0 && current / total <= 0.25
+          const low =
+            typeof current === 'number' && total != null && current > 0 && current / total <= 0.25
 
           return (
             <button
@@ -69,7 +77,7 @@ export const MoveMenu = memo(function MoveMenu({
               onFocus={() => onPreview?.(move ?? null)}
               onBlur={() => onPreview?.(null)}
             >
-              <span className={styles.name}>{moveName.replace(/-/g, ' ')}</span>
+              <span className={styles.name}>{move?.displayName ?? moveName}</span>
               <span className={styles.foot}>
                 <b className={low ? `${styles.pp} ${styles.ppLow}` : styles.pp}>
                   PP {current ?? '-'}/{total ?? '-'}
@@ -93,7 +101,11 @@ export const MoveMenu = memo(function MoveMenu({
 
       {disabled && (
         <p className={styles.hint}>
-          {blocked ? 'Seu Pokémon caiu — escolha um substituto em POKÉMON.' : 'Aguarde o seu turno…'}
+          {blocked
+            ? 'Escolha um Pokémon em POKÉMON.'
+            : request?.submitted
+              ? 'Ação confirmada. Aguardando o oponente…'
+              : 'Aguarde o seu turno…'}
         </p>
       )}
     </section>

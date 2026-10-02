@@ -10,11 +10,7 @@ export interface HudCardProps {
   opponent: boolean
 }
 
-/**
- * O motor não tem níveis: todos os Pokémon usam o mesmo cálculo de HP.
- * Exibimos Lv50 porque é o formato do Showdown que o dataset de golpes segue —
- * e porque a caixa de status sem "Lv" não parece Pokémon.
- */
+/** Nível padrão do formato; o snapshot informa o nível efetivo. */
 const BATTLE_LEVEL = 50
 
 /** Fileira de pokébolas: cheia = disponível, vazia = nocauteada, aro = em campo. */
@@ -22,7 +18,10 @@ function PartyBalls({ player }: { player: Player | null }) {
   const team = player?.team ?? []
   if (team.length === 0) return null
   return (
-    <span className={styles.balls} aria-label={`${team.filter(m => m.hp > 0).length} de ${team.length} Pokémon em condições de lutar`}>
+    <span
+      className={styles.balls}
+      aria-label={`${team.filter((m) => m.hp > 0).length} de ${team.length} Pokémon em condições de lutar`}
+    >
       {team.map((member, index) => (
         <i
           key={`${index}-${member.pokemon}`}
@@ -46,7 +45,8 @@ function PartyBalls({ player }: { player: Player | null }) {
  */
 export const HudCard = memo(function HudCard({ player, opponent }: HudCardProps) {
   const data = player?.pokemonData
-  const activeTypes = data?.types ?? player?.team.find(member => member.pokemon === player.pokemon)?.types ?? []
+  const activeTypes =
+    data?.types ?? player?.team.find((member) => member.pokemon === player.pokemon)?.types ?? []
   const stages = data?.statStages
   const activeStages = stages ? Object.entries(stages).filter(([, value]) => value !== 0) : []
   const status = data?.status
@@ -68,7 +68,7 @@ export const HudCard = memo(function HudCard({ player, opponent }: HudCardProps)
             </span>
           )}
         </h3>
-        <span className={styles.level}>Lv{BATTLE_LEVEL}</span>
+        <span className={styles.level}>Lv{data?.level ?? BATTLE_LEVEL}</span>
       </div>
 
       <HealthBar
@@ -84,17 +84,16 @@ export const HudCard = memo(function HudCard({ player, opponent }: HudCardProps)
             {STATUS_SHORT[status]}
           </span>
         )}
-        {data?.isTerastallized && (
-          <span className={styles.tera} title={`Terastalizado — tipo ${data.teraType}`}>
-            <i style={{ background: `var(--type-${data.teraType}, var(--type-stellar))` }} aria-hidden="true" />
-            TERA
-          </span>
-        )}
-        {activeTypes.map(type => (
+        {activeTypes.map((type) => (
           <TypeBadge key={type} type={type} small />
         ))}
         {activeStages.map(([stat, value]) => (
-          <span key={stat} className={value > 0 ? `${styles.stage} ${styles.up}` : `${styles.stage} ${styles.down}`}>
+          <span
+            key={stat}
+            className={
+              value > 0 ? `${styles.stage} ${styles.up}` : `${styles.stage} ${styles.down}`
+            }
+          >
             {value > 0 ? '▲' : '▼'}
             {STAT_SHORT[stat] ?? stat}
             {value > 0 ? '+' : ''}

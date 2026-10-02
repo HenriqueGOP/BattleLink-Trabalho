@@ -1,4 +1,5 @@
 import type { ClientMessage, ServerMessage } from '../types/protocol'
+import { decodeServerMessage } from '../../../server/src/contracts/decode'
 
 type Listener<T> = (payload: T) => void
 
@@ -49,7 +50,7 @@ export class SocketService {
         if (this.ws !== ws) return
         let message: ServerMessage
         try {
-          message = JSON.parse(String(event.data)) as ServerMessage
+          message = decodeServerMessage(JSON.parse(String(event.data)))
         } catch {
           for (const listener of this.errorListeners) listener()
           return

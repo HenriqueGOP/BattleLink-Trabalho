@@ -63,7 +63,7 @@
 }
 
 /* ---- variantes GBA (grade de comandos da referencia) ---- */
-/* ---------- comandos de batalha (LUTAR / POKÉMON / TERA / FUGIR) ----------
+/* ---------- comandos de batalha (LUTAR / POKÉMON / FUGIR) ----------
    Cores do menu clássico: vermelho para lutar, verde para a equipe,
    roxo para Terastal e azul para fugir. Contorno escuro + sombra dura. */
 .fight,

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './Sprite.module.css'
+import { safeAsset } from '../../lib/assets'
 
 export interface SpriteProps {
   src: string | null | undefined
@@ -22,7 +23,7 @@ export interface SpriteProps {
 export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: SpriteProps) {
   // guarda QUAL src falhou: dispensa efeito para limpar a flag quando src muda
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
-  const broken = !src || failedSrc === src
+  const broken = !safeAsset(src) || failedSrc === src
 
   const classes = [styles.sprite, className].filter(Boolean).join(' ')
   const style = { width: size, height: size }
@@ -42,7 +43,7 @@ export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: Sp
     <img
       className={classes}
       style={style}
-      src={src}
+      src={safeAsset(src) ?? undefined}
       /* alt vazio: o nome sempre aparece ao lado, e um alt longo virava texto
          solto no layout quando a imagem falhava */
       alt=""
@@ -50,7 +51,7 @@ export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: Sp
       height={size}
       loading={loading}
       decoding="async"
-      onError={() => setFailedSrc(src)}
+      onError={() => setFailedSrc(src ?? null)}
     />
   )
 }

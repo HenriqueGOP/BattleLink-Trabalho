@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { PROTOCOL_VERSION } from "./contracts/protocol";
 
 try {
   process.loadEnvFile(join(__dirname, "..", ".env"));
@@ -6,9 +7,15 @@ try {
   if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
 }
 
-const integerFromEnv = (name: string, fallback: number, maximum = 65535): number => {
+const integerFromEnv = (
+  name: string,
+  fallback: number,
+  maximum = 65535,
+): number => {
   const value = Number(process.env[name] ?? fallback);
-  return Number.isInteger(value) && value > 0 && value <= maximum ? value : fallback;
+  return Number.isInteger(value) && value > 0 && value <= maximum
+    ? value
+    : fallback;
 };
 
 export const config = {
@@ -17,7 +24,7 @@ export const config = {
   tcpPort: integerFromEnv("PORT", 3001),
   webSocketPort: integerFromEnv("WEB_PORT", 3002),
   httpPort: integerFromEnv("HTTP_PORT", 3003),
-  protocolVersion: "pokemon-battle/2",
+  protocolVersion: PROTOCOL_VERSION,
   maxPlayerNameLength: 24,
   allowedOrigins: (
     process.env.ALLOWED_ORIGINS ??
@@ -33,8 +40,10 @@ export const config = {
   maxMessagesPerSecond: integerFromEnv("MAX_MESSAGES_PER_SECOND", 30),
   maxPendingMessages: integerFromEnv("MAX_PENDING_MESSAGES", 16),
   joinTimeoutMs: integerFromEnv("JOIN_TIMEOUT_MS", 10000, 60000),
+  preparationTimeoutMs: integerFromEnv("PREPARATION_TIMEOUT_MS", 8000, 60000),
   pokeApiCacheDir:
-    process.env.POKEAPI_CACHE_DIR || join(__dirname, "..", "..", "data", "pokeapi-cache"),
+    process.env.POKEAPI_CACHE_DIR ||
+    join(__dirname, "..", "..", "data", "pokeapi-cache"),
 };
 
 export type ServerConfig = typeof config;

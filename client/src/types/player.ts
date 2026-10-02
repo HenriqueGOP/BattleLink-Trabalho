@@ -21,6 +21,7 @@ export type StatusName = 'burn' | 'poison' | 'bad_poison' | 'paralysis' | 'sleep
 
 /** Membro da equipe no snapshot (server TeamMemberState). */
 export interface TeamMember {
+  id: import('./protocol').CombatantId
   pokemon: string
   types: string[]
   image: string | null
@@ -31,7 +32,6 @@ export interface TeamMember {
   hp: number
   status: StatusName | null
   isShiny: boolean
-  isTerastallized: boolean
   sleepTurns: number
   pp: Record<string, number>
 }
@@ -41,8 +41,6 @@ export interface ActivePokemonData {
   moves: PokemonMove[]
   selectedMoves: string[]
   types: string[]
-  teraType: string
-  isTerastallized: boolean
   status: StatusName | null
   isShiny: boolean
   statStages: StatStages
@@ -50,6 +48,7 @@ export interface ActivePokemonData {
   pp: Record<string, number>
   cries: PokemonCries
   sprites: PokemonSprites
+  level: number
 }
 
 /** Jogador no snapshot (server PlayerState). */

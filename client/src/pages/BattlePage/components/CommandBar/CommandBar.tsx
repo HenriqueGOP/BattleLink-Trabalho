@@ -9,7 +9,7 @@ export interface CommandBarProps {
   message: string
   myTurn: boolean
   myPokemon: string | null | undefined
-  /** Ações da grade 2×2 (LUTAR / POKÉMON / TERA / FUGIR) ou o menu de golpes. */
+  /** Ações de batalha (LUTAR / POKÉMON / FUGIR) ou o menu de golpes. */
   children: React.ReactNode
   /**
    * true quando `children` já é um painel completo (o menu de golpes), como no
@@ -33,9 +33,12 @@ export interface CommandBarProps {
 function useTypewriter(text: string): string {
   const [shown, setShown] = useState(text)
   const timerRef = useRef<number | null>(null)
-  useEffect(() => () => {
-    if (timerRef.current != null) window.clearTimeout(timerRef.current)
-  }, [])
+  useEffect(
+    () => () => {
+      if (timerRef.current != null) window.clearTimeout(timerRef.current)
+    },
+    []
+  )
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       timerRef.current = window.setTimeout(() => setShown(text), 0)
@@ -51,8 +54,19 @@ function useTypewriter(text: string): string {
   }, [text])
   return shown
 }
-export function CommandBar({ message, myTurn, myPokemon, children, panelMode = false, preview = null }: CommandBarProps) {
-  const target = message || (myTurn ? `O que ${myPokemon ?? 'seu Pokémon'} vai fazer?` : 'Aguarde o turno do oponente…')
+export function CommandBar({
+  message,
+  myTurn,
+  myPokemon,
+  children,
+  panelMode = false,
+  preview = null,
+}: CommandBarProps) {
+  const target =
+    message ||
+    (myTurn
+      ? `O que ${myPokemon ?? 'seu Pokémon'} vai fazer?`
+      : 'Aguarde a resolução das escolhas…')
   const text = useTypewriter(target)
 
   return (
@@ -61,7 +75,7 @@ export function CommandBar({ message, myTurn, myPokemon, children, panelMode = f
         <div className={styles.message}>
           <article className={styles.preview}>
             <header className={styles.previewHead}>
-              <h3 className={styles.previewName}>{preview.name.replace(/-/g, ' ')}</h3>
+              <h3 className={styles.previewName}>{preview.displayName ?? preview.name}</h3>
               <TypeBadge type={preview.type} small />
               {preview.category && <span className={styles.category}>{preview.category}</span>}
             </header>
@@ -84,7 +98,7 @@ export function CommandBar({ message, myTurn, myPokemon, children, panelMode = f
             <ul className={styles.previewEffects}>
               {moveEffects(preview)
                 .slice(0, 4)
-                .map(effect => (
+                .map((effect) => (
                   <li key={effect.label} className={styles[effect.tone]}>
                     {effect.label}
                   </li>
@@ -97,7 +111,9 @@ export function CommandBar({ message, myTurn, myPokemon, children, panelMode = f
       ) : (
         <div className={styles.message} role="log" aria-live="polite">
           <p className={styles.messageText}>{text}</p>
-          <span className={styles.cursor} aria-hidden="true">▼</span>
+          <span className={styles.cursor} aria-hidden="true">
+            ▼
+          </span>
         </div>
       )}
       <div className={panelMode ? styles.panel : styles.grid}>{children}</div>

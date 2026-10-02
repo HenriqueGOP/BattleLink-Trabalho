@@ -44,7 +44,7 @@ const PokemonCard = ({
 
 /** Catálogo + busca + sorteio. Equipe 0/6 → 6/6. */
 export function SelectionPage() {
-  const { state, playerId, choosePokemon, leave } = useBattleContext()
+  const { state, playerId, choosePokemon, randomTeam, leave } = useBattleContext()
   const { myPlayer } = useBattle()
   const navigate = useNavigate()
   const audioPrefs = useAudio()
@@ -74,15 +74,8 @@ export function SelectionPage() {
   }, [catalog, query, team])
 
   function draw(count: number) {
-    const available = catalog.filter(
-      (pokemon) => !team.some((member) => member.pokemon === pokemon.name)
-    )
     audio.play('select')
-    for (let drawn = 0; drawn < count && available.length > 0; drawn++) {
-      const index = Math.floor(Math.random() * available.length)
-      const [pokemon] = available.splice(index, 1)
-      choosePokemon(pokemon.name)
-    }
+    randomTeam(count)
     setDrawKey((key) => key + 1)
   }
 

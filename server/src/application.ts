@@ -1,6 +1,9 @@
 import { createServer, Socket } from "node:net";
 import { randomUUID } from "node:crypto";
-import { createServer as createHttpServer, Server as HttpServer } from "node:http";
+import {
+  createServer as createHttpServer,
+  Server as HttpServer,
+} from "node:http";
 import { StringDecoder } from "node:string_decoder";
 import { WebSocketServer, WebSocket } from "ws";
 import { RoomManager } from "./game/manager";
@@ -8,7 +11,8 @@ import { Room } from "./game/room";
 import { ClientMessage, ServerMessage } from "./game/types";
 import { config, ServerConfig } from "./config";
 import { parseClientMessage } from "./protocol";
-import { fetchPokemonCatalog } from "./game/pokeapi";
+import { catalog } from "./contracts/catalog";
+import { BattleRuleError } from "./game/engine";
 import {
   authenticate,
   ConnectionLimits,
@@ -30,19 +34,59 @@ export function createApplication(
   const manager = new RoomManager();
   const senders = new Map<string, Sender>();
   const joinTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  const preparationTimers = new Map<string, ReturnType<typeof setTimeout>>();
   const sockets = new Set<Socket>();
-  const limits = new ConnectionLimits(settings.maxConnections, settings.maxConnectionsPerIp);
-  const webServer = new WebSocketServer({ noServer: true, maxPayload: MAX_MESSAGE_BYTES });
+  const limits = new ConnectionLimits(
+    settings.maxConnections,
+    settings.maxConnectionsPerIp,
+  );
+  const webServer = new WebSocketServer({
+    noServer: true,
+    maxPayload: MAX_MESSAGE_BYTES,
+  });
   const alive = new WeakMap<WebSocket, boolean>();
   let stopping = false;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
 
   function broadcast(room: Room): void {
     for (const player of room.state.players)
-      senders.get(player.id)?.({ type: "state", state: room.getStateFor(player.id) });
+      senders.get(player.id)?.({
+        type: "state",
+        state: room.getStateFor(player.id),
+      });
   }
 
-  function fail(sender: Sender, message: string, code = "INVALID_MESSAGE"): void {
+  function updatePreparationTimer(room: Room): void {
+    if (!room.preparing) {
+      const timer = preparationTimers.get(room.id);
+      if (timer) clearTimeout(timer);
+      preparationTimers.delete(room.id);
+      return;
+    }
+    if (preparationTimers.has(room.id)) return;
+    const timer = setTimeout(() => {
+      void (async () => {
+        const unlock = await room.mutex.acquire();
+        try {
+          if (manager.roomOf(room.state.players[0].id) !== room || stopping)
+            return;
+          room.preparationExpired();
+          broadcast(room);
+        } finally {
+          preparationTimers.delete(room.id);
+          unlock();
+        }
+      })();
+    }, settings.preparationTimeoutMs);
+    timer.unref();
+    preparationTimers.set(room.id, timer);
+  }
+
+  function fail(
+    sender: Sender,
+    message: string,
+    code = "INVALID_MESSAGE",
+  ): void {
     sender({ type: "error", code, message });
   }
 
@@ -78,19 +122,28 @@ export function createApplication(
       if (room.state.phase !== "finished") {
         room.forfeit(playerId);
         broadcast(room);
-        const opponent = room.state.players.find((player) => player.id !== playerId)!;
+        const opponent = room.state.players.find(
+          (player) => player.id !== playerId,
+        )!;
         senders.get(opponent.id)?.({
           type: "opponent_left",
           message: "O oponente desconectou. Você venceu por desistência.",
         });
       }
     } finally {
+      const timer = preparationTimers.get(room.id);
+      if (timer) clearTimeout(timer);
+      preparationTimers.delete(room.id);
       manager.remove(playerId);
       unlock();
     }
   }
 
-  async function handle(sender: Sender, playerId: string, message: ClientMessage): Promise<void> {
+  async function handle(
+    sender: Sender,
+    playerId: string,
+    message: ClientMessage,
+  ): Promise<void> {
     if (!senders.has(playerId) || stopping) return;
     if (message.type === "join") {
       if (!authenticate(message.token, settings.accessToken)) {
@@ -99,12 +152,28 @@ export function createApplication(
         return;
       }
       clearJoinTimer(playerId);
-      const current = manager.roomOf(playerId);
-      if (current) {
-        sender({ type: "match_found", roomId: current.id, state: current.getStateFor(playerId) });
+      if (message.catalogVersion !== catalog.version) {
+        fail(
+          sender,
+          "Catálogo incompatível. Atualize o cliente e o servidor.",
+          "CATALOG_MISMATCH",
+        );
+        sender.close();
         return;
       }
-      const room = manager.enqueue(playerId, message.name.slice(0, settings.maxPlayerNameLength));
+      const current = manager.roomOf(playerId);
+      if (current) {
+        sender({
+          type: "match_found",
+          roomId: current.id,
+          state: current.getStateFor(playerId),
+        });
+        return;
+      }
+      const room = manager.enqueue(
+        playerId,
+        message.name.slice(0, settings.maxPlayerNameLength),
+      );
       if (!room) {
         sender({
           type: "waiting",
@@ -130,38 +199,71 @@ export function createApplication(
       fail(sender, "Entre na fila antes de jogar.", "NOT_IN_MATCH");
       return;
     }
-    // HTTP ocorre fora da região crítica. A confirmação revalida fase, equipe e sala.
-    const prepared =
-      message.type === "choose_pokemon"
-        ? await room.preparePokemon(playerId, message.pokemon)
-        : null;
     const unlock = await room.mutex.acquire();
     trace(`[mutex] ${room.id}: lock adquirido por ${playerId}`);
     try {
-      if (!senders.has(playerId) || manager.roomOf(playerId) !== room || stopping) return;
-      if (prepared) room.commitPokemon(prepared);
+      if (
+        !senders.has(playerId) ||
+        manager.roomOf(playerId) !== room ||
+        stopping
+      )
+        return;
+      if (message.type === "choose_pokemon")
+        room.choosePokemon(playerId, message.pokemon);
+      else if (message.type === "random_team")
+        room.randomTeam(playerId, message.count);
       else if (message.type === "set_moves")
         room.setMoves(playerId, message.pokemon, message.moves);
       else if (message.type === "accept_team") room.acceptTeam(playerId);
       else if (message.type === "reset_team") room.resetTeam(playerId);
-      else if (message.type === "terastallize") room.terastallize(playerId);
-      else if (message.type === "switch_pokemon") room.switchPokemon(playerId, message.pokemon);
-      else if (message.type === "action") room.applyAction(playerId, message.action);
+      else if (message.type === "battle_ready")
+        room.battleReady(playerId, message.preparationId);
+      else if (message.type === "resync") {
+        sender({ type: "state", state: room.getStateFor(playerId) });
+        return;
+      } else if (message.type === "action") {
+        const update = room.applyAction(playerId, message);
+        sender({
+          type: "action_ack",
+          requestId: message.requestId,
+          actionId: message.actionId,
+          duplicate: update.duplicate,
+          resolved: update.resolved,
+        });
+        if (!update.resolved) {
+          sender({ type: "state", state: room.getStateFor(playerId) });
+          return;
+        }
+      }
+      updatePreparationTimer(room);
       broadcast(room);
+    } catch (error) {
+      if (room.state.phase === "finished") {
+        updatePreparationTimer(room);
+        broadcast(room);
+      }
+      throw error;
     } finally {
       unlock();
       trace(`[mutex] ${room.id}: lock liberado`);
     }
   }
 
-  function dispatcher(sender: Sender, playerId: string): (raw: string, binary?: boolean) => void {
+  function dispatcher(
+    sender: Sender,
+    playerId: string,
+  ): (raw: string, binary?: boolean) => void {
     let chain = Promise.resolve();
     let pending = 0;
     const budget = new MessageBudget(settings.maxMessagesPerSecond);
     return (raw, binary = false) => {
       if (!senders.has(playerId)) return;
       if (!budget.consume()) {
-        fail(sender, "Muitas mensagens. Reconecte e tente novamente.", "RATE_LIMITED");
+        fail(
+          sender,
+          "Muitas mensagens. Reconecte e tente novamente.",
+          "RATE_LIMITED",
+        );
         sender.close();
         return;
       }
@@ -180,10 +282,13 @@ export function createApplication(
       try {
         message = parseClientMessage(parsed);
       } catch (error) {
-        fail(sender, error instanceof Error ? error.message : "Mensagem inválida.");
+        fail(
+          sender,
+          error instanceof Error ? error.message : "Mensagem inválida.",
+        );
         return;
       }
-      // Leave não fica preso atrás de uma busca externa pendente.
+      // Leave não fica preso atrás de comandos pendentes.
       if (message.type === "leave") {
         sender.close();
         return;
@@ -194,12 +299,28 @@ export function createApplication(
         return;
       }
       pending++;
-      // FIFO por conexão, sem impedir o outro jogador de usar a sala durante HTTP.
+      // FIFO por conexão; catálogo e montagem são locais, sem I/O dentro do mutex.
       chain = chain
         .then(() => handle(sender, playerId, message))
         .catch((error) => {
           if (senders.has(playerId))
-            fail(sender, error instanceof Error ? error.message : "Mensagem inválida.");
+            sender({
+              type: "error",
+              code:
+                error instanceof BattleRuleError
+                  ? error.code
+                  : "INVALID_MESSAGE",
+              message:
+                error instanceof BattleRuleError &&
+                error.code === "ENGINE_CONTRACT"
+                  ? "A partida foi interrompida por uma falha de execução."
+                  : error instanceof Error
+                    ? error.message
+                    : "Mensagem inválida.",
+              ...(message.type === "action"
+                ? { actionId: message.actionId }
+                : {}),
+            });
         })
         .finally(() => {
           pending--;
@@ -237,7 +358,12 @@ export function createApplication(
     const decoder = new StringDecoder("utf8");
     let buffer = "";
     socket.setKeepAlive(true, 30000);
-    sender({ type: "welcome", playerId, protocol: settings.protocolVersion });
+    sender({
+      type: "welcome",
+      playerId,
+      protocol: settings.protocolVersion,
+      catalogVersion: catalog.version,
+    });
     socket.on("data", (data) => {
       buffer += decoder.write(data);
       let newline: number;
@@ -280,7 +406,9 @@ export function createApplication(
     }
     const release = limits.acquire(request.socket.remoteAddress);
     if (!release) {
-      socket.end("HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n\r\n");
+      socket.end(
+        "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n\r\n",
+      );
       return;
     }
     socket.once("close", release);
@@ -309,7 +437,12 @@ export function createApplication(
       alive.set(ws, true);
       ws.on("pong", () => alive.set(ws, true));
       const dispatch = dispatcher(sender, playerId);
-      sender({ type: "welcome", playerId, protocol: settings.protocolVersion });
+      sender({
+        type: "welcome",
+        playerId,
+        protocol: settings.protocolVersion,
+        catalogVersion: catalog.version,
+      });
       ws.on("message", (raw, binary) => dispatch(raw.toString(), binary));
       ws.on("close", () => {
         release();
@@ -319,8 +452,11 @@ export function createApplication(
     });
   });
 
-  let catalogBody: Promise<string> | null = null;
-  const apiServer = createHttpServer(async (request, response) => {
+  const catalogBody = JSON.stringify({
+    version: catalog.version,
+    pokemon: catalog.species.map(({ id, num, name }) => ({ id, num, name })),
+  });
+  const apiServer = createHttpServer((request, response) => {
     const origin = request.headers.origin;
     response.setHeader("Vary", "Origin");
     if (origin && !isAllowedOrigin(origin, settings.allowedOrigins)) {
@@ -348,25 +484,8 @@ export function createApplication(
       response.end();
       return;
     }
-    try {
-      if (!catalogBody)
-        catalogBody = fetchPokemonCatalog()
-          .then((pokemon) => JSON.stringify({ pokemon }))
-          .catch((error) => {
-            catalogBody = null;
-            throw error;
-          });
-      const body = await catalogBody;
-      response.writeHead(200);
-      response.end(body);
-    } catch {
-      response.writeHead(502);
-      response.end(
-        JSON.stringify({
-          error: "Catálogo indisponível. Conecte à internet para preencher o cache local.",
-        }),
-      );
-    }
+    response.writeHead(200);
+    response.end(catalogBody);
   });
 
   for (const listener of [tcpServer, webBridge, apiServer]) {
@@ -374,7 +493,9 @@ export function createApplication(
       sockets.add(socket);
       socket.once("close", () => sockets.delete(socket));
     });
-    listener.on("error", (error) => console.error(`[servidor] ${error.message}`));
+    listener.on("error", (error) =>
+      console.error(`[servidor] ${error.message}`),
+    );
   }
   function bind(
     listener: typeof tcpServer | HttpServer,
@@ -400,6 +521,8 @@ export function createApplication(
     if (heartbeat) clearInterval(heartbeat);
     for (const timer of joinTimers.values()) clearTimeout(timer);
     joinTimers.clear();
+    for (const timer of preparationTimers.values()) clearTimeout(timer);
+    preparationTimers.clear();
     for (const ws of webServer.clients) ws.terminate();
     for (const socket of sockets) socket.destroy();
     await Promise.all(
@@ -415,6 +538,7 @@ export function createApplication(
       ),
     );
     await new Promise<void>((resolve) => webServer.close(() => resolve()));
+    manager.close();
   }
   return {
     async listen(): Promise<void> {
@@ -424,7 +548,8 @@ export function createApplication(
         bind(apiServer, settings.httpPort),
       ]);
       const failure = results.find(
-        (result): result is PromiseRejectedResult => result.status === "rejected",
+        (result): result is PromiseRejectedResult =>
+          result.status === "rejected",
       );
       if (failure) {
         await close();

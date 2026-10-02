@@ -16,9 +16,12 @@ export function TurnIndicator({ myTurn, finished, turnEvent }: TurnIndicatorProp
   const lastEventId = useRef<unknown>(null)
 
   useEffect(() => {
-    // O servidor manda turn_change com targetId; o lado visual (me/opponent) é
-    // resolvido no eventEngine. Sem adivinhar pelo texto da mensagem.
-    const event = turnEvent as { id?: number; type?: string; target?: 'me' | 'opponent' | 'system' } | null
+    // O adaptador visual deriva o início da rodada dos eventos canônicos.
+    const event = turnEvent as {
+      id?: number
+      type?: string
+      target?: 'me' | 'opponent' | 'system'
+    } | null
     if (!event || event.type !== 'turn_change' || lastEventId.current === event.id) return
     lastEventId.current = event.id
     setToast({ mine: event.target === 'me' })
@@ -31,13 +34,20 @@ export function TurnIndicator({ myTurn, finished, turnEvent }: TurnIndicatorProp
       <span
         className={`${styles.chip} ${myTurn ? styles.mine : styles.theirs}`}
         role="status"
-        aria-label={finished ? 'Batalha encerrada' : myTurn ? 'Seu turno' : 'Turno do oponente'}
+        aria-label={
+          finished ? 'Batalha encerrada' : myTurn ? 'Escolha sua ação' : 'Aguardando resolução'
+        }
       >
         <i aria-hidden="true" />
-        {finished ? 'FIM' : myTurn ? 'SEU TURNO' : 'OPONENTE'}
+        {finished ? 'FIM' : myTurn ? 'ESCOLHA' : 'AGUARDANDO'}
       </span>
 
-      {toast && <span className={`${styles.pip} ${toast.mine ? styles.mine : styles.theirs}`} aria-hidden="true" />}
+      {toast && (
+        <span
+          className={`${styles.pip} ${toast.mine ? styles.mine : styles.theirs}`}
+          aria-hidden="true"
+        />
+      )}
     </>
   )
 }

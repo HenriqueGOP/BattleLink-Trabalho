@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { buildSideContext, classifyLogLine, diffState } from '../lib/eventEngine'
+import { buildLogEntries, diffState } from '../lib/eventEngine'
 import type { BattleEvent, LogEntry } from '../types/events'
 import type { GameState } from '../types/battle'
 
@@ -26,7 +26,7 @@ export interface BattleEventsApi {
 export function useBattleEvents(
   state: GameState | null,
   myIndex: number,
-  roomId: string | null,
+  roomId: string | null
 ): BattleEventsApi {
   const [current, setCurrent] = useState<BattleEvent | null>(null)
   const [totals, setTotals] = useState<DamageTotals>({ dealt: 0, received: 0 })
@@ -103,8 +103,7 @@ export function useBattleEvents(
 
   const logEntries = useMemo<LogEntry[]>(() => {
     if (!state || myIndex < 0) return []
-    const context = buildSideContext(state, myIndex)
-    return state.log.map((text, index) => ({ id: index, ...classifyLogLine(text, context) }))
+    return buildLogEntries(state, myIndex)
   }, [state, myIndex])
 
   const skip = useCallback(() => {

@@ -4,11 +4,13 @@ import { Sprite } from '../../../../components/Sprite'
 import { STATUS_SHORT } from '../shared'
 import styles from './BattleControls.module.css'
 import type { Player } from '../../../../types/player'
+import type { ActionRequest } from '../../../../types/protocol'
 
 export interface BattleControlsProps {
   player: Player | null
   myTurn: boolean
   blocked: boolean
+  request: ActionRequest | null
   onSwitch: (pokemon: string) => void
 }
 
@@ -21,21 +23,24 @@ export const BattleControls = memo(function BattleControls({
   player,
   myTurn,
   blocked,
+  request,
   onSwitch,
 }: BattleControlsProps) {
   const team = player?.team ?? []
-  const canSwitch = myTurn || blocked
+  const canSwitch = myTurn && !request?.submitted
 
   return (
     <section className={styles.controls} aria-label="Equipe">
       {blocked && (
         <p className={styles.urgent} role="alert">
-          Seu Pokémon caiu — escolha um substituto!
+          {request?.kind === 'revive'
+            ? 'Escolha um Pokémon para reviver!'
+            : 'Escolha o próximo Pokémon!'}
         </p>
       )}
 
       <div className={styles.roster} data-urgent={blocked ? 'true' : undefined}>
-        {team.map(member => {
+        {team.map((member) => {
           const active = member.pokemon === player?.pokemon
           const fainted = member.hp <= 0
           const ratio = member.maxHp > 0 ? Math.max(0, member.hp / member.maxHp) : 0
@@ -47,7 +52,7 @@ export const BattleControls = memo(function BattleControls({
               className={[styles.slot, active ? styles.active : '', fainted ? styles.fainted : '']
                 .filter(Boolean)
                 .join(' ')}
-              disabled={!canSwitch || active || fainted}
+              disabled={!canSwitch || !request?.switches.includes(member.id)}
               onClick={() => {
                 audio.play('switch')
                 onSwitch(member.pokemon)
@@ -65,7 +70,11 @@ export const BattleControls = memo(function BattleControls({
               <span className={styles.info}>
                 <span className={styles.nameRow}>
                   <b className={styles.name}>{member.pokemon}</b>
-                  {member.status && <i className={`${styles.status} ${styles[member.status]}`}>{STATUS_SHORT[member.status]}</i>}
+                  {member.status && (
+                    <i className={`${styles.status} ${styles[member.status]}`}>
+                      {STATUS_SHORT[member.status]}
+                    </i>
+                  )}
                 </span>
 
                 <span className={styles.hpRow}>
