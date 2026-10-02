@@ -4,12 +4,14 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec tsx src/index.ts",
     "build": "tsc",
-    "test": "tsx src/game/domain.test.ts && tsx src/game/events.test.ts && tsx src/protocol.test.ts",
+    "test": "tsx src/game/domain.test.ts && tsx src/game/events.test.ts && tsx src/protocol.test.ts && npm run test:engine",
+    "test:engine": "tsc --project tsconfig.engine-tests.json && tsx src/game/engine/engine.test.ts",
     "start": "node dist/index.js",
     "client": "tsx src/client.ts",
     "client:build": "node dist/client.js"
   },
   "devDependencies": {
+    "@smogon/calc": "0.11.0",
     "@types/node": "^26.4.1",
     "@types/ws": "^8.18.1",
     "nodemon": "^3.1.14",
@@ -17,6 +19,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "@pkmn/sim": "0.10.11",
     "ws": "^8.21.3"
   }
 }
