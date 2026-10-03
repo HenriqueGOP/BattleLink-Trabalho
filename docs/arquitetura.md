@@ -1,28 +1,46 @@
-# Arquitetura e demonstracao
+# Arquitetura e demonstração — fase 4
 
 ```mermaid
 flowchart LR
-  C1[Cliente CLI 1] -- TCP JSON\nnewline --> S[Servidor node:net]
-  C2[Cliente CLI 2] -- TCP JSON\nnewline --> S
-  S --> Q[Fila e RoomManager]
-  Q --> R[Room: estado oficial]
-  R --> M[AsyncMutex: regiao critica]
-  M --> R
-  R -- snapshots state --> C1
-  R -- snapshots state --> C2
+  CLI[Terminal] -->|TCP JSON| A[application: validação, FIFO e limites]
+  UI[React] -->|WebSocket JSON| A
+  A --> M[RoomManager: fila e salas]
+  M --> R[Room: ciclo, equipes e mutex]
+  R --> E[BattleSession: regras e RNG]
+  E --> S[Adapter privado do simulador]
+  R -->|Snapshot privado e eventos| UI
+  R -->|Snapshot privado e eventos| CLI
+  C[Catálogo local versionado] --> R
+  C --> UI
+  L[Recursos locais e whitelist] --> UI
+  UI --> Q[BattleEventQueue: eventos e checkpoints]
+  Q --> D[AnimationDirector: GSAP e WAAPI]
+  D -->|Conclusão ou troca no ponto de substituição| Q
+  Q --> V[Estado apresentado: HUD, sprites, log e resultado]
 ```
 
-O recurso compartilhado e `Room.state`: jogadores, Pokemon, HP, energia, turno, log e vencedor. A regiao critica comeca quando `room.mutex.acquire()` resolve e termina no `finally` com `unlock()`. Escolha de Pokemon e acao de batalha so modificam o estado dentro desse intervalo.
+## Fronteiras
 
-O Node executa handlers no event loop, mas isso nao substitui a demonstracao: o `AsyncMutex` serializa explicitamente mensagens concorrentes que chegam para a mesma sala. Se dois ataques chegarem juntos, o primeiro lock adquirido valida seu turno e altera o estado; o segundo espera, depois recebe erro de turno ou processa o novo estado, sem intercalar mutacoes.
+- **Transporte:** `application.ts` gerencia sockets, filas por conexão, limites, autenticação, origem e timers. Ambos os clientes usam os mesmos handlers.
+- **Orquestração:** `Room` mantém identidades, equipes selecionadas, confirmação, preparação e resultado. O mutex serializa comandos concorrentes; não há consulta externa. O getter `state` só expõe metadados imutáveis.
+- **Regras:** `BattleSession` coleta escolhas privadas e resolve a rodada completa com o simulador Gen 9. Apenas o adapter conhece seus objetos mutáveis. Snapshots/eventos retornados são imutáveis.
+- **Dados:** catálogo gerado da versão fixada de `@pkmn/sim`; espécies e golpes são JSON separados, learnsets usam índices compactos no disco. Cliente e servidor usam a mesma versão.
+- **Recursos:** sprites/cries locais são resolvidos por mapas; mensagens nunca fornecem caminhos. Whitelist impede interpretar URL/HTML recebido. O bundler rejeita simulador/calculadora no navegador.
+- **Apresentação:** `BattleProvider` mantém o snapshot autoritativo usado para validar controles. `BattleEventQueue` recebe eventos novos, preserva checkpoints de cada snapshot e confirma fatos visuais após a conclusão do `AnimationDirector`. HP, ativo, status, log e resultado usam esse estado apresentado. Uma lacuna, skip ou aba oculta aplica o snapshot mais recente e cancela trabalho obsoleto. A troca confirma o novo ativo depois da saída e antes da entrada.
 
-## Roteiro de apresentacao
+A ordem de chegada das escolhas não decide quem ataca primeiro: prioridade, velocidade e desempate do RNG fazem isso. O primeiro jogador recebe confirmação privada; a transmissão pública só ocorre após a resolução. Desconexão produz resultado final antes de remover e destruir a sala. Timer de preparação, sockets e motor são liberados no encerramento.
 
-1. Terminal 1: `npm start`. Mostre as conexoes TCP e as linhas `[mutex]`.
-2. Terminais 2 e 3: `npm run client -- Alice` e `npm run client -- Bob`.
-3. Mostre `waiting`, `match_found`, os dois jogadores e o estado central.
-4. Em ambos, escolha um Pokemon. O servidor transmite o mesmo snapshot.
-5. Tente atacar no cliente que nao tem o turno para mostrar a rejeicao.
-6. Ataque no turno correto e mostre HP, log e troca de `turn` nos dois terminais.
-7. Digite `invalid` para mostrar a resposta de protocolo invalido.
-8. Repita ataques ate `phase: finished` e `winner`, ou feche um cliente para mostrar `opponent_left`.
+Combate, sorteio de equipes e apresentação têm fluxos de RNG separados. Sorteio por lado tem fluxo próprio, de modo que a ordem de cliques dos dois jogadores não muda sua seleção. Arena usa somente o fluxo visual do servidor. Partículas do cliente derivam sua variação da sequência pública, sem receber a seed privada ou consumir o RNG de combate. Não há alterações de RNG global.
+
+## Roteiro de apresentação
+
+1. Inicie servidor e dois terminais ou duas abas React; veja waiting e match_found.
+2. Sorteie seis membros em cada cliente; ajuste golpes compatíveis e confirme.
+3. Verifique a preparação dos recursos antes do início.
+4. Escolha uma ação em um cliente: seus controles ficam aguardando, a visão adversária não muda.
+5. Escolha no outro cliente; observe a rodada completa, PP, HP e eventos coerentes nos dois lados.
+6. Demonstre troca voluntária e, após KO, substituição obrigatória.
+7. Reenvie a mesma ação: não executa novamente. Solicitação antiga ou troca da equipe adversária falha.
+8. Termine a batalha ou feche uma conexão: o resultado final chega antes da liberação da sala.
+
+Detalhes de contrato: [protocolo](protocolo.md). Evidências e limites: [fase 3](FASE_3_INTEGRACAO.md) e [fase 4](FASE_4_APRESENTACAO.md).

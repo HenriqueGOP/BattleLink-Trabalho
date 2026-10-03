@@ -10,3 +10,5 @@ coverage/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+arvore.txt
+data/pokeapi-cache/

@@ -1,0 +1,192 @@
+/* Caixa de status da batalha — formato da série: creme, contorno duplo escuro
+   e o canto "cortado" que aponta para o lado do treinador. */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 12px 9px;
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  color: var(--hud-ink);
+  border: 3px solid var(--hud-edge);
+  /* canto inferior direito reto = caixa do jogador (apontando para o próprio lado) */
+  border-radius: 12px 12px 4px 12px;
+  box-shadow:
+    inset 0 0 0 2px var(--hud-edge-soft),
+    0 4px 0 var(--hud-shadow),
+    0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* caixa do oponente: espelhada, canto reto embaixo à esquerda */
+.opponent {
+  border-radius: 12px 12px 12px 4px;
+}
+
+.trainerRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.role {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: var(--hud-face);
+  background: var(--hud-ink);
+}
+
+.opponent .role {
+  background: var(--poke-red-dark);
+}
+
+.trainer {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--hud-ink-soft);
+}
+
+/* ---------- fileira de pokébolas da equipe ---------- */
+.balls {
+  flex: none;
+  display: inline-flex;
+  gap: 2px;
+}
+
+.ball {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--hud-edge);
+  background: linear-gradient(
+    180deg,
+    var(--poke-red) 0 42%,
+    var(--hud-edge) 42% 58%,
+    var(--poke-white) 58% 100%
+  );
+}
+
+/* nocauteada: bola apagada */
+.ballFainted {
+  background: var(--hud-edge-soft);
+  opacity: 0.55;
+}
+
+/* em campo: aro de destaque */
+.ballActive {
+  box-shadow: 0 0 0 2px var(--hpbar-label);
+}
+
+/* ---------- nome + nível ---------- */
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pokemonName {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  color: var(--hud-ink);
+}
+
+.shiny {
+  color: #e8b918;
+  font-size: 13px;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(232, 185, 24, 0.8);
+}
+
+.level {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  color: var(--hud-ink-soft);
+}
+
+/* ---------- etiquetas: status, tera, tipos, stages ---------- */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 16px;
+}
+
+.status {
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.35);
+}
+
+.burn { background: var(--status-burn); }
+.poison { background: var(--status-poison); }
+.bad_poison { background: var(--status-bad-poison); }
+.paralysis { background: var(--status-paralysis); color: #3a3000; }
+.sleep { background: var(--status-sleep); }
+.freeze { background: var(--status-freeze); color: #08323d; }
+
+.tera {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: #fff;
+  background: #2a2140;
+  border: 1.5px solid var(--type-stellar);
+  box-shadow: 0 0 8px rgba(73, 208, 192, 0.5);
+}
+
+.tera i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stage {
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  padding: 3px 4px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+.up { background: #2f7a3f; }
+.down { background: #8c3232; }
+
+@media (max-width: 480px) {
+  .card { padding: 6px 9px 7px; }
+  .pokemonName { font-size: 9px; }
+  .trainer { font-size: 14px; }
+}

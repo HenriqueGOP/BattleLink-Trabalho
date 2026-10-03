@@ -1,0 +1,1 @@
+export { BattleSpot } from './BattleSpot'

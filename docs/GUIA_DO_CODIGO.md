@@ -1,165 +1,52 @@
-# Guia do codigo
+# Guia do código — fase 4
 
-Este documento explica como o projeto funciona por dentro e serve como mapa para futuras alteracoes. A regra mais importante e: **o cliente solicita; o servidor decide**.
+O cliente solicita; o servidor decide. Este mapa descreve a implementação ativa em `pokemon-battle/3`.
 
-## 1. Mapa de pastas
+## Arquivos principais
 
-```text
-meu-jogo/
-  client/                 React + Vite, apenas interface e copia local do estado
-    src/App.tsx           conexao WebSocket e telas de lobby/batalha
-    src/App.css           identidade visual e responsividade
-    src/main.tsx          ponto de entrada React
-  server/                 processo oficial da partida
-    src/index.ts          adaptadores TCP/WebSocket e ciclo de conexao
-    src/config.ts         portas, host e limites configuraveis
-    src/protocol.ts       validacao das mensagens recebidas
-    src/client.ts         cliente CLI para a apresentacao
-    src/game/types.ts     tipos do protocolo e do dominio
-    src/game/manager.ts   fila de matchmaking e indice de salas
-    src/game/room.ts      regras e estado oficial da batalha
-    src/game/mutex.ts     exclusao mutua por sala
-    src/game/*.test.ts    testes do dominio e protocolo
-  docs/                   protocolo, arquitetura e este guia
-```
+| Área | Arquivos | Responsabilidade |
+|---|---|---|
+| Inicialização | server/src/index.ts, config.ts | Configuração, portas e encerramento |
+| Transporte | server/src/application.ts, security.ts | TCP/WebSocket/HTTP, autenticação, origem, limites, FIFO, preparação |
+| Contrato | server/src/contracts/protocol.ts, decode.ts | Tipos compartilhados e validação de mensagens do servidor |
+| Entrada | server/src/protocol.ts | Validação de mensagens do cliente |
+| Fila | server/src/game/manager.ts | Pareamento, índice e destruição de salas |
+| Sala | server/src/game/room.ts, mutex.ts | Equipes, confirmação, preparação, snapshots por perspectiva |
+| Motor | server/src/game/engine | Regras, RNG, matemática, adapter, capacidades e eventos |
+| Catálogo | server/src/contracts/catalog.ts, server/src/data | Dados locais e sugestões de golpes compatíveis |
+| Terminal | server/src/client.ts | Mesmas solicitações e escolhas do navegador via TCP |
+| Conexão React | BattleProvider.tsx, services/socketService.ts | Decoder, snapshot, envio idempotente e ressincronização |
+| Modelo visual | client/src/lib/battleView.ts, catalog.ts | IDs → textos, PP, HP e recursos locais |
+| Recursos | client/src/lib/assets.ts, preloadBattle.ts | Whitelist, fallback, cancelamento e prazo de preload |
+| Eventos visuais | client/src/lib/eventEngine.ts, hooks/useBattleEvents.ts | Mensagens, assinatura do estado apresentado e ciclo de vida |
+| Fila | client/src/lib/presentation/BattleEventQueue.ts | Eventos, checkpoints, watermark, lacunas, skip e aba oculta |
+| Animação | client/src/lib/presentation/AnimationDirector.ts, impact.ts | Conclusão real, cancelamento, barras de HP, pool e flashes |
+| Medição | BattleProfiler.tsx, PresentationLab.tsx | Instrumentação e cenário disponíveis somente no modo profile |
+| Telas | client/src/pages | Lobby, seleção, golpes e batalha |
+| Áudio | client/src/lib/audio | Preferências persistidas, cries locais, música/SFX procedurais |
 
-Arquivos de suporte importantes:
+## Como alterar o protocolo
 
-- `package.json` da raiz oferece comandos unificados para instalar, compilar, testar, validar e iniciar cada parte;
-- `server/package.json` controla o processo Node e suas dependencias de runtime (`ws`);
-- `client/package.json` controla Vite, React, build e Oxlint;
-- `server/tsconfig.json` compila TypeScript para `server/dist`;
-- `client/tsconfig*.json` separa a configuracao da aplicacao React e da configuracao do Vite;
-- `client/src/main.tsx` monta o componente React no elemento `root` e ativa `StrictMode`;
-- `client/src/index.css` contem o reset global minimo; o visual da arena vive em `App.css`;
-- `.env.example` documenta configuracoes locais sem versionar segredos.
+Atualize os tipos compartilhados, parser do servidor, decoder de resposta e todos os clientes no mesmo conjunto de alterações. Cubra payload válido/inválido, privacidade e repetição. Não adicione URLs, callbacks, dados internos do simulador ou escolhas adversárias a snapshots.
 
-## 2. Inicializacao do servidor
+## Como alterar regras
 
-`server/src/index.ts` abre dois transportes para o mesmo dominio:
+Use a fachada do motor. Mecânicas nativas ficam no simulador, a política de exclusões no manifesto/adapter. Golpes simples adicionais podem ser definidos por dados confiáveis no servidor; nunca por payload de rede. A calculadora recebe entradas imutáveis e roll explícito e não toca na partida. Preserve os testes cruzados e os replays determinísticos.
 
-1. `node:net` escuta TCP em `PORT` (padrao `3001`). Cada mensagem termina em newline.
-2. `ws` escuta WebSocket em `WEB_PORT` (padrao `3002`). O navegador usa esta ponte porque a Web API nao permite abrir TCP bruto.
+Após atualizar a versão fixada, regenere dados com `node scripts/generate-battle-catalog.cjs` depois do build do servidor. Atualize a versão do catálogo quando houver mudança semântica, revise capacidades e repita a validação. `python scripts/vendor-battle-assets.py` é uma ferramenta de desenvolvimento: usa revisões registradas, valida assinaturas/tamanhos e gera manifesto com hashes. O jogo usa os arquivos já versionados.
 
-Os dois caminhos criam um `Sender`, registram o jogador e chamam a mesma funcao `handle`. Isso e intencional: terminal e React nao podem ter regras de jogo diferentes.
+## Estado e privacidade
 
-## 3. Entrada e validacao
+A equipe selecionada é privada. O motor publica apenas o que foi revelado por eventos, reservando PP, atributos e solicitação para o dono. Room exige seis membros; BattleSession aceita equipes menores para fixtures e consultas isoladas. Pedidos de troca e revival usam IDs estáveis, inclusive quando o Pokémon tem HP zero.
 
-`server/src/protocol.ts` e a fronteira de confianca. JSON recebido pela rede e `unknown` ate passar por `parseClientMessage`. A funcao verifica `type`, campos obrigatorios e tipos das acoes. Mensagens malformadas falham antes de tocar em `Room`.
+Eventos públicos possuem sequência e rodada. O cliente ignora duplicatas e snapshots antigos; uma lacuna além da janela exige usar o snapshot integral. Não derive regras lendo texto humano do log.
 
-Para adicionar uma nova mensagem:
+## Testes
 
-1. Adicione o formato em `ClientMessage` ou `ServerMessage`, em `game/types.ts`.
-2. Adicione a validacao correspondente em `parseClientMessage`.
-3. Trate a mensagem em `handle`, no `index.ts`.
-4. Cubra a entrada invalida e valida em `protocol.test.ts`.
-5. Atualize `docs/protocolo.md`.
+`npm test` preserva o runner anterior e acrescenta typecheck dos testes e validação dos recursos. Há grupos de domínio, eventos, regressões da auditoria, protocolo, segurança, ciclo do socket, integração HTTP/TCP/WebSocket, arquivos locais, apresentação e motor. A suíte não depende de internet. `presentation.test.ts` usa o motor real para os snapshots e um DOM controlado para verificar conclusão, cancelamento, transforms e reutilização do pool.
 
-## 4. Estado oficial
+Os arquivos `pokeapi.ts`, `json-cache.ts`, `showdown-moves.ts`, fixtures e `data/moves.json` permanecem para cobertura histórica do importador/cache. Não são importados pelo caminho ativo de partidas. As justificativas para migração de fixtures antigas estão no relatório da fase 3.
 
-`server/src/game/room.ts` e a autoridade da partida. `GameState` contem:
+## Limites atuais
 
-- `players`: identidade, Pokemon, HP e energia;
-- `turn`: indice `0` ou `1` do jogador autorizado;
-- `phase`: batalha ou partida finalizada;
-- `log`: historico legivel para a demonstracao;
-- `winner`: jogador vencedor ou `null`.
-
-O cliente nunca envia `damage`, `hp`, `turn` ou `winner`. Ele envia uma intencao, por exemplo `action: { type: "attack" }`. `Room.applyAction` valida turno e energia, calcula dano, atualiza HP, regenera energia, troca o turno e detecta vitoria.
-
-Para adicionar um Pokemon, inclua sua vida em `LOCAL_POKEMON`, ajuste as opcoes do React e documente o novo dado. Para adicionar uma acao, altere `ActionType`, valide seu payload, defina custo e implemente o `switch` em `Room.applyAction`.
-
-## 5. Fila e salas
-
-`RoomManager` mantem dois indices:
-
-- `queue`: jogadores aguardando um oponente;
-- `rooms`: `playerId` para `Room`, permitindo localizar a sala rapidamente.
-
-Quando o segundo jogador entra, o manager cria uma sala, preserva os nomes e registra os dois IDs. Quando alguem sai, remove a sala dos dois indices e o outro processo recebe `opponent_left`.
-
-Se o jogo crescer para varias modalidades, este e o ponto para introduzir salas publicas/privadas, codigo de convite ou matchmaking por nivel sem colocar essa logica em `Room`.
-
-## 6. Exclusao mutua
-
-O recurso compartilhado e `room.state`. A regiao critica e qualquer escolha de Pokemon ou acao que modifique esse objeto. `AsyncMutex` funciona como uma fila FIFO:
-
-```ts
-const unlock = await room.mutex.acquire();
-try {
-  room.applyAction(playerId, action);
-} finally {
-  unlock();
-}
-```
-
-O `finally` e essencial: mesmo uma excecao de validacao libera o bloqueio. Se dois ataques chegarem juntos, somente um entra primeiro; o segundo espera e valida o novo turno depois. Assim nao existe intercalamento de mutacoes.
-
-## 7. Cliente CLI
-
-`server/src/client.ts` e propositalmente simples para a apresentacao. Ele conecta por TCP, envia `join` e transforma comandos em mensagens:
-
-```text
-choose charizard
-attack flamethrower
-defend
-special
-invalid
-quit
-```
-
-Ele nao possui autoridade especial. E um cliente igual ao React: apenas envia solicitacoes e imprime mensagens do servidor.
-
-## 8. Cliente React
-
-`client/src/App.tsx` possui quatro responsabilidades aceitaveis para uma UI pequena:
-
-1. abrir o WebSocket;
-2. converter mensagens recebidas em estado React;
-3. enviar eventos de interface como `choose_pokemon` e `action`;
-4. renderizar lobby, jogadores, HP, energia, turno e log.
-
-O React nao calcula dano nem troca turno. O estado recebido em `state` substitui a copia local. Para crescer a interface, extraia componentes como `PlayerCard`, `ActionPanel` e `BattleLog` para arquivos separados, mantendo o tipo do protocolo em um modulo compartilhado.
-
-## 9. Configuracao e ambientes
-
-`server/src/config.ts` centraliza `HOST`, `PORT`, `WEB_PORT`, versao do protocolo e limite de nome. O cliente aceita `VITE_WS_URL`. Copie os exemplos:
-
-```powershell
-Copy-Item server/.env.example server/.env
-Copy-Item client/.env.example client/.env
-```
-
-Em producao, troque `127.0.0.1` por um host apropriado e configure a origem permitida na ponte WebSocket antes de expor o processo.
-
-## 10. Fluxo completo de uma acao
-
-```text
-React/CLI
-  -> JSON action
-transporte TCP ou WebSocket
-  -> parseClientMessage
-index.ts / handle
-  -> RoomManager.roomOf
-  -> AsyncMutex.acquire
-  -> Room.applyAction
-  -> broadcast(state)
-  -> dois clientes atualizam suas copias
-```
-
-Esse fluxo e o melhor ponto para depurar: primeiro confirme a mensagem enviada, depois os logs de lock, depois o `state` transmitido.
-
-## 11. Testes e evolucao
-
-`npm test --prefix server` verifica regras basicas da sala, ordem do mutex e validacao do protocolo. Ao modificar uma regra, escreva primeiro um caso no teste de dominio. Ao modificar uma mensagem, atualize o teste do protocolo e a documentacao.
-
-Comandos da raiz:
-
-```powershell
-npm run install:all
-npm run build
-npm test
-npm run lint
-```
-
-O build gera `server/dist` e `client/dist`. Esses artefatos nao devem ser versionados; o codigo-fonte e suficiente para reproduzir a entrega.
+A apresentação confirma HP/nocaute nos limites dos eventos e o ativo no ponto de substituição da troca. Os efeitos finitos têm um único dono. O Profiler não registrou commits React por frame nos impactos observados; isso não comprova FPS em um celular. Menus, acessibilidade completa e novas arenas são fases seguintes. Evidências e reprodução: [fase 4](FASE_4_APRESENTACAO.md).

@@ -1,0 +1,112 @@
+/* Auras CSS: somente transform e opacity. */
+@keyframes fx-poison-aura {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.07);
+  }
+}
+
+@keyframes fx-poison-bubble {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-34px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes fx-burn-aura {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.05) translateY(-2px);
+  }
+}
+
+@keyframes fx-ember {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-42px) translateX(var(--drift, 6px)) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes fx-sleep-z {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(16px, -34px) rotate(14deg) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Efeitos finitos pertencem exclusivamente ao AnimationDirector. */
+.battle-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+}
+.battle-impact {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+.battle-float {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  font-family: var(--font-display);
+  font-size: clamp(12px, 1.4vw, 19px);
+  white-space: nowrap;
+  text-shadow: 0 2px 0 #121622;
+  pointer-events: none;
+  z-index: 6;
+}
+.battle-float-damage {
+  color: #ff855c;
+}
+.battle-float-critical {
+  color: #ffd94a;
+}
+.battle-float-heal {
+  color: #7fed91;
+}
+.battle-float-info {
+  color: #e2edff;
+  font-size: 10px;
+}
+[data-paused='true'] * {
+  animation-play-state: paused !important;
+}

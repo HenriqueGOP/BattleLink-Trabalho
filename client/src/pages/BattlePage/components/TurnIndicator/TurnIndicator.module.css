@@ -1,0 +1,52 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  border: 2px solid var(--line-strong);
+  background: var(--bg-panel);
+}
+
+.chip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.mine {
+  color: var(--hp-green);
+  border-color: var(--hp-green);
+}
+
+.mine i {
+  background: var(--hp-green);
+  animation: blink 1s ease-in-out infinite;
+}
+
+.theirs {
+  color: var(--text-dim);
+}
+
+.theirs i {
+  background: var(--text-faint);
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mine i {
+    animation: none;
+  }
+}

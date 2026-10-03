@@ -1,0 +1,916 @@
+{
+  "environment": "IAB Chromium, build de produção --mode profile, cenário de nove snapshots com movimento completo",
+  "schema": 1,
+  "commits": [
+    {
+      "id": "battle-scene",
+      "phase": "mount",
+      "actualDuration": 1.7999999998137355,
+      "baseDuration": 0.7999999998137355,
+      "startTime": 100.3000000002794,
+      "commitTime": 102.5,
+      "event": "mount",
+      "sequence": null
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.6000000000931323,
+      "baseDuration": 0.7000000001862645,
+      "startTime": 129.39999999990687,
+      "commitTime": 130,
+      "event": "idle",
+      "sequence": "5"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.3000000002793968,
+      "baseDuration": 0.5000000004656613,
+      "startTime": 188.20000000018626,
+      "commitTime": 188.8000000002794,
+      "event": "idle",
+      "sequence": "5"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 190,
+      "commitTime": 190.3000000002794,
+      "event": "battle_start",
+      "sequence": "0"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.39999999990686774,
+      "baseDuration": 0.5000000004656613,
+      "startTime": 467.20000000018626,
+      "commitTime": 467.60000000009313,
+      "event": "battle_start",
+      "sequence": "0"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.5000000004656613,
+      "startTime": 468,
+      "commitTime": 468,
+      "event": "battle_start",
+      "sequence": "0"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.39999999990686774,
+      "baseDuration": 0.6000000000931323,
+      "startTime": 527.1000000000931,
+      "commitTime": 527.5,
+      "event": "info",
+      "sequence": "6"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 528.1000000000931,
+      "commitTime": 528.2000000001863,
+      "event": "info",
+      "sequence": "7"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 529,
+      "commitTime": 529.1000000000931,
+      "event": "info",
+      "sequence": "8"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 909.6000000000931,
+      "commitTime": 909.8999999999069,
+      "event": "info",
+      "sequence": "8"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 911.3000000002794,
+      "commitTime": 911.3000000002794,
+      "event": "damage",
+      "sequence": "9"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 1003,
+      "commitTime": 1003.2000000001863,
+      "event": "damage",
+      "sequence": "9"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 1003.3999999999069,
+      "commitTime": 1003.3999999999069,
+      "event": "damage",
+      "sequence": "9"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 1547.7000000001863,
+      "commitTime": 1547.8999999999069,
+      "event": "damage",
+      "sequence": "9"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 1548.7000000001863,
+      "commitTime": 1548.8000000002794,
+      "event": "damage",
+      "sequence": "10"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 2179.600000000093,
+      "commitTime": 2179.8000000002794,
+      "event": "damage",
+      "sequence": "10"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 2180.399999999907,
+      "commitTime": 2180.5,
+      "event": "info",
+      "sequence": "11"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 2180.8000000002794,
+      "commitTime": 2180.899999999907,
+      "event": "turn_change",
+      "sequence": "12"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 2181.3000000002794,
+      "commitTime": 2181.399999999907,
+      "event": "sync",
+      "sequence": "13"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 2182.2000000001863,
+      "commitTime": 2182.2000000001863,
+      "event": "info",
+      "sequence": "14"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 2568.899999999907,
+      "commitTime": 2569.100000000093,
+      "event": "info",
+      "sequence": "14"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 2569.8000000002794,
+      "commitTime": 2569.8000000002794,
+      "event": "damage",
+      "sequence": "15"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 3207.3000000002794,
+      "commitTime": 3207.5,
+      "event": "damage",
+      "sequence": "15"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 3208.5,
+      "commitTime": 3208.5,
+      "event": "damage",
+      "sequence": "16"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 3839.3000000002794,
+      "commitTime": 3839.5,
+      "event": "damage",
+      "sequence": "16"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 3840.399999999907,
+      "commitTime": 3840.399999999907,
+      "event": "damage",
+      "sequence": "17"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.2999999998137355,
+      "baseDuration": 0.5,
+      "startTime": 4471.300000000279,
+      "commitTime": 4471.600000000093,
+      "event": "damage",
+      "sequence": "17"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 4472,
+      "commitTime": 4472,
+      "event": "info",
+      "sequence": "18"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 4472.399999999907,
+      "commitTime": 4472.5,
+      "event": "info",
+      "sequence": "19"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 4473.200000000186,
+      "commitTime": 4473.200000000186,
+      "event": "heal",
+      "sequence": "20"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 5034,
+      "commitTime": 5034.200000000186,
+      "event": "heal",
+      "sequence": "20"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 5035.100000000093,
+      "commitTime": 5035.100000000093,
+      "event": "turn_change",
+      "sequence": "21"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 5035.5,
+      "commitTime": 5035.600000000093,
+      "event": "sync",
+      "sequence": "22"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 5035.899999999907,
+      "commitTime": 5035.899999999907,
+      "event": "idle",
+      "sequence": "22"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32358.5,
+      "commitTime": 32358.600000000093,
+      "event": "idle",
+      "sequence": "22"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32359,
+      "commitTime": 32359.100000000093,
+      "event": "info",
+      "sequence": "23"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 32359.5,
+      "commitTime": 32359.600000000093,
+      "event": "info",
+      "sequence": "24"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 32360,
+      "commitTime": 32360,
+      "event": "info",
+      "sequence": "25"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 32634.80000000028,
+      "commitTime": 32635,
+      "event": "info",
+      "sequence": "25"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32635.200000000186,
+      "commitTime": 32635.200000000186,
+      "event": "info",
+      "sequence": "25"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32743.899999999907,
+      "commitTime": 32744.100000000093,
+      "event": "info",
+      "sequence": "25"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 32744.700000000186,
+      "commitTime": 32744.700000000186,
+      "event": "status_apply",
+      "sequence": "26"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32912.60000000009,
+      "commitTime": 32912.80000000028,
+      "event": "status_apply",
+      "sequence": "26"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 32913,
+      "commitTime": 32913,
+      "event": "status_apply",
+      "sequence": "26"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.39999999990686774,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33174.30000000028,
+      "commitTime": 33174.89999999991,
+      "event": "status_apply",
+      "sequence": "26"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33175.89999999991,
+      "commitTime": 33175.89999999991,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 33190.89999999991,
+      "commitTime": 33191,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 33191.30000000028,
+      "commitTime": 33191.30000000028,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33490.39999999991,
+      "commitTime": 33490.5,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "nested-update",
+      "actualDuration": 0,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33490.80000000028,
+      "commitTime": 33490.80000000028,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33806.200000000186,
+      "commitTime": 33806.5,
+      "event": "residual",
+      "sequence": "27"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 33806.89999999991,
+      "commitTime": 33807,
+      "event": "turn_change",
+      "sequence": "28"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33807.200000000186,
+      "commitTime": 33807.39999999991,
+      "event": "sync",
+      "sequence": "29"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33807.700000000186,
+      "commitTime": 33807.80000000028,
+      "event": "info",
+      "sequence": "30"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 33808,
+      "commitTime": 33808.200000000186,
+      "event": "info",
+      "sequence": "31"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 33808.39999999991,
+      "commitTime": 33808.39999999991,
+      "event": "info",
+      "sequence": "32"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 33808.80000000028,
+      "commitTime": 33808.80000000028,
+      "event": "stat_up",
+      "sequence": "33"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 34368.80000000028,
+      "commitTime": 34369,
+      "event": "stat_up",
+      "sequence": "33"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 34369.80000000028,
+      "commitTime": 34369.80000000028,
+      "event": "residual",
+      "sequence": "34"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 35000.80000000028,
+      "commitTime": 35001,
+      "event": "residual",
+      "sequence": "34"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 35001.39999999991,
+      "commitTime": 35001.5,
+      "event": "turn_change",
+      "sequence": "35"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 35001.80000000028,
+      "commitTime": 35001.89999999991,
+      "event": "sync",
+      "sequence": "36"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 35002.30000000028,
+      "commitTime": 35002.30000000028,
+      "event": "info",
+      "sequence": "37"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 35002.89999999991,
+      "commitTime": 35003.10000000009,
+      "event": "info",
+      "sequence": "38"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 35003.30000000028,
+      "commitTime": 35003.39999999991,
+      "event": "info",
+      "sequence": "39"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 35389.80000000028,
+      "commitTime": 35390,
+      "event": "info",
+      "sequence": "39"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 35390.700000000186,
+      "commitTime": 35390.700000000186,
+      "event": "damage",
+      "sequence": "40"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 36028.89999999991,
+      "commitTime": 36029.10000000009,
+      "event": "damage",
+      "sequence": "40"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 36030,
+      "commitTime": 36030.10000000009,
+      "event": "residual",
+      "sequence": "41"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 36660.700000000186,
+      "commitTime": 36660.89999999991,
+      "event": "residual",
+      "sequence": "41"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 36661.200000000186,
+      "commitTime": 36661.39999999991,
+      "event": "turn_change",
+      "sequence": "42"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.09999999962747097,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 36661.80000000028,
+      "commitTime": 36661.89999999991,
+      "event": "sync",
+      "sequence": "43"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 36662.200000000186,
+      "commitTime": 36662.200000000186,
+      "event": "info",
+      "sequence": "44"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.19999999972060323,
+      "baseDuration": 0.39999999990686774,
+      "startTime": 37042.700000000186,
+      "commitTime": 37042.89999999991,
+      "event": "info",
+      "sequence": "44"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.2999999998137355,
+      "startTime": 37043.60000000009,
+      "commitTime": 37043.60000000009,
+      "event": "damage",
+      "sequence": "45"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 37681.5,
+      "commitTime": 37681.700000000186,
+      "event": "damage",
+      "sequence": "45"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 37682.200000000186,
+      "commitTime": 37682.200000000186,
+      "event": "info",
+      "sequence": "46"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 37683,
+      "commitTime": 37683,
+      "event": "info",
+      "sequence": "47"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 37683.80000000028,
+      "commitTime": 37683.80000000028,
+      "event": "residual",
+      "sequence": "48"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 38313.39999999991,
+      "commitTime": 38313.60000000009,
+      "event": "residual",
+      "sequence": "48"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 38314.200000000186,
+      "commitTime": 38314.200000000186,
+      "event": "faint",
+      "sequence": "49"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 38799.5,
+      "commitTime": 38799.700000000186,
+      "event": "faint",
+      "sequence": "49"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 38800.200000000186,
+      "commitTime": 38800.30000000028,
+      "event": "sync",
+      "sequence": "50"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 38800.700000000186,
+      "commitTime": 38800.80000000028,
+      "event": "switch_in",
+      "sequence": "51"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 39022,
+      "commitTime": 39022.200000000186,
+      "event": "switch_in",
+      "sequence": "51"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 39466.5,
+      "commitTime": 39466.700000000186,
+      "event": "turn_change",
+      "sequence": "52"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 39467.10000000009,
+      "commitTime": 39467.200000000186,
+      "event": "sync",
+      "sequence": "53"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 39468.60000000009,
+      "commitTime": 39468.700000000186,
+      "event": "victory",
+      "sequence": "54"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.20000000018626451,
+      "baseDuration": 0.40000000037252903,
+      "startTime": 39903.89999999991,
+      "commitTime": 39904.200000000186,
+      "event": "victory",
+      "sequence": "54"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.3000000002793968,
+      "startTime": 39904.60000000009,
+      "commitTime": 39904.700000000186,
+      "event": "sync",
+      "sequence": "55"
+    },
+    {
+      "id": "battle-scene",
+      "phase": "update",
+      "actualDuration": 0.10000000009313226,
+      "baseDuration": 0.20000000018626451,
+      "startTime": 39904.89999999991,
+      "commitTime": 39905.10000000009,
+      "event": "idle",
+      "sequence": "55"
+    }
+  ]
+}

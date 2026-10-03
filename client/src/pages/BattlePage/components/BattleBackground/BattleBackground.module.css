@@ -1,0 +1,207 @@
+﻿/* Sistema de cenários - camadas com z-index crescente dentro do palco.
+   O componente ocupa o palco inteiro (position:absolute; inset:0) e fica ABAIXO
+   de círculos/Pokémon/efeitos/HUD (que usam --z-* do palco). */
+
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ---------- camada 1: céu/fundo ---------- */
+.far {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 68%; /* protege o chão do corte em resoluções diferentes */
+  transition: background-image 0.5s ease;
+}
+
+.far.hasImage + .mid { display: none; }
+.far.hasImage ~ .midTwo { display: none; }
+.far.hasImage ~ .ground { background: transparent !important; box-shadow: none !important; }
+
+/* fallback CSS por tema (sem bg.png) — luz suave e desfocada, referência GBA */
+.theme-nature .far {
+  background:
+    radial-gradient(120% 55% at 50% 0%, #e6e4de 0%, #d8d5cc 38%, transparent 58%),
+    repeating-linear-gradient(94deg, #e0ce9f 0 26px, #c9ac72 26px 44px, #b09458 44px 52px, #c9ac72 52px 74px),
+    linear-gradient(180deg, #e6e4de 0%, #d8d5cc 40%, #c9ac72 62%);
+  filter: blur(0.6px);
+}
+.theme-cave .far {
+  background:
+    radial-gradient(90% 55% at 50% 0%, #4a3b5e 0%, #372c48 55%, transparent 72%),
+    linear-gradient(180deg, #3a2f4c 0%, #2c2338 55%, #201a2c 100%);
+  filter: blur(0.6px);
+}
+.theme-night .far {
+  background:
+    radial-gradient(2px 2px at 18% 22%, #ffffffcc 50%, transparent 51%),
+    radial-gradient(2px 2px at 34% 12%, #ffffffaa 50%, transparent 51%),
+    radial-gradient(2px 2px at 52% 26%, #ffffff99 50%, transparent 51%),
+    radial-gradient(2px 2px at 71% 15%, #ffffffcc 50%, transparent 51%),
+    radial-gradient(2px 2px at 86% 30%, #ffffff88 50%, transparent 51%),
+    radial-gradient(60% 40% at 78% 12%, #f6f7d433 0%, transparent 60%),
+    linear-gradient(180deg, #1a2450 0%, #273566 46%, #3d5c74 78%, #55768a 100%);
+  filter: blur(0.6px);
+}
+
+/* ---------- camada 2: intermediário (silhuetas) ---------- */
+.mid,
+.midTwo {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 26%;
+  height: 30%;
+  pointer-events: none;
+}
+
+/* colinas (nature) */
+.theme-nature .mid {
+  background:
+    radial-gradient(58% 100% at 18% 100%, #5da25e 0 62%, transparent 63%),
+    radial-gradient(50% 100% at 62% 100%, #4f9350 0 58%, transparent 59%),
+    radial-gradient(44% 100% at 92% 100%, #6bb06c 0 60%, transparent 61%);
+  opacity: 0.9;
+}
+.theme-nature .midTwo {
+  bottom: 24%;
+  height: 22%;
+  background:
+    radial-gradient(40% 100% at 8% 100%, #417f42 0 55%, transparent 56%),
+    radial-gradient(36% 100% at 78% 100%, #468a47 0 52%, transparent 53%);
+  opacity: 0.85;
+}
+/* estalactites/pilar (cave) */
+.theme-cave .mid {
+  top: 0;
+  bottom: auto;
+  height: 34%;
+  background:
+    linear-gradient(#120e1c 0 0);
+  clip-path: polygon(0 0, 100% 0, 100% 18%, 88% 44%, 80% 20%, 66% 52%, 54% 22%, 40% 60%, 28% 24%, 16% 46%, 8% 18%, 0 30%);
+  opacity: 0.96;
+}
+.theme-cave .midTwo {
+  bottom: 22%;
+  height: 26%;
+  background: linear-gradient(#0f0b18 0 0);
+  clip-path: polygon(0 78%, 10% 52%, 22% 84%, 35% 46%, 48% 88%, 60% 50%, 74% 86%, 88% 54%, 100% 82%, 100% 100%, 0 100%);
+  opacity: 0.95;
+}
+/* skyline noturna (night) */
+.theme-night .mid {
+  bottom: 30%;
+  height: 26%;
+  background: linear-gradient(#0d1233 0 0);
+  clip-path: polygon(0 100%, 0 42%, 9% 42%, 9% 20%, 17% 20%, 17% 55%, 26% 55%, 26% 30%, 36% 30%, 36% 62%, 47% 62%, 47% 26%, 58% 26%, 58% 58%, 68% 58%, 68% 34%, 79% 34%, 79% 60%, 90% 60%, 90% 24%, 100% 24%, 100% 100%);
+  opacity: 0.9;
+}
+.theme-night .midTwo {
+  bottom: 26%;
+  height: 18%;
+  background: linear-gradient(#151d47 0 0);
+  clip-path: polygon(0 100%, 0 60%, 14% 60%, 14% 34%, 30% 34%, 30% 66%, 46% 66%, 46% 40%, 63% 40%, 63% 70%, 80% 70%, 80% 44%, 100% 44%, 100% 100%);
+  opacity: 0.9;
+}
+
+/* ---------- camada 3: chão ---------- */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  pointer-events: none;
+}
+.theme-nature .ground {
+  background: linear-gradient(180deg, #7bb66d 0%, #5f9a55 30%, #4c8347 100%);
+  box-shadow: inset 0 6px 12px rgba(255, 255, 255, 0.18);
+}
+.theme-cave .ground {
+  background: linear-gradient(180deg, #241c38 0%, #1a1428 40%, #100c1a 100%);
+  box-shadow: inset 0 8px 18px rgba(0, 0, 0, 0.55);
+}
+.theme-night .ground {
+  background: linear-gradient(180deg, #2c4a63 0%, #22394e 35%, #17263a 100%);
+  box-shadow: inset 0 6px 14px rgba(140, 190, 230, 0.12);
+}
+
+/* ---------- camada 4: atmosfera ---------- */
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.leaf {
+  position: absolute;
+  top: -8%;
+  width: 10px;
+  height: 14px;
+  background: #7fc47f;
+  border-radius: 60% 40% 60% 40%;
+  opacity: 0;
+  animation: leafFall 9s linear infinite;
+}
+@keyframes leafFall {
+  0% { transform: translate(0, -4vh) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.85; }
+  100% { transform: translate(-6vw, 108vh) rotate(540deg); opacity: 0; }
+}
+
+.firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffe89a;
+  box-shadow: 0 0 10px 3px rgba(255, 232, 154, 0.45);
+  opacity: 0;
+  animation: fireflyDrift 7s ease-in-out infinite;
+}
+@keyframes fireflyDrift {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  25% { opacity: 0.9; }
+  50% { transform: translate(3vw, -4vh); opacity: 0.35; }
+  75% { opacity: 0.75; }
+}
+
+.dust {
+  position: absolute;
+  bottom: 18%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b9a7d8;
+  opacity: 0;
+  animation: dustRise 8s ease-in-out infinite;
+}
+@keyframes dustRise {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.5; }
+  100% { transform: translate(2vw, -26vh) scale(1.15); opacity: 0; }
+}
+
+/* ---------- camada 5: overlays de contraste ---------- */
+.overlayDark,
+.overlaySoft {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.overlayDark { background: linear-gradient(180deg, rgba(4, 6, 18, 0.42) 0%, rgba(4, 6, 18, 0.12) 45%, rgba(4, 6, 18, 0.3) 100%); }
+.overlaySoft { background: linear-gradient(180deg, rgba(10, 14, 30, 0.16) 0%, transparent 40%, rgba(10, 14, 30, 0.2) 100%); }
+
+/* bg.png presente: esconde o desenho CSS (silhuetas) e mantém só atmosfera/overlay */
+.far.hasImage ~ .mid,
+.far.hasImage ~ .midTwo,
+.far.hasImage ~ .ground {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leaf, .firefly, .dust { animation: none; opacity: 0.25; }
+}

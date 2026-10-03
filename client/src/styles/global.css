@@ -1,0 +1,199 @@
+/* Reset + base + utilitários mínimos. Componentes usam CSS Modules. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(74, 125, 219, 0.14), transparent 60%),
+    radial-gradient(900px 420px at 10% 110%, rgba(232, 69, 44, 0.12), transparent 55%),
+    var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.1vw + 12px, 21px);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Scrollbar temática */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: var(--radius);
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Utilitários mínimos */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   Caixas do jogo — mesmas molduras da tela de batalha, para que
+   lobby, seleção e montagem de equipe falem a mesma língua visual.
+   Usadas junto das classes de CSS Module: className={`gb-panel ${styles.x}`}
+   ============================================================ */
+
+/* caixa creme (a da caixa de status / diálogo) */
+.gb-panel {
+  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  color: var(--hud-ink);
+  border: 3px solid var(--hud-edge);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 0 2px var(--hud-edge-soft),
+    0 4px 0 var(--hud-shadow),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* caixa branca com contorno azul (a do menu de comandos) */
+.gb-menu {
+  background: var(--menu-face);
+  color: var(--hud-ink);
+  border: 3px solid var(--menu-edge);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 3px var(--menu-face),
+    inset 0 0 0 5px #b8cce8,
+    0 4px 0 var(--hud-shadow);
+}
+
+/* título pixel com sombra dura, como as telas de menu dos jogos */
+.gb-title {
+  font-family: var(--font-display);
+  line-height: 1.3;
+  color: var(--hud-face);
+  text-shadow:
+    3px 3px 0 var(--hud-edge),
+    0 0 18px rgba(0, 0, 0, 0.6);
+}
+
+/* pokébola desenhada em CSS (decorativa) */
+.gb-ball {
+  display: inline-block;
+  border-radius: 50%;
+  border: 3px solid var(--poke-black);
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      var(--poke-white) 0 18%,
+      var(--poke-black) 18% 26%,
+      transparent 26%
+    ),
+    linear-gradient(
+      180deg,
+      var(--poke-red) 0 46%,
+      var(--poke-black) 46% 54%,
+      var(--poke-white) 54% 100%
+    );
+}
+
+/* rótulo pequeno em caixa escura (contador, etapa, etc.) */
+.gb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: var(--hud-face);
+  background: var(--hud-ink);
+  border: 2px solid var(--hud-edge);
+}
+
+/* Acessibilidade: reduz movimento agressivo globalmente */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

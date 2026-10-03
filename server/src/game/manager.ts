@@ -8,7 +8,11 @@ export class RoomManager {
 
   /** Jogador entra na fila. Retorna a sala se formou um par, senão null. */
   public enqueue(playerId: PlayerId, name: string): Room | null {
-    if (this.queue.some(player => player.id === playerId) || this.rooms.has(playerId)) return null;
+    if (
+      this.queue.some((player) => player.id === playerId) ||
+      this.rooms.has(playerId)
+    )
+      return null;
 
     const opponent = this.queue.shift();
     if (!opponent) {
@@ -25,7 +29,7 @@ export class RoomManager {
   }
 
   public cancel(playerId: PlayerId): void {
-    this.queue = this.queue.filter(player => player.id !== playerId);
+    this.queue = this.queue.filter((player) => player.id !== playerId);
   }
 
   public roomOf(playerId: PlayerId): Room | undefined {
@@ -37,14 +41,21 @@ export class RoomManager {
     this.rooms.delete(playerId);
     this.cancel(playerId);
     if (room) {
-      const other = room.state.players.find(p => p.id !== playerId);
+      const other = room.state.players.find((p) => p.id !== playerId);
       if (other) this.rooms.delete(other.id);
+      room.destroy();
     }
     return room;
   }
 
   public waitingPosition(playerId: PlayerId): number {
-    const index = this.queue.findIndex(player => player.id === playerId);
+    const index = this.queue.findIndex((player) => player.id === playerId);
     return index < 0 ? 0 : index + 1;
+  }
+
+  public close(): void {
+    for (const room of new Set(this.rooms.values())) room.destroy();
+    this.rooms.clear();
+    this.queue = [];
   }
 }

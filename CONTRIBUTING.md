@@ -4,7 +4,7 @@
 2. Mantenha regras de jogo no servidor, nunca no React ou no cliente CLI.
 3. Atualize `docs/protocolo.md` ao alterar mensagens.
 4. Adicione ou ajuste testes em `server/src/**/*.test.ts`.
-5. Rode `npm run build`, `npm test` e `npm run lint` na raiz.
+5. Rode `npm run build`, `npm test` e `npm run lint` na raiz; no client, rode tambem `npm run format`.
 6. Descreva no pull request como a alteracao afeta turno, estado e sincronizacao.
 
-Prefira mudancas pequenas e modulares. Nao comite `node_modules`, `dist` ou arquivos `.env`.
+Prefira mudancas pequenas e modulares. Nao comite `node_modules`, `dist`, arquivos `.env` nem o `arvore.txt` (dump gerado da arvore do projeto).

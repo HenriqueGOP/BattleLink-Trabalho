@@ -1,0 +1,107 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlays);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 6, 14, 0.78);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.4s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(430px, 100%);
+  padding: 30px 26px;
+  text-align: center;
+  background: var(--bg-panel);
+  border: 3px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: rise 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+@keyframes rise {
+  from { transform: translateY(26px) scale(0.94); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.ball {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--poke-red) 0 47%, var(--poke-black) 47% 53%, var(--poke-white) 53% 100%);
+  border: 3px solid var(--poke-black);
+  position: relative;
+}
+
+.ball::after {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 12px;
+  height: 12px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--poke-white);
+  border: 3px solid var(--poke-black);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(13px, 2.6vw, 18px);
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+.victory .title { color: #ffd94a; text-shadow: 0 0 24px rgba(255, 217, 74, 0.45); }
+.defeat .title { color: #ff8a80; }
+.draw .title, .interrupted .title { color: var(--text); }
+
+.detail {
+  font-size: 19px;
+  color: var(--text-dim);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  background: var(--bg-panel-2);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+.stat dt {
+  font-size: 14px;
+  color: var(--text-faint);
+}
+
+.stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .card { animation: none; }
+}
