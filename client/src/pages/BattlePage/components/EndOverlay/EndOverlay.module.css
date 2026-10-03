@@ -4,104 +4,142 @@
   z-index: var(--z-overlays);
   display: grid;
   place-items: center;
-  padding: 20px;
-  background: rgba(4, 6, 14, 0.78);
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.4s ease both;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  color: inherit;
+  padding: var(--space-5);
+  background: rgba(7, 24, 35, 0.85);
+  overflow-y: auto;
+  animation: fadeIn var(--dur) ease both;
 }
-
+.overlay::backdrop {
+  background: transparent;
+}
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  width: min(430px, 100%);
-  padding: 30px 26px;
+  gap: var(--space-5);
+  width: min(470px, 100%);
+  padding: var(--space-6);
   text-align: center;
-  background: var(--bg-panel);
-  border: 3px solid var(--line-strong);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-  animation: rise 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  color: var(--hud-ink);
+  background: linear-gradient(160deg, var(--hud-face), var(--hud-face-2));
+  border: var(--border-width) solid var(--hud-edge);
+  border-top: 8px solid var(--menu-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  animation: rise var(--dur-slow) var(--ease-out) both;
 }
-
 @keyframes rise {
-  from { transform: translateY(26px) scale(0.94); opacity: 0; }
-  to { transform: none; opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
-
 .ball {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: linear-gradient(180deg, var(--poke-red) 0 47%, var(--poke-black) 47% 53%, var(--poke-white) 53% 100%);
-  border: 3px solid var(--poke-black);
+  background: linear-gradient(
+    180deg,
+    var(--poke-red) 0 47%,
+    var(--poke-black) 47% 53%,
+    var(--poke-white) 53% 100%
+  );
+  border: var(--border-width) solid var(--poke-black);
   position: relative;
+  transform: rotate(-10deg);
 }
-
 .ball::after {
   content: '';
   position: absolute;
   inset: 50% auto auto 50%;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   translate: -50% -50%;
   border-radius: 50%;
   background: var(--poke-white);
-  border: 3px solid var(--poke-black);
+  border: var(--border-width) solid var(--poke-black);
 }
-
 .title {
-  font-family: var(--font-display);
-  font-size: clamp(13px, 2.6vw, 18px);
-  line-height: 1.5;
-  letter-spacing: 0.04em;
+  font-size: clamp(16px, 2.6vw, 23px);
+  line-height: 1.6;
+  color: var(--hud-ink);
 }
-
-.victory .title { color: #ffd94a; text-shadow: 0 0 24px rgba(255, 217, 74, 0.45); }
-.defeat .title { color: #ff8a80; }
-.draw .title, .interrupted .title { color: var(--text); }
-
+.victory {
+  border-top-color: var(--success);
+}
+.victory .title {
+  color: var(--success);
+}
+.defeat {
+  border-top-color: var(--danger);
+}
+.defeat .title {
+  color: var(--danger);
+}
+.draw .title,
+.interrupted .title {
+  color: var(--hud-ink);
+}
 .detail {
-  font-size: 19px;
-  color: var(--text-dim);
+  font-size: 24px;
+  color: var(--hud-ink-soft);
 }
-
 .stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: var(--space-3);
   width: 100%;
   margin: 0;
 }
-
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 10px;
-  background: var(--bg-panel-2);
-  border: 2px solid var(--line);
-  border-radius: 8px;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--menu-face);
+  border: 2px solid var(--hud-edge-soft);
+  border-radius: var(--radius);
 }
-
 .stat dt {
-  font-size: 14px;
-  color: var(--text-faint);
+  font-size: var(--font-size-label);
+  color: var(--hud-ink-soft);
 }
-
 .stat dd {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--text);
+  font-size: 32px;
+  color: var(--hud-ink);
 }
-
+@media (max-width: 480px) {
+  .overlay {
+    padding: var(--space-3);
+  }
+  .card {
+    padding: var(--space-5);
+    gap: var(--space-4);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .overlay, .card { animation: none; }
+  .overlay,
+  .card {
+    animation: none;
+  }
 }

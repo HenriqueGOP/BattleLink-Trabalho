@@ -1,0 +1,13 @@
+Use case: stylized-concept. Asset type: production transparent sprite atlas for cartoon turn-based creature combat.
+Create a single exactly square 1024 by 1024 PNG spritesheet with REAL transparent alpha. EXACT uniform 8 columns by 8 rows, each cell 128 by 128 pixels. No visible grid, no labels, no letters, no background, no characters, no watermark. Each frame is centered at its own cell center with at least 16 pixels empty padding inside that cell. Nothing crosses cell edges.
+Each ROW is ONE different effect, with eight successive animation frames left-to-right: small onset, growing, main shape, peak, expanding, breaking apart, fading fragments, tiny trailing fragments. Keep the anchor exactly steady in each row. Render rounded hand-drawn 2D game VFX, clean thick navy outlines, saturated colors, flat cel shading, crisp silhouettes, modest highlights and no blurry bloom.
+Rows top to bottom:
+1 gold/orange starburst impact with small red speed strokes.
+2 white and pale blue curved claw slash, three parallel curved strokes.
+3 orange and red flame fireball flaring into flame wisps.
+4 cyan water splash with a rounded crest and droplets.
+5 yellow lightning zigzags and small blue sparks.
+6 green swirling leaves and emerald cutting arcs.
+7 pale icy blue crystal burst with six angular shards.
+8 purple shadow orb bursting into violet smoky crescents.
+These are animated frame sequences, not a collection of unrelated icons. All eight frames per row should depict progression of the SAME effect. Must be perfectly aligned regular grid, full transparent empty pixels surrounding artwork.

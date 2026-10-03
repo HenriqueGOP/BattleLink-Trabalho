@@ -144,12 +144,13 @@ export function BattlePage() {
                 <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
                 <div className={styles.spots}>
                   <HudCard player={opponent} opponent />
-                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} />
+                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} paused={hidden} />
                   <BattleSpot
                     player={myPlayer}
                     opponent={false}
                     spriteRef={mySpriteRef}
                     urgent={blocked}
+                    paused={hidden}
                   />
                   <HudCard player={myPlayer} opponent={false} />
                 </div>

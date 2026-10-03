@@ -8,10 +8,13 @@ import { BattleBackground } from './components/BattleBackground'
 import { HudCard } from './components/HudCard'
 import { BattleProfiler } from './components/BattleProfiler'
 import { Button } from '../../components/Button'
+import { EndOverlay } from './components/EndOverlay'
+import { AudioSettings } from '../../components/AudioSettings'
+import { SpriteGallery } from './SpriteGallery'
 import styles from './BattlePage.module.css'
 
 const snapshots = fixture as unknown as { label: string; state: RoomSnapshot }[]
-function Scenario() {
+function Scenario({ restart }: { restart: () => void }) {
   const [step, setStep] = useState(0)
   const stage = useRef<HTMLDivElement>(null),
     me = useRef<HTMLDivElement>(null),
@@ -22,7 +25,7 @@ function Scenario() {
     []
   )
   const authoritative = useMemo(() => presentSnapshot(snapshots[step].state), [step])
-  const { presented, busy, hidden, skip, setHidden, current } = useBattleEvents(
+  const { presented, busy, hidden, skip, setHidden, current, totals } = useBattleEvents(
     authoritative,
     0,
     getStage,
@@ -64,8 +67,13 @@ function Scenario() {
             <BattleBackground background={state.field.background} />
             <div className={styles.spots}>
               <HudCard player={state.players[1]} opponent />
-              <BattleSpot player={state.players[1]} opponent spriteRef={foe} />
-              <BattleSpot player={state.players[0]} opponent={false} spriteRef={me} />
+              <BattleSpot player={state.players[1]} opponent spriteRef={foe} paused={hidden} />
+              <BattleSpot
+                player={state.players[0]}
+                opponent={false}
+                spriteRef={me}
+                paused={hidden}
+              />
               <HudCard player={state.players[0]} opponent={false} />
             </div>
           </section>
@@ -74,6 +82,15 @@ function Scenario() {
       <p data-lab-result>
         {state.phase === 'finished' && !busy ? 'Resultado apresentado' : 'Partida em apresentação'}
       </p>
+      {state.phase === 'finished' && !busy && (
+        <EndOverlay
+          state={state}
+          myId={state.players[0].id}
+          totals={totals}
+          opponentLeft={false}
+          onLeave={restart}
+        />
+      )}
     </>
   )
 }
@@ -84,6 +101,7 @@ export function PresentationLab() {
   return (
     <main className={styles.page}>
       <h1>Laboratório de apresentação</h1>
+      <AudioSettings />
       <div className={styles.tools}>
         <Button
           onClick={() => {
@@ -97,7 +115,10 @@ export function PresentationLab() {
           {mounted ? 'Desmontar cena' : 'Montar cena'}
         </Button>
       </div>
-      {mounted && <Scenario key={epoch} />}
+      {mounted && <Scenario key={epoch} restart={() => setEpoch((value) => value + 1)} />}
+      <BattleProfiler>
+        <SpriteGallery enabled={!mounted} />
+      </BattleProfiler>
     </main>
   )
 }

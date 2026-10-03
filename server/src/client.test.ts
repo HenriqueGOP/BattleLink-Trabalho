@@ -47,10 +47,39 @@ async function run() {
     process.stderr.on("data", (chunk) => {
       output += chunk;
     });
+    const exited = new Promise<{
+      code: number | null;
+      signal: NodeJS.Signals | null;
+    }>((resolve, reject) => {
+      process.once("error", reject);
+      process.once("close", (code, signal) => resolve({ code, signal }));
+    });
+    // O teste aguarda depois do comando quit; observar desde spawn evita perder o evento close.
+    void exited.catch(() => undefined);
     return {
       process,
       send: (commands: string) => process.stdin.write(`${commands}\n`),
       output: () => output,
+      waitForExit: (): Promise<{
+        code: number | null;
+        signal: NodeJS.Signals | null;
+      }> =>
+        new Promise((resolve, reject) => {
+          const timer = setTimeout(
+            () => reject(new Error(`CLI não encerrou: ${output.slice(-1500)}`)),
+            10000,
+          );
+          void exited.then(
+            (result) => {
+              clearTimeout(timer);
+              resolve(result);
+            },
+            (error) => {
+              clearTimeout(timer);
+              reject(error);
+            },
+          );
+        }),
       wait: (text: string): Promise<void> =>
         new Promise((resolve, reject) => {
           const timer = setTimeout(() => {
@@ -102,6 +131,18 @@ async function run() {
     clients[1].send("quit");
     await clients[0].wait("(disconnect)");
     clients[0].send("quit");
+    const exits = await Promise.all(
+      clients.map((client) => client.waitForExit()),
+    );
+    for (const [index, exit] of exits.entries()) {
+      assert.equal(
+        exit.code,
+        0,
+        `CLI ${index + 1} deve encerrar sem erro: ${clients[index].output()}`,
+      );
+      assert.equal(exit.signal, null);
+      assert.doesNotMatch(clients[index].output(), /ERR_USE_AFTER_CLOSE/);
+    }
     assert.ok(
       clients.every(
         (client) =>
@@ -113,12 +154,16 @@ async function run() {
   } finally {
     for (const client of clients) {
       client.process.stdin.end();
-      client.process.kill();
+      if (
+        client.process.exitCode === null &&
+        client.process.signalCode === null
+      )
+        client.process.kill();
     }
     await application.close();
   }
   console.log(
-    "Terminal clients passed: two real processes, setup, readiness, private actions, damage and disconnect.",
+    "Terminal clients passed: two real processes, setup, readiness, private actions, damage, disconnect and clean quit (exit 0).",
   );
 }
 void run().catch((error) => {

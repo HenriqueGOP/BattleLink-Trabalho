@@ -1,42 +1,42 @@
 /* ============================================================
    Pokémon Battle — Design System
-   Identidade: pixel-art moderna · acento vermelho Pokébola
+   Identidade: fichas de treinador · creme, azul e vermelho
    ============================================================ */
 
 :root {
   /* Paleta base (noite de estádio) */
-  --bg-deep: #070a14;
-  --bg-base: #0d1122;
-  --bg-panel: #131a30;
-  --bg-panel-2: #1a2340;
-  --bg-raised: #202b4d;
-  --line: #2c3860;
-  --line-strong: #3d4c7d;
+  --bg-deep: #102738;
+  --bg-base: #153447;
+  --bg-panel: #193e52;
+  --bg-panel-2: #20495f;
+  --bg-raised: #28566c;
+  --line: #416c7f;
+  --line-strong: #7193a3;
 
-  --text: #e9edff;
-  --text-dim: #a7b2d8;
-  --text-faint: #6d7aa6;
+  --text: #fff8e8;
+  --text-dim: #d0e2e9;
+  --text-faint: #b6d0dc;
 
   /* Acento Pokébola */
-  --poke-red: #e8452c;
-  --poke-red-dark: #b32d18;
+  --poke-red: #bc342c;
+  --poke-red-dark: #92251f;
   --poke-white: #f6f7fb;
   --poke-black: #12141c;
   --accent: var(--poke-red);
-  --accent-strong: #ff5a3d;
+  --accent-strong: #c83b31;
   --on-accent: #ffffff;
 
   /* ---- HUD de batalha (referência: caixa de status dos jogos) ----
      Caixa creme com contorno escuro, barra de HP segmentada e etiqueta "HP"
      dourada. Estes tokens existem para que HUD, barra e menus compartilhem
      exatamente a mesma paleta. */
-  --hud-face: #f8f8e8;
-  --hud-face-2: #e8e8d0;
-  --hud-ink: #384058;
-  --hud-ink-soft: #6b7490;
-  --hud-edge: #202840;
-  --hud-edge-soft: #b8b8a0;
-  --hud-shadow: rgba(16, 20, 34, 0.55);
+  --hud-face: #fff8e8;
+  --hud-face-2: #f3e7cb;
+  --hud-ink: #25364a;
+  --hud-ink-soft: #4b6070;
+  --hud-edge: #172b3d;
+  --hud-edge-soft: #d4c9ae;
+  --hud-shadow: rgba(7, 24, 35, 0.6);
 
   /* Barra de HP: trilho escuro + preenchimento em 3 faixas (verde/amarelo/vermelho) */
   --hpbar-track: #303848;
@@ -49,11 +49,31 @@
   --hpbar-label: #f8d030;
 
   /* Caixa de mensagem e menu de comandos */
-  --msg-face: #f8f8f0;
-  --msg-edge: #384058;
-  --msg-edge-inner: #8890a8;
-  --menu-face: #ffffff;
-  --menu-edge: #4870b0;
+  --msg-face: var(--hud-face);
+  --msg-edge: var(--hud-edge);
+  --msg-edge-inner: var(--hud-edge-soft);
+  --menu-face: #fffdf6;
+  --menu-edge: #23648b;
+  --menu-inner: #bfd6df;
+  --input-face: #fffef9;
+  --input-placeholder: #526776;
+  --portrait-face: #e3edf0;
+  --success: #24603c;
+  --danger: #96342e;
+  --command-party: #24603c;
+  --command-bag: #674185;
+  --command-run: #23648b;
+  --focus-ring: #ffc94a;
+  --focus-on-light: #165f90;
+  --panel-face: var(--hud-face);
+  --panel-ink: var(--hud-ink);
+  --panel-muted: var(--hud-ink-soft);
+  --border-strong: var(--hud-edge);
+  --border-width: 3px;
+  --panel-shadow:
+    inset 0 2px 0 #fffef8, 0 5px 0 var(--hud-shadow), 0 12px 26px rgba(7, 24, 35, 0.18);
+  --menu-shadow: inset 0 0 0 2px var(--menu-inner), 0 5px 0 var(--hud-shadow);
+  --control-height: 44px;
 
   /* Estados de jogo */
   --hp-green: #3fd068;
@@ -83,13 +103,13 @@
   --type-stellar: #49d0c0;
 
   /* Status */
-  --status-burn: #f08a3c;
-  --status-poison: #a44fd0;
-  --status-bad-poison: #6d2f96;
+  --status-burn: #95430e;
+  --status-poison: #78378d;
+  --status-bad-poison: #582775;
   --status-paralysis: #e8c93a;
-  --status-sleep: #8a93ad;
-  --status-freeze: #52c8e8;
-  --status-confusion: #e87ab0;
+  --status-sleep: #4c5c74;
+  --status-freeze: #b5e6f2;
+  --status-confusion: #953b67;
 
   /* Clima / terreno */
   --weather-rain-1: #17233f;
@@ -108,6 +128,10 @@
   /* Tipografia */
   --font-display: 'Press Start 2P', monospace;
   --font-body: 'VT323', monospace;
+  --font-ui: var(--font-body);
+  --font-size-body: 24px;
+  --font-size-label: 20px;
+  --font-size-small: 18px;
 
   /* Espaçamentos */
   --space-1: 4px;
@@ -120,9 +144,9 @@
   --space-8: 64px;
 
   /* Raios — pixel style: cantos pequenos e consistentes */
-  --radius-sm: 3px;
-  --radius: 6px;
-  --radius-lg: 10px;
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
 
   /* Sombras duras estilo game-boy sofisticado */
   --shadow-1: 0 2px 0 rgba(0, 0, 0, 0.45);

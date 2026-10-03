@@ -1,4 +1,6 @@
+import { useId, useRef } from 'react'
 import { Button } from '../../../../components/Button'
+import { useModalDialog } from '../../../../hooks/useModalDialog'
 import styles from './EndOverlay.module.css'
 import type { GameState } from '../../../../types/battle'
 import type { DamageTotals } from '../../../../hooks/useBattleEvents'
@@ -13,6 +15,10 @@ export interface EndOverlayProps {
 
 /** Cobertura de fim de partida: vitoria, derrota, empate ou saida do oponente. */
 export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOverlayProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+  const detailId = useId()
+  useModalDialog(dialogRef, true)
   const winner = state.winner
   const result =
     winner === myId
@@ -50,11 +56,26 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
               : 'Nenhum lado prevaleceu.'
 
   return (
-    <div className={`${styles.overlay} ${styles[result]}`} role="alertdialog" aria-label={title}>
+    <dialog
+      ref={dialogRef}
+      className={`${styles.overlay} ${styles[result]}`}
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={detailId}
+      onCancel={(event) => {
+        event.preventDefault()
+        onLeave()
+      }}
+    >
       <div className={styles.card}>
         <span className={styles.ball} aria-hidden="true" />
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.detail}>{detail}</p>
+        <h2 id={titleId} className={styles.title}>
+          {title}
+        </h2>
+        <p id={detailId} className={styles.detail}>
+          {detail}
+        </p>
         <dl className={styles.stats}>
           <div className={styles.stat}>
             <dt>Dano causado</dt>
@@ -69,6 +90,6 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
           Voltar ao lobby
         </Button>
       </div>
-    </div>
+    </dialog>
   )
 }

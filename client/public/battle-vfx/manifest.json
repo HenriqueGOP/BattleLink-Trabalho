@@ -1,0 +1,44 @@
+[
+  {
+    "id": "attacks",
+    "path": "/battle-vfx/attacks.webp",
+    "width": 1254,
+    "height": 1254,
+    "columns": 8,
+    "rows": 8,
+    "framesPerClip": 8,
+    "bytes": 620824,
+    "sha256": "3dc152139b44a2882e0e85ac74a5674243d4c051366ecaa9906028e1a6092eb8",
+    "originalSha256": "09c239c5e1dcf344d52b68f02b027bd183ac65ae29e6bae6514190d8186cb1c9",
+    "source": "OpenAI imagegen built-in; original project artwork; 2026-10-02",
+    "encoding": "WebP quality82 alpha100; no art retouch, resize or frame rearrangement"
+  },
+  {
+    "id": "statuses",
+    "path": "/battle-vfx/statuses.webp",
+    "width": 1254,
+    "height": 1254,
+    "columns": 8,
+    "rows": 8,
+    "framesPerClip": 8,
+    "bytes": 579934,
+    "sha256": "70ab0bcc3de5005a5251935350f460dcff5d8ee4574e033fbd1db1ff38aa03fd",
+    "originalSha256": "f06c5e2f2681e81f40ff0625e87bc3e6265ae7331a3e2e350666e848e90458c0",
+    "source": "OpenAI imagegen built-in; original project artwork; 2026-10-02",
+    "encoding": "WebP quality82 alpha100; no art retouch, resize or frame rearrangement"
+  },
+  {
+    "id": "transitions",
+    "path": "/battle-vfx/transitions.webp",
+    "width": 1254,
+    "height": 1254,
+    "columns": 8,
+    "rows": 8,
+    "framesPerClip": 8,
+    "bytes": 656072,
+    "sha256": "2339607e5366e0a055ee3e91de9da2915dec76add467b4b7c94afdc89feb13fa",
+    "originalSha256": "a5e1f8a0f76ccc95628d42ca488a30aea9dcf28cc5798069713f4e0b2c044bd3",
+    "source": "OpenAI imagegen built-in; original project artwork; 2026-10-02",
+    "encoding": "WebP quality82 alpha100; no art retouch, resize or frame rearrangement"
+  }
+]

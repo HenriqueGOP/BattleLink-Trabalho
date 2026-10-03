@@ -20,6 +20,7 @@ const input = createInterface({
 });
 let state: RoomSnapshot | null = null;
 let awaitingWelcome = true;
+let inputClosed = false;
 let pending: Extract<ClientMessage, { type: "action" }> | null = null;
 const HELP =
   "choose <id> | random [1..6] | moves <id> <golpe1,golpe2> | ready | attack <id> | switch <id> | retry | reset | state | help | quit";
@@ -107,6 +108,11 @@ function receive(message: ServerMessage): void {
 }
 let buffer = "";
 socket.setEncoding("utf8");
+input.on("close", () => {
+  inputClosed = true;
+  process.stdin.destroy();
+  if (!socket.destroyed && !socket.writableEnded) socket.end();
+});
 socket.setTimeout(15000, () => {
   if (awaitingWelcome) {
     console.error("Tempo de conexão esgotado.");
@@ -114,6 +120,7 @@ socket.setTimeout(15000, () => {
   }
 });
 socket.on("data", (data) => {
+  if (inputClosed) return;
   buffer += data;
   if (buffer.length > 1024 * 1024) {
     socket.destroy();
@@ -130,13 +137,14 @@ socket.on("data", (data) => {
       return;
     }
   }
-  input.prompt();
+  if (!inputClosed) input.prompt();
 });
 socket.on("error", (error) =>
   console.error(`Falha de conexão: ${error.message}`),
 );
 socket.on("close", () => input.close());
 input.on("line", (line) => {
+  if (inputClosed) return;
   const [command, ...args] = line.trim().split(/\s+/);
   if (command === "choose" && args[0])
     send({ type: "choose_pokemon", pokemon: args[0] });
@@ -180,5 +188,5 @@ input.on("line", (line) => {
     socket.end();
     input.close();
   } else console.log(HELP);
-  input.prompt();
+  if (!inputClosed) input.prompt();
 });

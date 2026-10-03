@@ -1,0 +1,56 @@
+{
+  "forest": {
+    "path": "/arenas/forest.svg",
+    "bytes": 2716,
+    "sha256": "b6a90fddc07e862b02a50ac4c3ce0191be1852ea60fe74baecda923d575fb2ed",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  },
+  "stadium": {
+    "path": "/arenas/stadium.svg",
+    "bytes": 2812,
+    "sha256": "596383c6e43dfe761a5e90dc5be7bae554f71145f628c7f717911d117afe3ad8",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  },
+  "cave": {
+    "path": "/arenas/cave.svg",
+    "bytes": 2570,
+    "sha256": "1717c5565ba772313e4dd516f0d0ab58363cdade96fac7d71d601e72c2784e97",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  },
+  "beach": {
+    "path": "/arenas/beach.svg",
+    "bytes": 2655,
+    "sha256": "2afa54db2d3a2a5879655830c16e4281d5ef2bafa0e4d4747beebb1308644189",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  },
+  "space": {
+    "path": "/arenas/space.svg",
+    "bytes": 2913,
+    "sha256": "0f36461dab6afe33e734eb8fbbc705d9fc633f2c0293a100d075b81956ae8bbf",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  },
+  "night-city": {
+    "path": "/arenas/night-city.svg",
+    "bytes": 2894,
+    "sha256": "03030facfd47cfc3d0cdcf4e92b224ad6f2090620e8109c5b4de3e26a10aaa51",
+    "width": 1200,
+    "height": 700,
+    "license": "CC0-1.0",
+    "origin": "original-vector-art"
+  }
+}

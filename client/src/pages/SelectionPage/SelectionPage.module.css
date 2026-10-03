@@ -1,300 +1,248 @@
-/* Seleção de equipe no formato de Pokédex: painel creme, entradas numeradas. */
-
 .page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-5);
   width: min(1180px, 100%);
-  margin: 0 auto;
-  padding: 14px clamp(10px, 2.5vw, 24px) 24px;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-5) var(--space-7);
 }
-
-/* ---------- cabeçalho ---------- */
 .header {
   display: flex;
   align-items: flex-end;
-  gap: 14px;
   flex-wrap: wrap;
+  gap: var(--space-4);
 }
-
 .eyebrow {
-  font-family: var(--font-display);
-  font-size: 7px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--text-faint);
+  font-size: var(--font-size-label);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
 }
-
 .title {
-  font-size: clamp(13px, 2.2vw, 20px);
-  letter-spacing: 0.04em;
-  color: var(--hud-face);
-  text-shadow: 2px 2px 0 var(--hud-edge);
+  color: var(--text);
+  font-size: clamp(16px, 2.2vw, 23px);
+  line-height: 1.6;
 }
-
 .headerTools {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: var(--space-3);
   margin-left: auto;
 }
-
-/* contador X/6 no estilo das caixas do jogo */
 .counter {
   display: inline-flex;
   align-items: baseline;
-  gap: 1px;
-  padding: 6px 11px;
-  font-family: var(--font-display);
-  font-size: 11px;
+  gap: 2px;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
   color: var(--hud-ink);
-  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
-  border: 3px solid var(--hud-edge);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 2px var(--hud-edge-soft);
+  background: var(--hud-face);
+  border: var(--border-width) solid var(--hud-edge);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
 }
-
 .counter b {
-  font-size: 15px;
   color: var(--poke-red-dark);
+  font-size: 30px;
 }
-
 .counter[data-full='true'] {
-  border-color: var(--hp-green);
-  animation: pop 0.4s var(--ease-out);
+  border-color: var(--success);
 }
 .counter[data-full='true'] b {
-  color: #2f7a3f;
+  color: var(--success);
 }
-@keyframes pop {
-  0% { transform: scale(0.88); }
-  60% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-/* ---------- fileira da equipe escolhida ---------- */
 .teamRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 7px;
-  min-height: 62px;
-  padding: 8px 10px;
+  gap: var(--space-2);
+  min-height: 80px;
+  padding: var(--space-3) var(--space-4);
 }
-
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 4px;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
-  border: 2px solid var(--hud-edge);
-  box-shadow: var(--shadow-1);
+  background: var(--menu-face);
+  border: 2px solid var(--hud-edge-soft);
 }
-
 .chipSprite {
   border-radius: 50%;
-  background: #dfe4ef;
-  border: 2px solid var(--hud-edge);
+  background: var(--portrait-face);
 }
-
 .chipName {
-  font-family: var(--font-display);
-  font-size: 7px;
-  letter-spacing: 0.04em;
-  text-transform: capitalize;
   color: var(--hud-ink);
+  font-size: var(--font-size-label);
+  text-transform: capitalize;
 }
-
 .chipHint {
-  font-size: 16px;
+  font-size: 22px;
   color: var(--hud-ink-soft);
 }
-
-/* ---------- ações ---------- */
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
   align-items: center;
+  gap: var(--space-3);
 }
-
 .searchWrap {
-  flex: 1 1 220px;
+  flex: 1 1 260px;
   min-width: 0;
 }
-
 .search {
   width: 100%;
-  padding: 10px 13px;
-  font-size: 19px;
+  padding: var(--space-3) var(--space-4);
+  font-size: 24px;
   color: var(--hud-ink);
-  background: #fff;
-  border: 3px solid var(--hud-edge);
-  border-radius: 8px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.14);
+  background: var(--input-face);
+  border: var(--border-width) solid var(--hud-edge);
+  border-radius: var(--radius);
+  box-shadow: inset 0 2px 0 var(--hud-edge-soft);
 }
-
 .search::placeholder {
-  color: #9aa4bd;
+  color: var(--input-placeholder);
 }
-
 .search:focus-visible {
-  outline: none;
-  border-color: var(--menu-edge);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.14), 0 0 0 3px rgba(72, 112, 176, 0.3);
+  outline-color: var(--focus-on-light);
 }
-
-/* ---------- grade da Pokédex ---------- */
-.grid {
+.grid,
+.skeletonGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 9px;
-  padding: 11px;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-4);
   background: var(--menu-face);
-  border: 3px solid var(--menu-edge);
-  border-radius: 10px;
-  box-shadow:
-    inset 0 0 0 3px var(--menu-face),
-    inset 0 0 0 5px #b8cce8,
-    0 4px 0 var(--hud-shadow);
+  border: var(--border-width) solid var(--menu-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--menu-shadow);
 }
-
-/* entrada da Pokédex: número, sprite e nome */
 .card {
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
   justify-items: center;
-  gap: 4px;
-  padding: 8px 7px 9px;
-  cursor: pointer;
+  gap: var(--space-2);
+  min-height: 176px;
+  padding: var(--space-3);
   color: var(--hud-ink);
-  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
-  border: 3px solid var(--hud-edge);
-  border-radius: 9px;
-  box-shadow: inset 0 0 0 2px var(--hud-edge-soft), var(--shadow-1);
-  transition: transform var(--dur-fast) var(--ease-out), filter var(--dur-fast) linear;
+  background: linear-gradient(160deg, var(--hud-face), var(--hud-face-2));
+  border: 2px solid var(--hud-edge-soft);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast);
 }
-
 .card:not(:disabled):hover {
   transform: translateY(-3px);
-  filter: brightness(1.06);
   border-color: var(--menu-edge);
 }
-
-.card:disabled {
-  cursor: not-allowed;
-  filter: grayscale(0.55) brightness(0.9);
-  border-color: #2f7a3f;
+.card:focus-visible {
+  outline-color: var(--focus-on-light);
 }
-
+.card:disabled {
+  border-color: var(--success);
+  background: var(--portrait-face);
+}
 .number {
   align-self: start;
   justify-self: start;
-  font-family: var(--font-display);
-  font-size: 7px;
-  letter-spacing: 0.04em;
   color: var(--hud-ink-soft);
+  font-size: var(--font-size-small);
 }
-
 .image {
   width: 76px;
   height: 76px;
   object-fit: contain;
   image-rendering: pixelated;
-  /* alt vazio no TSX evita texto solto quando o sprite não carrega */
 }
-
 .name {
-  font-family: var(--font-display);
-  font-size: 7px;
-  line-height: 1.5;
-  letter-spacing: 0.03em;
+  font-size: 22px;
+  line-height: 1.15;
   text-align: center;
   text-transform: capitalize;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
-
 .plus {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: var(--space-2);
+  right: var(--space-2);
   display: grid;
   place-items: center;
-  width: 19px;
-  height: 19px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  font-size: 13px;
+  font-size: 20px;
   line-height: 1;
-  color: #fff;
+  color: var(--on-accent);
   background: var(--poke-red);
   border: 2px solid var(--hud-edge);
 }
-
 .card:disabled .plus {
-  background: #2f7a3f;
+  background: var(--success);
 }
-
-/* ---------- carregando / erro / vazio ---------- */
 .skeletonGrid {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 9px;
-  padding: 11px;
-  background: var(--menu-face);
-  border: 3px solid var(--menu-edge);
-  border-radius: 10px;
 }
-
 .skeleton {
-  height: 128px;
-  border-radius: 9px;
-  background: linear-gradient(90deg, #e4e8f2 0%, #f2f4fa 50%, #e4e8f2 100%);
-  background-size: 200% 100%;
-  border: 3px solid var(--hud-edge-soft);
-  animation: shimmer 1.3s linear infinite;
+  height: 176px;
+  border-radius: var(--radius);
+  background: var(--portrait-face);
+  border: 2px solid var(--hud-edge-soft);
 }
-@keyframes shimmer {
-  to { background-position: -200% 0; }
-}
-
 .loadingRow {
-  position: absolute;
-  left: 50%;
-  bottom: -30px;
-  translate: -50% 0;
-  display: inline-flex;
+  grid-column: 1 / -1;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  color: var(--text-dim);
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--hud-ink-soft);
+  padding: var(--space-2);
 }
-
 .errorBox {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 11px;
-  padding: 14px 16px;
-  border-radius: 10px;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
   color: var(--hud-ink);
-  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
-  border: 3px solid var(--poke-red-dark);
-  box-shadow: inset 0 0 0 2px var(--hud-edge-soft);
+  background: var(--hud-face);
+  border: var(--border-width) solid var(--danger);
+  box-shadow: var(--panel-shadow);
 }
-
 .empty {
   grid-column: 1 / -1;
-  padding: 26px;
+  padding: var(--space-7) var(--space-4);
   text-align: center;
-  font-size: 17px;
   color: var(--hud-ink-soft);
 }
-
 @media (max-width: 560px) {
-  .grid, .skeletonGrid { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); }
-  .image { width: 60px; height: 60px; }
+  .page {
+    padding: var(--space-5) var(--space-3) var(--space-6);
+    gap: var(--space-4);
+  }
+  .headerTools {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .grid,
+  .skeletonGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+  .card {
+    min-height: 164px;
+  }
+  .name {
+    font-size: 20px;
+  }
+  .actions > button {
+    flex: 1 1 auto;
+    font-size: 22px;
+  }
 }

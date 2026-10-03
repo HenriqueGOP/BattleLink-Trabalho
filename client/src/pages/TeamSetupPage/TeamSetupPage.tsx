@@ -142,6 +142,8 @@ export function TeamSetupPage() {
               <h3 className={styles.movesTitle}>Golpes equipados</h3>
               <output
                 className={styles.moveCount}
+                aria-live="polite"
+                aria-atomic="true"
                 data-full={chosen.length === MAX_MOVES ? 'true' : undefined}
                 aria-label={`${chosen.length} de ${MAX_MOVES} golpes`}
               >

@@ -11,7 +11,7 @@ export interface AudioApi extends AudioPrefs {
   playCry: (url: string | null | undefined) => void
 }
 
-const EMPTY: AudioPrefs = { musicVolume: 0.4, sfxVolume: 0.7, musicMuted: false, sfxMuted: false }
+const EMPTY: AudioPrefs = { musicVolume: 0.4, sfxVolume: 0.7, musicMuted: true, sfxMuted: true }
 
 function subscribe(listener: () => void): () => void {
   return audio.subscribe(listener)
@@ -25,8 +25,14 @@ function getSnapshot(): AudioPrefs {
 export function useAudio(): AudioApi {
   const prefs = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY)
 
-  const setVolume = useCallback((channel: AudioChannel, value: number) => audio.setVolume(channel, value), [])
-  const setMuted = useCallback((channel: AudioChannel, muted: boolean) => audio.setMuted(channel, muted), [])
+  const setVolume = useCallback(
+    (channel: AudioChannel, value: number) => audio.setVolume(channel, value),
+    []
+  )
+  const setMuted = useCallback(
+    (channel: AudioChannel, muted: boolean) => audio.setMuted(channel, muted),
+    []
+  )
   const play = useCallback((name: SfxName) => audio.play(name), [])
   const playMusic = useCallback((theme: ThemeName) => audio.playMusic(theme), [])
   const stopMusic = useCallback(() => audio.stopMusic(), [])

@@ -88,9 +88,9 @@ Cada etapa termina com build, lint e testes, commit isolado ou alterações orga
 resumo de até 15 linhas e pausa antes da seguinte. Nenhum teste existente será removido
 ou enfraquecido sem justificativa. Não afirmar que as fases futuras estão implementadas.
 
-A fase 7 é uma etapa nova solicitada após a entrega da fase 4. O diretor existente é
-seu ponto de integração; a arte dos efeitos deixa de ser desenhada em CSS. Até sua
-implementação, o projeto continua usando os efeitos atuais da fase 4.
+A fase 7 foi solicitada após a entrega da fase 4. Na autorização seguinte, o usuário
+pediu executar as fases 5, 6 e 7 juntas, substituindo a pausa entre essas três etapas.
+O diretor existente é o ponto de integração; a arte dos efeitos migrou para atlas locais.
 
 ## Critérios de validação
 
@@ -160,7 +160,24 @@ não mostrou commits por frame nos impactos observados. FPS em celular real, rev
 completa dos menus, novas arenas e animações em spritesheets continuam nas etapas seguintes. Detalhes e limites:
 [relatório da fase 4](../FASE_4_APRESENTACAO.md).
 
-### Critérios gerais
+### Registro das fases 5, 6 e 7
+
+Menus e diálogos foram unificados com tokens, tipografia local legível, controles de
+44 px e foco modal/restauração. Preferências de áudio publicam snapshots imutáveis.
+As seis arenas originais usam IDs validados e somam 16.560 bytes. Preload e erros de
+imagem usam fallback local, com o prazo de três segundos preservado.
+
+O combate usa 24 clips originais em três atlas WebP, total de 1.856.830 bytes. O renderer
+Canvas compartilha um relógio, tem cache de três imagens e limite de 24 clips, e segue
+conclusão/cancelamento do diretor. Auras CSS e partículas desenhadas foram removidas.
+Carga, recharge e críticos absorvidos por Substitute receberam regressões com eventos
+reais. O alvo inicial de 256 KiB/atlas foi revisto para 768 KiB com base no empacotamento;
+o conjunto continua abaixo de 4 MiB. O motor e escolhas privadas permanecem inalterados.
+
+Builds, lint, suítes e evidências de navegador são registrados na
+[validação conjunta](../FASES_5_6_7_VALIDACAO.md). FPS em celular real continua pendente.
+
+### Critérios gerais atuais
 
 - Sanidade de dano 31–37; todos os 16 rolls; atributos, estágios, críticos, STAB,
   Adaptability, Burn, imunidades e tabela 18×18 contra `@smogon/calc`.
@@ -171,12 +188,13 @@ completa dos menus, novas arenas e animações em spritesheets continuam nas eta
   commit React por frame; modal acessível, contraste AA e largura mínima de 360 px.
 - Recursos sem rede externa; arenas até 600 KB e preload com timeout de três segundos
   antes de fallback local. A sala também limita a espera por cliente ausente.
-- Recursos locais, avisos de licença e screenshots foram registrados na fase 3.
-  [VERIFICAR nas fases correspondentes] Percurso completo em navegadores distintos,
-  apresentação e 60 FPS em celular intermediário real. Emulação não substitui medição
+- Recursos locais, avisos de licença e screenshots foram registrados nas fases 3–7.
+  O percurso em dois clientes e a apresentação são descritos na validação conjunta.
+  **[VERIFICAR]** 60 FPS em celular intermediário real. Emulação não substitui medição
   em aparelho.
 - Na fase 7, efeitos artísticos de combate migram para atlas originais ou licenciados:
   ataques, esquiva, troca, status, buff/debuff, cura e nocaute/resultado. O renderer deve
-  seguir eventos canônicos e aceitar skip/cancelamento/movimento reduzido. [VERIFICAR]
-  fontes/licenças/prompts, cobertura das animações, preload, memória, tamanho e FPS em
-  aparelho real. Especificação: [fase 7](../FASE_7_ANIMACOES.md).
+  seguir eventos canônicos e aceitar skip/cancelamento/movimento reduzido. Fontes,
+  prompts, cobertura, preload e orçamento estão registrados na validação conjunta.
+  FPS e memória em aparelho real continuam **[VERIFICAR]**.
+  Especificação: [fase 7](../FASE_7_ANIMACOES.md).

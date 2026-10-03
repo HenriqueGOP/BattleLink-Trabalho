@@ -64,6 +64,7 @@ export function HomePage() {
 
         <form
           className={styles.form}
+          aria-busy={waiting}
           onSubmit={(event) => {
             event.preventDefault()
             submit()
@@ -78,6 +79,8 @@ export function HomePage() {
             className={styles.input}
             value={name}
             maxLength={MAX_NAME_LENGTH}
+            required
+            aria-describedby="trainer-hint"
             placeholder="Ex.: Ash"
             onChange={(event) => setName(event.target.value)}
             autoComplete="off"
@@ -109,7 +112,13 @@ export function HomePage() {
           </Button>
         </form>
 
-        <div className={styles.status} data-state={waiting ? 'on' : 'off'}>
+        <div
+          className={styles.status}
+          data-state={waiting ? 'on' : 'off'}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {waiting ? (
             <>
               <PokeballSpinner size={22} label="Procurando oponente" />
@@ -129,7 +138,7 @@ export function HomePage() {
           )}
         </div>
 
-        <p className={styles.hint}>
+        <p className={styles.hint} id="trainer-hint">
           Dois navegadores = duas vagas na fila. O servidor emparelha aos pares.
         </p>
       </section>

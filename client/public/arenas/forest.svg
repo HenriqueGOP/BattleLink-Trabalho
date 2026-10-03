@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#c7efd9"/><stop offset="1" stop-color="#f6efd0"/></linearGradient>
+    <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#8bbd86"/><stop offset="1" stop-color="#b9d49b"/></linearGradient>
+    <symbol id="tree" viewBox="0 0 210 390"><path d="M91 160h32l14 224H79z" fill="#4c7661"/><path d="M106 32C64 11 32 45 39 73 3 65-8 127 29 143 4 185 48 212 82 188c13 44 57 37 67 7 46 17 70-19 47-51 36-28 11-67-19-64 11-37-33-63-58-42z" fill="#3c8d72"/><path d="M50 82c-12 23 10 38 33 35 2 26 31 31 46 8 29 18 60-11 44-35" fill="none" stroke="#60ae82" stroke-width="14" stroke-linecap="round"/></symbol>
+    <symbol id="fern" viewBox="0 0 100 65"><path d="M50 63Q12 62 3 22q32 0 47 31Q22 23 35 0q19 15 17 46Q64 7 92 12 91 45 53 63" fill="#3b8163"/><path d="M50 63 35 11m15 52L13 33m39 25 30-32" fill="none" stroke="#7ba875" stroke-width="3"/></symbol>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1200v700H0z"/>
+  <circle cx="873" cy="149" r="87" fill="#f5f2ca"/>
+  <path d="M0 329Q160 206 330 322 482 182 655 295 826 210 1200 275v294H0" fill="#79b990"/>
+  <g opacity=".5"><use href="#tree" x="77" y="63" width="190" height="354"/><use href="#tree" x="327" y="83" width="151" height="279"/><use href="#tree" x="620" y="54" width="175" height="326"/><use href="#tree" x="995" y="36" width="187" height="346"/></g>
+  <path d="M0 424Q252 351 422 427 785 328 1200 406v294H0" fill="url(#floor)"/>
+  <path d="M385 408q210-72 520 30-272 1-302 90 4 97 403 172H524Q218 574 385 408" fill="#d1d9ac" opacity=".8"/>
+  <path d="M0 450Q-30 212 84-38h147C109 92 220 223 139 478zM1091 470q-90-227-9-470h118v488z" fill="#396452"/>
+  <path d="M60 425Q18 249 113 9m1031 417q-57-158-21-361" fill="none" stroke="#587d58" stroke-width="24" stroke-linecap="round"/>
+  <path d="M0 0h1200v69Q989 117 885 44 737 129 603 30 454 116 311 49 127 144 0 82" fill="#235b4c"/>
+  <path d="M0 61Q103 106 203 53m531-9q101 90 196 10" stroke="#4a9771" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <g fill="#689f77"><ellipse cx="241" cy="465" rx="36" ry="8"/><ellipse cx="1011" cy="531" rx="65" ry="9"/><ellipse cx="567" cy="622" rx="32" ry="5"/></g>
+  <use href="#fern" x="27" y="491" width="159" height="102"/><use href="#fern" x="1053" y="467" width="123" height="82"/><use href="#fern" x="-40" y="613" width="199" height="125"/>
+  <g fill="#f8e6aa"><circle cx="225" cy="472" r="4"/><circle cx="238" cy="473" r="4"/><circle cx="1035" cy="552" r="4"/></g>
+  <g fill="#4b8866"><path d="m876 608 6-16 5 16 9-13-3 19zm-714-55 7-19 6 19 8-11-3 16zm850-109 7-15 4 17 8-11-1 14z"/></g>
+</svg>

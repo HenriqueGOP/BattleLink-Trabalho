@@ -1,0 +1,12 @@
+Use case: stylized-concept. Asset type: transparent cartoon creature battle VFX sprite atlas, 1024x1024 PNG.
+Precise regular EIGHT columns x EIGHT rows, 128px square cells. No visible grid or text. All surroundings truly transparent. Each frame centered in its cell, max 80px width/height, 24px clear margin, NO crossing cell boundaries. Crisp hand-drawn flat cel shaded game effects with dark navy outlines matching cartoon fire/water/lightning battle art.
+Each row is eight successive frames from left to right of ONE animation:
+Row1 recall: red-white light ribbon circles inward, closes to glowing small red orb, disappears into tiny spark.
+Row2 summon: tiny cyan-white orb opens into circular teal light ring and golden sparkles then fades.
+Row3 faint: small gray-blue puff opens into soft falling cloud fragments then dwindles, no creature.
+Row4 victory: golden laurel-like star wreath opens with orange-yellow small stars and celebratory rays, fades into sparkles.
+Row5 defeat: small slate-blue cracked crescent and down-drooping wisps fades away.
+Row6 draw: twin lilac and cyan rings join and sparkle, fade away.
+Row7 dodge: three pale blue speed crescents curving to right, quick whoosh then fragment and fade.
+Row8 psychic: pink and magenta concentric curved ripples expand, break into small twinkles, fade.
+No letters, numerals, watermark, background, characters or logos. Strict grid and fixed anchors; artwork fully enclosed in each cell.

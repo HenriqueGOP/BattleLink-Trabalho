@@ -384,9 +384,6 @@ async function directorTests() {
     await play;
     assert.equal(commits, 1);
     assert.equal(foe.children.size, 0, "Efeitos removidos na conclusão");
-    const particleCount = FakeNode.created.filter(
-      (node) => node.className === "battle-particle",
-    ).length;
     const controller = new AbortController(),
       before = FakeNode.animations.length;
     const cancelled = director.run(
@@ -408,13 +405,12 @@ async function directorTests() {
     assert.equal(commits, 1);
     assert.ok(
       foe.children.size > 0,
-      "Conclusão cancelada não remove partículas reutilizadas pelo próximo impacto",
+      "Conclusão cancelada não remove efeitos do próximo impacto",
     );
     assert.equal(
-      FakeNode.created.filter((node) => node.className === "battle-particle")
-        .length,
-      particleCount,
-      "Pool reutilizado",
+      FakeNode.created.filter((node) => node.className === "battle-particle").length,
+      0,
+      "Arte CSS removida; limite e liberação dos clips estão cobertos em sprite-animation.test",
     );
     assert.ok(
       FakeNode.animations
@@ -509,7 +505,7 @@ void (async () => {
   await queueTests();
   await directorTests();
   console.log(
-    "Presentation tests passed: queued snapshots, per-hit HP, KO/switch/result, skip, hidden tab, stale completion, cleanup, pooled effects and reduced motion.",
+    "Presentation tests passed: queued snapshots, per-hit HP, KO/switch/result, skip, hidden tab, stale completion, effect cleanup and reduced motion.",
   );
 })().catch((error) => {
   console.error(error);

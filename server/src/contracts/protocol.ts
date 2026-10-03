@@ -8,12 +8,12 @@ import type {
 
 export const PROTOCOL_VERSION = "pokemon-battle/3";
 export const ARENA_IDS = [
-  "meadow",
   "forest",
+  "stadium",
   "cave",
-  "night",
   "beach",
-  "city",
+  "space",
+  "night-city",
 ] as const;
 export type ArenaId = (typeof ARENA_IDS)[number];
 export type GamePhase = "setup" | "preparing" | "battle" | "finished";

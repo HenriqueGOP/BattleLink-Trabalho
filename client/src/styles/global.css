@@ -22,13 +22,12 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 500px at 70% -10%, rgba(74, 125, 219, 0.14), transparent 60%),
-    radial-gradient(900px 420px at 10% 110%, rgba(232, 69, 44, 0.12), transparent 55%),
-    var(--bg-deep);
+    radial-gradient(ellipse at 15% 0%, rgba(97, 160, 170, 0.18), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(31, 100, 139, 0.2), transparent 60%), var(--bg-deep);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: clamp(17px, 1.1vw + 12px, 21px);
-  line-height: 1.45;
+  font-size: var(--font-size-body);
+  line-height: 1.25;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -57,6 +56,18 @@ button:disabled {
   cursor: not-allowed;
 }
 
+button,
+input,
+select,
+summary {
+  touch-action: manipulation;
+}
+
+input,
+select {
+  min-height: var(--control-height);
+}
+
 a {
   color: inherit;
 }
@@ -72,8 +83,8 @@ h4 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-strong);
-  outline-offset: 2px;
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
 
@@ -120,26 +131,20 @@ h4 {
 
 /* caixa creme (a da caixa de status / diálogo) */
 .gb-panel {
-  background: linear-gradient(180deg, var(--hud-face) 0 62%, var(--hud-face-2) 62% 100%);
+  background: linear-gradient(180deg, var(--hud-face), var(--hud-face-2));
   color: var(--hud-ink);
-  border: 3px solid var(--hud-edge);
-  border-radius: 12px;
-  box-shadow:
-    inset 0 0 0 2px var(--hud-edge-soft),
-    0 4px 0 var(--hud-shadow),
-    0 10px 24px rgba(0, 0, 0, 0.35);
+  border: var(--border-width) solid var(--hud-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
 }
 
 /* caixa branca com contorno azul (a do menu de comandos) */
 .gb-menu {
   background: var(--menu-face);
   color: var(--hud-ink);
-  border: 3px solid var(--menu-edge);
-  border-radius: 10px;
-  box-shadow:
-    inset 0 0 0 3px var(--menu-face),
-    inset 0 0 0 5px #b8cce8,
-    0 4px 0 var(--hud-shadow);
+  border: var(--border-width) solid var(--menu-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--menu-shadow);
 }
 
 /* título pixel com sombra dura, como as telas de menu dos jogos */
@@ -178,9 +183,9 @@ h4 {
   align-items: center;
   gap: 5px;
   padding: 4px 8px;
-  border-radius: 4px;
-  font-family: var(--font-display);
-  font-size: 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-small);
   letter-spacing: 0.06em;
   color: var(--hud-face);
   background: var(--hud-ink);

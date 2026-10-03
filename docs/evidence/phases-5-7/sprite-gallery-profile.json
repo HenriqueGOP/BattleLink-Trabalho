@@ -1,0 +1,66 @@
+{
+  "canvasCount": 24,
+  "profiles": [
+    {
+      "commits": [
+        {
+          "actualDuration": 0.09999999962747096,
+          "baseDuration": 0,
+          "commitTime": 126.8999999994412,
+          "event": "mount",
+          "id": "battle-scene",
+          "phase": "mount",
+          "sequence": null,
+          "startTime": 126.5
+        },
+        {
+          "actualDuration": 1,
+          "baseDuration": 0.2999999988824129,
+          "commitTime": 22825.299999999817,
+          "event": "mount",
+          "id": "battle-scene",
+          "phase": "update",
+          "sequence": null,
+          "startTime": 22824.200000000183
+        },
+        {
+          "actualDuration": 0.40000000037252903,
+          "baseDuration": 0.30000000074505806,
+          "commitTime": 59298.09999999963,
+          "event": "mount",
+          "id": "battle-scene",
+          "phase": "update",
+          "sequence": null,
+          "startTime": 59297.39999999944
+        },
+        {
+          "actualDuration": 0.2999999998137355,
+          "baseDuration": 0.2999999998137355,
+          "commitTime": 59559,
+          "event": "mount",
+          "id": "battle-scene",
+          "phase": "update",
+          "sequence": null,
+          "startTime": 59558.59999999963
+        },
+        {
+          "actualDuration": 0.40000000037252903,
+          "baseDuration": 0.2999999998137355,
+          "commitTime": 61561.89999999944,
+          "event": "mount",
+          "id": "battle-scene",
+          "phase": "update",
+          "sequence": null,
+          "startTime": 61561.39999999944
+        }
+      ],
+      "schema": 1
+    }
+  ],
+  "sample": {
+    "averageFps": 143.99280035998157,
+    "elapsedMs": 2000.1000000000056,
+    "frames": 288,
+    "p95Ms": 7
+  }
+}

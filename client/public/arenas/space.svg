@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <radialGradient id="sky" cx=".7" cy=".3" r=".8"><stop stop-color="#495584"/><stop offset=".6" stop-color="#283154"/><stop offset="1" stop-color="#19243e"/></radialGradient>
+    <linearGradient id="moon" x2="0" y2="1"><stop stop-color="#9dabc0"/><stop offset="1" stop-color="#586883"/></linearGradient>
+    <linearGradient id="planet" x2="1" y2="1"><stop stop-color="#ecbf99"/><stop offset=".5" stop-color="#d69c94"/><stop offset="1" stop-color="#8b789d"/></linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1200v700H0z"/>
+  <path d="M59 302q232-199 465-134t585-77Q793 241 491 194T59 302" fill="#596185" opacity=".3"/>
+  <g fill="#e7e7c8"><circle cx="50" cy="69" r="2"/><circle cx="206" cy="213" r="3"/><circle cx="296" cy="36" r="2"/><circle cx="427" cy="229" r="2"/><circle cx="533" cy="59" r="3"/><circle cx="732" cy="47" r="2"/><circle cx="934" cy="323" r="2"/><circle cx="1027" cy="88" r="2"/><circle cx="1161" cy="205" r="3"/><circle cx="382" cy="322" r="2"/><circle cx="91" cy="292" r="2"/><circle cx="664" cy="271" r="2"/><circle cx="999" cy="26" r="2"/></g>
+  <g stroke="#e9ddba" stroke-width="2" stroke-linecap="round"><path d="M325 112v12m-6-6h12M704 164v12m-6-6h12M1099 287v12m-6-6h12"/></g>
+  <ellipse cx="846" cy="174" rx="190" ry="44" fill="none" stroke="#b7b1b3" stroke-width="21" transform="rotate(-21 846 174)" opacity=".65"/>
+  <circle cx="846" cy="174" r="90" fill="url(#planet)"/>
+  <path d="M765 132q91 30 166-4m-170 48q94 34 173-1m-151 39q82 27 134-2" stroke="#c88890" stroke-width="16" fill="none" opacity=".7"/>
+  <path d="M668 241q155-14 346-132" fill="none" stroke="#d2c7bb" stroke-width="13" opacity=".65"/>
+  <circle cx="165" cy="157" r="37" fill="#728fa2"/><path d="M148 126q-9 47 37 56" stroke="#a3beb4" stroke-width="17" fill="none"/>
+  <path d="M0 404q173-151 359-45 315-59 473 22 205-160 368 16v303H0" fill="url(#moon)"/>
+  <path d="M0 412q173-127 359-30 315-59 473 22 205-141 368 8" fill="none" stroke="#bcc8ce" stroke-width="7"/>
+  <ellipse cx="278" cy="502" rx="102" ry="29" fill="#63758c" stroke="#a6b4be" stroke-width="6"/><ellipse cx="278" cy="502" rx="74" ry="19" fill="#7a8b9b"/>
+  <ellipse cx="945" cy="478" rx="99" ry="26" fill="#63758c" stroke="#a6b4be" stroke-width="6"/><ellipse cx="945" cy="478" rx="69" ry="16" fill="#7a8b9b"/>
+  <ellipse cx="702" cy="594" rx="59" ry="17" fill="#55647d" stroke="#8b9db0" stroke-width="5"/>
+  <path d="m110 388 26-43 51 28 4 31zm933-24 37-45 35 33-15 34z" fill="#7a8ca2" stroke="#b3c2c9" stroke-width="4"/>
+  <path d="m426 579 36-29 47 15-11 26zm-332 66 37-30 45 25-4 28zm943-86 25-17 26 15-12 15z" fill="#69798f"/>
+  <path d="M0 685q41-41 126-21l46 36H0m1200-35-75-48-91 30-26 53h192" fill="#40536c"/>
+  <path d="m549 452 20-3m-23 180 29 5m375-22 18 4" stroke="#b0bec6" stroke-width="3" stroke-linecap="round"/>
+</svg>

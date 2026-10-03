@@ -1,230 +1,240 @@
-/* Tela de título: céu + chão desenhados, logo e cartão de treinador. */
-
 .page {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 460px);
   align-items: center;
-  justify-content: center;
-  gap: clamp(18px, 4vh, 38px);
+  gap: var(--space-8);
   min-height: 100dvh;
-  padding: clamp(24px, 5vh, 56px) clamp(16px, 4vw, 40px);
+  padding: clamp(32px, 8vw, 110px);
   overflow: hidden;
 }
-
-/* ---------- cenário ---------- */
 .scene {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  background: linear-gradient(180deg, #1b2a52 0%, #2c4a86 42%, #4a79c0 70%, #6ba3d8 100%);
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 20% 30%, var(--bg-raised), transparent 70%), var(--bg-deep);
 }
-
+.scene::before {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  left: -300px;
+  top: -200px;
+  border: 90px solid rgba(255, 248, 232, 0.035);
+  border-radius: 50%;
+}
 .ground {
   position: absolute;
-  left: -5%;
-  right: -5%;
-  bottom: -14%;
-  height: 46%;
-  border-radius: 50% 50% 0 0;
-  background: linear-gradient(180deg, #4e9a4e 0 18%, #3d7f3f 18% 100%);
-  box-shadow: inset 0 6px 0 rgba(255, 255, 255, 0.18);
+  inset: auto -5% -28% -5%;
+  height: 48%;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  box-shadow: 0 -4px 0 rgba(255, 248, 232, 0.04);
+  transform: rotate(-8deg);
 }
-
 .cloud {
   position: absolute;
-  height: 22px;
+  width: 180px;
+  height: 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.28);
-  filter: blur(1px);
+  background: rgba(255, 248, 232, 0.06);
 }
 .cloudOne {
-  top: 14%;
-  left: 8%;
-  width: 190px;
-  box-shadow: 70px -14px 0 -2px rgba(255, 255, 255, 0.28);
+  top: 20%;
+  left: 9%;
+  transform: rotate(-35deg);
 }
 .cloudTwo {
-  top: 26%;
-  right: 10%;
-  width: 150px;
-  box-shadow: -56px 12px 0 -3px rgba(255, 255, 255, 0.22);
+  bottom: 18%;
+  right: 4%;
+  transform: rotate(-35deg);
 }
-
-/* ---------- logo ---------- */
 .titleCard {
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
+  align-items: flex-start;
+  gap: var(--space-5);
+  position: relative;
 }
-
 .logoBall {
-  width: 54px;
-  height: 54px;
-  animation: bob 2.6s ease-in-out infinite;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+  width: 76px;
+  height: 76px;
+  box-shadow: 0 7px 0 var(--hud-shadow);
+  transform: rotate(-12deg);
 }
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
-
 .title {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-4);
 }
-
 .titleTop {
-  font-size: clamp(20px, 4.4vw, 38px);
-  letter-spacing: 0.06em;
+  font-size: clamp(22px, 3.8vw, 43px);
+  letter-spacing: -0.02em;
 }
-
 .titleBottom {
-  font-size: clamp(26px, 6vw, 54px);
-  letter-spacing: 0.08em;
+  font-size: clamp(32px, 5.3vw, 66px);
   color: var(--hpbar-label);
+  letter-spacing: -0.03em;
   text-shadow:
-    3px 3px 0 var(--poke-red-dark),
-    5px 5px 0 var(--hud-edge);
+    4px 4px 0 var(--hud-edge),
+    7px 7px 0 var(--poke-red-dark);
 }
-
 .tagline {
-  font-size: clamp(15px, 1.6vw, 19px);
-  color: rgba(255, 255, 255, 0.86);
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  max-width: 370px;
+  color: var(--text-dim);
+  font-size: 26px;
 }
-
-/* ---------- cartão de treinador ---------- */
 .card {
   position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: min(460px, 100%);
-  padding: 16px 18px 18px;
+  gap: var(--space-4);
+  padding: var(--space-6);
 }
-
 .cardHeader {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--hud-edge-soft);
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 2px dashed var(--hud-edge-soft);
 }
-
 .ballMark {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   flex: none;
 }
-
 .cardTitle {
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--hud-ink);
 }
-
 .form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
-
 .label {
-  font-family: var(--font-display);
-  font-size: 8px;
-  letter-spacing: 0.06em;
+  font-size: var(--font-size-label);
   color: var(--hud-ink-soft);
 }
-
 .input {
   width: 100%;
-  padding: 11px 13px;
-  font-size: 21px;
+  padding: var(--space-3) var(--space-4);
+  font-size: 26px;
   line-height: 1.2;
   color: var(--hud-ink);
-  background: #fff;
-  border: 3px solid var(--hud-edge);
-  border-radius: 8px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.16);
+  background: var(--input-face);
+  border: 2px solid var(--hud-edge);
+  border-radius: var(--radius);
+  box-shadow: inset 0 2px 0 var(--hud-edge-soft);
 }
-
 .input::placeholder {
-  color: #9aa4bd;
+  color: var(--input-placeholder);
 }
-
 .input:focus-visible {
-  outline: none;
-  border-color: var(--menu-edge);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.16), 0 0 0 3px rgba(72, 112, 176, 0.35);
+  outline-color: var(--focus-on-light);
 }
-
+.form details {
+  font-size: var(--font-size-small);
+  margin-block: var(--space-2);
+}
+.form summary {
+  min-height: var(--control-height);
+  display: list-item;
+  align-content: center;
+  cursor: pointer;
+  color: var(--hud-ink-soft);
+}
+.form details[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
 .cta {
   width: 100%;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  min-height: 52px;
+  margin-top: var(--space-2);
 }
-
-/* ---------- status / fila ---------- */
 .status {
   display: flex;
   align-items: center;
-  gap: 9px;
-  min-height: 34px;
-  padding: 7px 11px;
-  border-radius: 6px;
-  background: rgba(56, 64, 88, 0.1);
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--hud-face-2);
   border: 2px solid var(--hud-edge-soft);
 }
-
 .status[data-state='on'] {
   border-color: var(--menu-edge);
-  background: rgba(72, 112, 176, 0.14);
+  background: var(--menu-inner);
 }
-
 .statusText {
-  flex: 1 1 auto;
+  flex: 1;
   min-width: 0;
-  font-size: 16px;
+  font-size: var(--font-size-label);
   color: var(--hud-ink-soft);
 }
-
 .cancel {
   flex: none;
-  font-family: var(--font-display);
-  font-size: 7px;
-  letter-spacing: 0.06em;
-  padding: 5px 7px;
-  border-radius: 4px;
-  color: #fff;
+  min-height: var(--control-height);
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-small);
+  border-radius: var(--radius-sm);
+  color: var(--on-accent);
   background: var(--poke-red-dark);
   border: 2px solid var(--hud-edge);
 }
-
-.cancel:hover {
-  filter: brightness(1.15);
-}
-
 .hint {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: var(--font-size-small);
+  line-height: 1.35;
   color: var(--hud-ink-soft);
 }
-
-@media (max-width: 520px) {
-  .card { padding: 13px 14px 15px; }
-  .input { font-size: 19px; }
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--space-6);
+    padding: var(--space-7) var(--space-5);
+  }
+  .titleCard {
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+  }
+  .title {
+    gap: var(--space-3);
+  }
+  .logoBall {
+    width: 52px;
+    height: 52px;
+  }
+  .tagline {
+    font-size: 22px;
+  }
+  .card {
+    width: min(460px, 100%);
+  }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .logoBall { animation: none; }
+@media (max-width: 480px) {
+  .page {
+    padding: var(--space-6) var(--space-4);
+    gap: var(--space-5);
+  }
+  .card {
+    padding: var(--space-5) var(--space-4);
+  }
+  .titleTop {
+    font-size: 23px;
+  }
+  .titleBottom {
+    font-size: 35px;
+  }
+  .cta {
+    font-size: 23px;
+    padding-inline: var(--space-2);
+  }
 }

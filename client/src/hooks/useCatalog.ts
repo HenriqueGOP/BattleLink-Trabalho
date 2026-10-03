@@ -41,6 +41,7 @@ export function useCatalog(): CatalogApi {
   }, [attempt])
 
   const retry = useCallback(() => {
+    setError(null)
     setLoading(true)
     setAttempt((value) => value + 1)
   }, [])

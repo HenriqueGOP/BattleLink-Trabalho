@@ -4,6 +4,7 @@ import { Button } from '../../components/Button'
 import { PokeballSpinner } from '../../components/PokeballSpinner'
 import { Sprite } from '../../components/Sprite'
 import { AudioSettings } from '../../components/AudioSettings'
+import { GameIcon } from '../../components/GameIcon/GameIcon'
 import { useBattleContext } from '../../context/BattleProvider'
 import { useBattle } from '../../hooks/useBattle'
 import { useCatalog } from '../../hooks/useCatalog'
@@ -83,7 +84,7 @@ export function SelectionPage() {
   if (state.phase !== 'setup' || myPlayer?.ready) return <Navigate to="/batalha" replace />
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} aria-busy={loading}>
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>01 · montar equipe</p>
@@ -128,13 +129,13 @@ export function SelectionPage() {
           onClick={() => draw(1)}
           disabled={team.length >= TEAM_SIZE || loading}
         >
-          🎲 Sortear 1
+          <GameIcon name="dice" /> Sortear 1
         </Button>
         <Button
           onClick={() => draw(TEAM_SIZE - team.length)}
           disabled={team.length >= TEAM_SIZE || loading}
         >
-          🎲 Sortear equipe inteira
+          <GameIcon name="dice" /> Sortear equipe inteira
         </Button>
         <label className={styles.searchWrap}>
           <span className="sr-only">Buscar Pokémon pelo nome</span>
@@ -152,7 +153,7 @@ export function SelectionPage() {
           {Array.from({ length: 12 }, (_, index) => (
             <div className={styles.skeleton} key={index} aria-hidden="true" />
           ))}
-          <span className={styles.loadingRow}>
+          <span className={styles.loadingRow} role="status">
             <PokeballSpinner size={30} label="Carregando catálogo" /> carregando os 1025…
           </span>
         </div>
@@ -178,7 +179,9 @@ export function SelectionPage() {
             />
           ))}
           {visible.length === 0 && (
-            <p className={styles.empty}>Nenhum Pokémon encontrado com esse nome.</p>
+            <p className={styles.empty} role="status">
+              Nenhum Pokémon encontrado com esse nome.
+            </p>
           )}
         </div>
       )}

@@ -1,6 +1,8 @@
 import type { RoomSnapshot } from '../types/protocol'
 import { pokemonAssets, markAssetFailed, FALLBACK_SPRITE } from './assets'
-import { resolveBackground } from '../config/battleBackgrounds'
+import { markBackgroundFailed, resolveBackground } from '../config/battleBackgrounds'
+import { VFX_ATLASES } from './presentation/spriteRegistry'
+import { markVfxFailed } from './presentation/SpriteRenderer'
 
 /** Somente caminhos do registro local; todos os trabalhos terminam em até 3 s. */
 export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal): Promise<void> {
@@ -27,6 +29,7 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
   ]
   const background = resolveBackground(snapshot.arena).background
   if (background) paths.push(background)
+  paths.push(...Object.values(VFX_ATLASES))
   paths.unshift(FALLBACK_SPRITE)
   const pending = new Set(paths)
   const timer = setTimeout(cancel, 3000)
@@ -40,7 +43,11 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
         await response.arrayBuffer()
         pending.delete(path)
       } catch {
-        if (!signal.aborted) markAssetFailed(path)
+        if (!signal.aborted) {
+          markAssetFailed(path)
+          markBackgroundFailed(path)
+          markVfxFailed(path)
+        }
       }
     }
   }
@@ -49,6 +56,11 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
   } finally {
     clearTimeout(timer)
     signal.removeEventListener('abort', cancel)
-    if (!signal.aborted) for (const path of pending) markAssetFailed(path)
+    if (!signal.aborted)
+      for (const path of pending) {
+        markAssetFailed(path)
+        markBackgroundFailed(path)
+        markVfxFailed(path)
+      }
   }
 }

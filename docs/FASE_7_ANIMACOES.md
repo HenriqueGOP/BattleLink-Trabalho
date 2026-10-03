@@ -1,18 +1,20 @@
 # Fase 7 — animações de combate em spritesheets
 
-**Status:** planejada; ainda não implementada. Esta etapa foi adicionada a pedido do usuário após a fase 4. A fase 5 continua dedicada aos menus, e a fase 6 às arenas e à validação integrada.
+**Status:** implementada. Esta etapa foi adicionada a pedido do usuário após a fase 4 e executada junto das fases 5 e 6. A medição de 60 FPS em celular real continua pendente.
 
 ## Objetivo
 
 Dar identidade visual aos eventos de batalha com arte animada em spritesheets locais. O combate e seus resultados continuam sob autoridade do servidor; a fase 7 muda a apresentação e se conecta ao `AnimationDirector` e à `BattleEventQueue` entregues na fase 4.
 
-Os efeitos serão quadros desenhados para animação, não formas de fogo, bolhas, brilhos ou palavras montados com keyframes CSS. CSS pode definir posição, tamanho, recorte do campo e acessibilidade da camada. O desenho e os quadros dos efeitos virão das imagens do spritesheet, reproduzidos por um renderer de Canvas 2D ou por outro renderer leve validado no protótipo.
+Os efeitos são quadros de imagens com transparência. CSS define posição, tamanho,
+recorte do campo e acessibilidade da camada. O renderer Canvas 2D reproduz a arte
+dos atlas, enquanto GSAP/WAAPI movimentam os Pokémon e as barras de HP.
 
 O Pokémon continua usando os sprites locais do jogo. A fase prioriza efeitos reutilizáveis disparados pelos eventos; não exige criar animações corporais exclusivas para cada uma das 1.025 espécies.
 
 ## Catálogo de efeitos
 
-| Evento ou situação | Animação planejada |
+| Evento ou situação | Família entregue |
 |---|---|
 | Ataque | Investida/contato, golpe cortante, projétil e impacto. A seleção considera os dados disponíveis do golpe e tem fallback neutro. |
 | Esquiva e precisão | Deslocamento breve do alvo para esquiva; efeito de erro quando o golpe falha; barreira para bloqueio/Protect; resposta discreta de imunidade ou resistência. |
@@ -23,29 +25,64 @@ O Pokémon continua usando os sprites locais do jogo. A fase prioriza efeitos re
 | Buff e debuff | Sinal de aumento/redução de atributo ligado ao evento de `boost`, sem inferir mudança a partir do texto do log. |
 | Cura e efeitos correlatos | Brilho/recuperação para cura e drenagem, com famílias visuais curtas e reutilizáveis. |
 
-Os assets serão agrupados por família visual e tags confiáveis do catálogo/evento. Não será criado um spritesheet por golpe. Efeitos desconhecidos ou indisponíveis usam o efeito neutro/local já existente, sem impedir o combate.
+Os assets são agrupados por família visual e dados confiáveis do catálogo/evento.
+São reutilizados entre golpes. Efeitos desconhecidos ou indisponíveis usam impacto
+neutro local ou conclusão sem arte, sem impedir o combate.
 
 ## Arte e procedência
 
-1. Produzir efeitos originais com geração de imagem/sprites ou ilustração própria, ou selecionar material cuja licença permita explicitamente uso e redistribuição no jogo. Pesquisas na internet podem orientar referências e linguagem de prompt; uma imagem encontrada não entra no jogo por estar publicamente acessível.
-2. Preferir atlas de quadros com fundo transparente, grade consistente, enquadramento e ponto de origem definidos, sequência temporal legível e sem texto, assinatura ou marcas d'água.
-3. Manter junto de cada asset seu ID, fonte/método de criação, prompt final quando gerado, licença/termos, autoria/créditos, dimensões, quantidade e duração de quadros, frequência de reprodução e hash.
-4. Revisar manualmente bordas, transparência, alinhamento entre quadros, escala no campo e contraste sobre as seis arenas. Otimizar em formato que preserve o alpha e a nitidez do estilo final.
-5. Guardar os arquivos no repositório local; nenhum endereço, prompt ou conteúdo recebido do socket pode escolher um caminho de arquivo ou URL.
+Três imagens originais foram geradas com imagegen integrado, em modo de geração
+nova com fundo transparente: ataques, status e transições. Cada prompt especifica
+oito famílias, oito quadros por linha, paleta e sequência temporal, sem texto,
+assinatura ou logotipos. Não foram incorporadas imagens encontradas na internet.
 
-Um prompt de geração por asset descreverá um efeito 2D original para jogo, a paleta e silhueta, fundo transparente, número/ordem de quadros, grade uniforme e ausência de letras/logotipos. O prompt será adaptado por família (por exemplo, chama, brilho de buff ou espiral de sono), não reaproveitado como uma instrução genérica para todo efeito.
+Os atlas e quadros foram inspecionados visualmente na galeria e no campo. A conversão
+para WebP preserva dimensões e alpha; pequenos fragmentos entre três linhas são
+excluídos pelo recorte tipado descrito abaixo. Créditos, termos aplicáveis, prompts,
+dimensões e hashes estão registrados. Caminhos são fixos no registro local; conteúdo
+do socket não seleciona URLs, arquivos ou HTML.
 
-## Integração técnica planejada
+## Integração técnica entregue
 
-- Criar um registro tipado de IDs de efeitos e metadados de atlas, quadro, ponto de origem, duração e tags. A resolução usa eventos canônicos e dados locais validados.
-- Estender o `AnimationDirector` para iniciar o asset adequado e aguardar sua conclusão. Efeitos persistentes, como status ativo, têm ciclo de início/fim e não bloqueiam a fila de turnos.
-- Desenhar em uma camada visual comum por arena, com número limitado de efeitos e quadros ativos. O renderer próprio atualiza Canvas sem criar commits React por frame; componentes React só sinalizam início, estado acessível e conclusão.
-- Usar o AbortSignal já adotado pelo diretor para cancelar quadros, timers, preload e camadas ao pular, ocultar a aba, trocar de sala ou desmontar a cena. Skip aplica os fatos do evento e limpa efeitos visuais pendentes.
-- Pré-carregar apenas os assets pertinentes à cena/equipe/movimentos conhecidos, com concorrência e limite de tempo. Se o arquivo falhar, usar fallback local e seguir o resultado autoritativo.
-- Respeitar `prefers-reduced-motion`: reduzir efeitos e duração visual sem omitir eventos, áudio escolhido, HP ou resultado. Aplicar limite global para flashes e evitar strobe.
-- Manter partículas do diretor em pool limitado; spritesheets não criam nós DOM por quadro nem alteram HP, RNG ou regras.
+- Registro tipado com IDs, atlas, linha, FPS, tamanho e margens de recorte. A resolução usa eventos canônicos e dados locais validados.
+- O `AnimationDirector` inicia o clip adequado e aguarda sua conclusão. Efeitos persistentes têm ciclo de início/fim e não bloqueiam a fila de turnos.
+- A camada de cada participante usa Canvas sem commits React por frame; React confirma o estado apresentado nos limites dos eventos.
+- AbortSignal cancela quadros, timers e canvas em skip, aba oculta e desmontagem. Skip aplica os fatos e limpa efeitos pendentes; sair da sala libera os recursos da cena.
+- Preload limitado carrega recursos pertinentes e os três atlas universais. Arquivo indisponível usa fallback e conserva o resultado autoritativo.
+- `prefers-reduced-motion` usa poses estáticas de status e confirma os demais eventos sem efeitos finitos; não há flashes de tela cheia.
+- Limitar os clips a 24; spritesheets não criam nós DOM por quadro nem alteram HP, RNG ou regras. As antigas partículas CSS foram substituídas pela arte dos atlas.
 
-O tamanho final dos atlas e o renderer serão fixados após um protótipo medido. Alvos iniciais para orientar a produção: até 256 KiB por atlas e até 4 MiB para o conjunto de efeitos de batalha comprimidos. Se o conjunto visual não couber sem reduzir legibilidade, a seleção e os limites serão revistos com evidência de tamanho, memória e desempenho antes de expandir o catálogo.
+O protótipo fixou o renderer em Canvas 2D, com um relógio RAF compartilhado e até 24 clips
+simultâneos (incluindo poses estáticas), sem criar nós por quadro. Foram removidas as
+partículas e auras desenhadas por CSS; GSAP/WAAPI conservam a movimentação dos Pokémon,
+HP e textos. O hit-stop também congela o relógio dos sprites.
+
+O alvo inicial de 256 KiB por atlas foi revisto para 768 KiB após empacotamento: ataques
+620.824 bytes, status 579.934 e transições 656.072. Total **1.856.830 bytes**, abaixo dos
+4 MiB previstos para o conjunto. São 24 clips de oito quadros, com alpha real, grade 8×8,
+dimensões reais 1254×1254 e FPS entre 8 e 24 conforme a família. Três clips de transição
+têm margens de recorte no registro para excluir pequenos fragmentos da linha vizinha
+observados na inspeção; os testes verificam o recorte dentro da célula, conservando ao
+menos 75% de sua altura. Não houve redimensionamento
+ou retoque do arquivo gerado. As imagens decodificadas representam aproximadamente
+18 MiB de pixels RGBA; três entradas de cache limitam a retenção dos atlas. O backing
+store dos canvas tem DPR limitado a dois e tamanho máximo de 240 px lógicos.
+
+O preload carrega os três atlas universais, a arena selecionada e recursos conhecidos
+dos participantes com até seis tarefas concorrentes, conservando o limite global de três segundos. Isso
+não requer conhecer golpes privados do oponente. Decodificação de cada imagem tem limite
+de 1,5 s. Falha em status/transições usa impacto neutro local; se todos os arquivos
+estiverem indisponíveis, os fatos, HP, texto e resultado continuam sendo apresentados.
+
+Fontes, hashes, prompts e método de empacotamento estão em
+`client/public/battle-vfx/{CREDITS.md,manifest.json}` e `docs/art-prompts`.
+
+Proteção/confusão usam operações canônicas. A fila fornece o próximo evento público ao
+diretor para distinguir preparação de carga de uma liberação ofensiva. Nenhuma escolha
+pendente é revelada por essa consulta. Críticos absorvidos por Substitute não contaminam
+danos residuais; loops de status terminam ao curar, nocautear, trocar ou desmontar, e
+são cancelados na aba oculta. Em movimento reduzido, são poses estáticas e o diretor
+confirma eventos sem efeitos finitos. Não há flashes de tela cheia.
 
 ## Aceite da fase
 
@@ -58,3 +95,11 @@ O tamanho final dos atlas e o renderer serão fixados após um protótipo medido
 - Registrar capturas dos casos principais e contagens do React Profiler, além do tamanho dos atlas e uma medição em build de produção. O alvo de 60 FPS em celular intermediário só será declarado após teste no aparelho real.
 
 Ataques por famílias e efeitos visuais dão cobertura ampla com assets reutilizáveis. Novas famílias podem ser adicionadas no registro sem criar uma animação dedicada para cada golpe.
+
+## Evidência e limites
+
+Testes completos, builds normal/profile, lint, galeria de 24 clips, React Profiler,
+multi-hit, troca, nocaute, skip, aba oculta e resultado foram executados. Os resultados
+e capturas estão na [validação conjunta](FASES_5_6_7_VALIDACAO.md). A amostra de FPS é
+desktop e inclui o término dos efeitos finitos; 60 FPS em celular real e a captura
+final do indicador corrigido a 360 px permanecem **[VERIFICAR]**.

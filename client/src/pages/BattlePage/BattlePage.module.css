@@ -1,17 +1,18 @@
 ﻿.page {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-4);
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 10px clamp(10px, 2.5vw, 24px) 18px;
+  padding: var(--space-5) var(--space-5) var(--space-6);
 }
 
 .topbar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding-bottom: 10px;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
   border-bottom: 2px solid var(--line);
 }
 
@@ -19,15 +20,15 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-family: var(--font-display);
-  font-size: 10px;
+  font-family: var(--font-ui);
+  font-size: 26px;
   letter-spacing: 0.06em;
   color: var(--text-dim);
   white-space: nowrap;
 }
 
 .brand b {
-  color: var(--poke-red);
+  color: var(--hpbar-label);
 }
 
 .ball {
@@ -48,14 +49,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 15px;
+  font-size: var(--font-size-label);
   color: var(--text-faint);
 }
 
 .tools {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   margin-left: auto;
 }
 
@@ -67,21 +68,23 @@
   min-height: 380px;
   text-align: center;
   padding: 30px;
-  background: var(--bg-panel);
-  border: 2px solid var(--line);
-  border-radius: 14px;
+  background: var(--hud-face);
+  color: var(--hud-ink);
+  border: var(--border-width) solid var(--hud-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
 }
 
 .waiting h2 {
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
-  color: var(--text);
+  color: var(--hud-ink);
 }
 
 .waiting p {
-  font-size: 16px;
-  color: var(--text-faint);
+  font-size: 24px;
+  color: var(--hud-ink-soft);
 }
 
 .waitingBall {
@@ -118,8 +121,8 @@
 .commandBtn {
   width: 100%;
   justify-content: center;
-  font-family: var(--font-display);
-  font-size: 10px;
+  font-family: var(--font-ui);
+  font-size: 26px;
   letter-spacing: 0.06em;
   min-height: 44px;
 }
@@ -128,8 +131,8 @@
   width: 100%;
   margin-top: 7px;
   justify-content: center;
-  font-family: var(--font-display);
-  font-size: 8px;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-label);
   letter-spacing: 0.06em;
 }
 
@@ -165,10 +168,10 @@
   position: relative;
   /* mais baixo que antes: campo + caixa de mensagem + menu cabem numa tela,
      como no jogo, sem obrigar a rolar para ver os golpes */
-  min-height: clamp(300px, 42vh, 440px);
+  min-height: clamp(330px, 42vh, 460px);
   overflow: hidden;
   border: 3px solid var(--line-strong);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
   /* fundo base escuro: garante contraste sob qualquer cenário */
   background: var(--bg-base);
@@ -193,7 +196,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  width: min(272px, 56%);
+  width: min(300px, 56%);
 }
 /* sprites e HUDs agora ficam em cantos opostos, então basta uma folga pequena */
 .spots > :nth-child(2) {
@@ -206,15 +209,15 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-  width: min(272px, 56%);
+  width: min(300px, 56%);
 }
 
-/* dock do indicador de turno: fixo no rodapé do palco, linha única, não cobre sprites */
+/* Indicador no espaço central entre os HUDs; preserva as etiquetas do jogador. */
 .turnDock {
   position: absolute;
   left: 50%;
-  bottom: 8px;
-  translate: -50% 0;
+  top: 45%;
+  translate: -50% -50%;
   z-index: var(--z-hud);
   pointer-events: none;
 }
@@ -231,7 +234,7 @@
     grid-template-columns: 1fr;
   }
   .stage {
-    min-height: clamp(240px, 46vw, 340px);
+    min-height: clamp(360px, 48vw, 400px);
   }
   .spots > :first-child,
   .spots > :last-child {
@@ -243,12 +246,26 @@
 }
 
 @media (max-width: 480px) {
+  .page {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+  .topbar {
+    gap: var(--space-2);
+  }
+  .tools {
+    gap: var(--space-2);
+  }
+  .tools button {
+    font-size: 18px;
+    padding-inline: var(--space-2);
+  }
   .brand span {
     display: none;
   }
   .spots > :first-child,
   .spots > :last-child {
-    width: 66%;
+    width: 62%;
   }
   .spots > :nth-child(2) {
     margin-top: 6px;

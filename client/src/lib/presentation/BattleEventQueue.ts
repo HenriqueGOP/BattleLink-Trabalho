@@ -17,7 +17,8 @@ export interface EventRunner {
     event: CanonicalEvent,
     wire: RoomSnapshot,
     signal: AbortSignal,
-    commit: () => void
+    commit: () => void,
+    next?: CanonicalEvent
   ): Promise<void>
 }
 type Job = { event: CanonicalEvent } | { checkpoint: RoomSnapshot }
@@ -219,7 +220,14 @@ export class BattleEventQueue {
             this.publish({ wire: applyPresentedEvent(this.value.wire!, job.event) })
         }
         this.publish({ activeEvent: job.event, busy: true })
-        await this.runner.run(job.event, wire, this.controller.signal, commit)
+        const following = this.jobs[0]
+        await this.runner.run(
+          job.event,
+          wire,
+          this.controller.signal,
+          commit,
+          following && 'event' in following ? following.event : undefined
+        )
         if (generation !== this.generation || this.disposed) return
         commit()
       }

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { useAudio } from '../../hooks/useAudio'
+import { useModalDialog } from '../../hooks/useModalDialog'
 import { audio } from '../../lib/audio'
 import styles from './AudioSettings.module.css'
 
@@ -7,36 +8,22 @@ import styles from './AudioSettings.module.css'
 export function AudioSettings() {
   const prefs = useAudio()
   const [open, setOpen] = useState(false)
-  const panelRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    if (!open) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
-    }
-    const onClick = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (!panelRef.current?.contains(target) && !buttonRef.current?.contains(target)) {
-        setOpen(false)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    window.addEventListener('mousedown', onClick)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('mousedown', onClick)
-    }
-  }, [open])
+  const dialogId = useId()
+  const titleId = useId()
+  useModalDialog(dialogRef, open, buttonRef)
 
   return (
     <div className={styles.wrap}>
       <button
         ref={buttonRef}
+        type="button"
         className={styles.gear}
-        onClick={() => setOpen(value => !value)}
+        onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="dialog"
+        aria-controls={dialogId}
         aria-label="Configurações de áudio"
         title="Configurações de áudio"
       >
@@ -49,63 +36,94 @@ export function AudioSettings() {
       </button>
 
       {open && (
-        <div ref={panelRef} className={styles.panel} role="dialog" aria-label="Configurações de áudio">
-          <h3 className={styles.title}>Áudio</h3>
+        <dialog
+          ref={dialogRef}
+          id={dialogId}
+          className={styles.dialog}
+          aria-modal="true"
+          aria-labelledby={titleId}
+          onCancel={(event) => {
+            event.preventDefault()
+            setOpen(false)
+          }}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setOpen(false)
+          }}
+        >
+          <div className={styles.panel}>
+            <header className={styles.header}>
+              <h3 id={titleId} className={styles.title}>
+                <span className="sr-only">Configurações de </span>Áudio
+              </h3>
+              <button
+                type="button"
+                className={styles.close}
+                aria-label="Fechar configurações de áudio"
+                onClick={() => setOpen(false)}
+              >
+                ×
+              </button>
+            </header>
 
-          <label className={styles.row}>
-            <span>Música</span>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={prefs.musicVolume}
-              onChange={event => prefs.setVolume('music', Number(event.target.value))}
-              aria-label="Volume da música"
-            />
-            <b>{Math.round(prefs.musicVolume * 100)}</b>
-          </label>
-          <label className={styles.check}>
-            <input
-              type="checkbox"
-              checked={prefs.musicMuted}
-              onChange={event => prefs.setMuted('music', event.target.checked)}
-            />
-            Silenciar música
-          </label>
+            <label className={styles.row}>
+              <span>Música</span>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={prefs.musicVolume}
+                aria-valuetext={`${Math.round(prefs.musicVolume * 100)} por cento`}
+                onChange={(event) => prefs.setVolume('music', Number(event.target.value))}
+                aria-label="Volume da música"
+              />
+              <b>{Math.round(prefs.musicVolume * 100)}</b>
+            </label>
+            <label className={styles.check}>
+              <input
+                type="checkbox"
+                checked={prefs.musicMuted}
+                onChange={(event) => prefs.setMuted('music', event.target.checked)}
+              />
+              Silenciar música
+            </label>
 
-          <label className={styles.row}>
-            <span>Efeitos</span>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={prefs.sfxVolume}
-              onChange={event => prefs.setVolume('sfx', Number(event.target.value))}
-              aria-label="Volume dos efeitos"
-            />
-            <b>{Math.round(prefs.sfxVolume * 100)}</b>
-          </label>
-          <label className={styles.check}>
-            <input
-              type="checkbox"
-              checked={prefs.sfxMuted}
-              onChange={event => prefs.setMuted('sfx', event.target.checked)}
-            />
-            Silenciar efeitos
-          </label>
+            <label className={styles.row}>
+              <span>Efeitos</span>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={prefs.sfxVolume}
+                aria-valuetext={`${Math.round(prefs.sfxVolume * 100)} por cento`}
+                onChange={(event) => prefs.setVolume('sfx', Number(event.target.value))}
+                aria-label="Volume dos efeitos"
+              />
+              <b>{Math.round(prefs.sfxVolume * 100)}</b>
+            </label>
+            <label className={styles.check}>
+              <input
+                type="checkbox"
+                checked={prefs.sfxMuted}
+                onChange={(event) => prefs.setMuted('sfx', event.target.checked)}
+              />
+              Silenciar efeitos
+            </label>
 
-          <button
-            className={styles.test}
-            onClick={() => {
-              audio.setMuted('sfx', false)
-              audio.play('select')
-            }}
-          >
-            ♪ Testar som
-          </button>
-        </div>
+            <button
+              type="button"
+              className={styles.test}
+              onClick={() => {
+                audio.unlock()
+                audio.setMuted('sfx', false)
+                audio.play('select')
+              }}
+            >
+              ♪ Testar som
+            </button>
+          </div>
+        </dialog>
       )}
     </div>
   )

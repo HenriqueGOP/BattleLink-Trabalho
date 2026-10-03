@@ -1,0 +1,12 @@
+Use case: stylized-concept. Asset type: transparent production cartoon combat status spritesheet.
+Create exactly 1024x1024 pixels, transparent alpha PNG. Strict regular grid of EIGHT columns and EIGHT rows (128x128px each cell). No grid lines, no text/letters/numbers, no watermark, no background, no creatures. Each shape stays within the central 80x80 pixels of its cell; leave 24px clear margin on all sides. This padding and fixed center anchor are critical for game cropping.
+Every row is a seamless eight-frame animation loop left-to-right. Same effect in that row grows, sways, pulses and returns to initial pose. Rounded hand-drawn 2D VFX, thick dark navy outlines, vivid flat cel shading, crisp contours, minimal glow. Match a playful cartoon creature battle.
+ROW1: small red-orange flickering cluster of three fire flames (burn).
+ROW2: violet poison bubbles rising from purple wisps (poison).
+ROW3: pale blue sleepy crescent with three rounded floating bubbles, no letters (sleep).
+ROW4: gold little stars orbiting a lavender curved arc (confusion).
+ROW5: translucent turquoise round shield dome with bright outlined rim (protect).
+ROW6: lime-green upward arrows with golden sparkles (buff).
+ROW7: purple downward arrows and small dark blue droplets (debuff).
+ROW8: mint green healing plus-cross and four golden twinkles (heal).
+Exactly eight progressive frames per row. Transparent empty padding, precise centers, each effect independent of adjacent cells. No gradients outside of shapes.

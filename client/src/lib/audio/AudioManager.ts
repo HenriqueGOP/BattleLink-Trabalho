@@ -70,21 +70,21 @@ class AudioManager {
   setVolume(channel: AudioChannel, value: number): void {
     const clamped = Math.max(0, Math.min(1, value))
     if (channel === 'music') {
-      this.prefs.musicVolume = clamped
-      this.music.setVolume(clamped)
+      this.prefs = { ...this.prefs, musicVolume: clamped }
+      this.music.setVolume(this.prefs.musicMuted ? 0 : clamped)
     } else {
-      this.prefs.sfxVolume = clamped
-      this.sfx.setVolume(clamped)
+      this.prefs = { ...this.prefs, sfxVolume: clamped }
+      this.sfx.setVolume(this.prefs.sfxMuted ? 0 : clamped)
     }
     this.persist()
   }
 
   setMuted(channel: AudioChannel, muted: boolean): void {
     if (channel === 'music') {
-      this.prefs.musicMuted = muted
+      this.prefs = { ...this.prefs, musicMuted: muted }
       this.music.setVolume(muted ? 0 : this.prefs.musicVolume)
     } else {
-      this.prefs.sfxMuted = muted
+      this.prefs = { ...this.prefs, sfxMuted: muted }
       this.sfx.setVolume(muted ? 0 : this.prefs.sfxVolume)
     }
     this.persist()

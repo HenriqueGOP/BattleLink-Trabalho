@@ -16,12 +16,11 @@
 /* Etiqueta "HP" dourada, levemente inclinada como no original */
 .hpTag {
   flex: none;
-  font-family: var(--font-display);
-  font-size: 8px;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-small);
   line-height: 1;
   letter-spacing: 0.04em;
-  color: var(--hpbar-label);
-  text-shadow: 0 1px 0 var(--hud-edge);
+  color: var(--hud-ink);
   transform: skewX(-12deg);
 }
 
@@ -29,7 +28,7 @@
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
-  height: 9px;
+  height: 11px;
   border-radius: 999px;
   background: var(--hpbar-track);
   border: 2px solid var(--hud-edge);
@@ -38,7 +37,7 @@
 }
 
 .compact .track {
-  height: 8px;
+  height: 10px;
 }
 
 .fill {
@@ -73,8 +72,8 @@
 
 .number {
   align-self: flex-end;
-  font-family: var(--font-display);
-  font-size: 9px;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-label);
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--hud-ink);
