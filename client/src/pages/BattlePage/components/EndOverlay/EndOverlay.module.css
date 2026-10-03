@@ -83,6 +83,12 @@
   line-height: 1.6;
   color: var(--hud-ink);
 }
+.title,
+.detail {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 .victory {
   border-top-color: var(--success);
 }

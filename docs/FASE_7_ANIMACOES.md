@@ -1,6 +1,6 @@
 # Fase 7 — animações de combate em spritesheets
 
-**Status:** implementada. Esta etapa foi adicionada a pedido do usuário após a fase 4 e executada junto das fases 5 e 6. A medição de 60 FPS em celular real continua pendente.
+**Status:** implementada. Esta etapa foi adicionada a pedido do usuário após a fase 4 e executada junto das fases 5 e 6. A composição móvel final foi validada em 2026-10-03; 60 FPS e memória em celular real continuam pendentes.
 
 ## Objetivo
 
@@ -99,7 +99,28 @@ Ataques por famílias e efeitos visuais dão cobertura ampla com assets reutiliz
 ## Evidência e limites
 
 Testes completos, builds normal/profile, lint, galeria de 24 clips, React Profiler,
-multi-hit, troca, nocaute, skip, aba oculta e resultado foram executados. Os resultados
-e capturas estão na [validação conjunta](FASES_5_6_7_VALIDACAO.md). A amostra de FPS é
-desktop e inclui o término dos efeitos finitos; 60 FPS em celular real e a captura
-final do indicador corrigido a 360 px permanecem **[VERIFICAR]**.
+multi-hit, troca, nocaute, skip, aba oculta e resultado foram executados. A suíte
+completa passou novamente em 2026-10-03, incluindo os 1.564 cenários/turnos da fase
+2B e os 12 replays. Lint teve zero erros e os dois avisos existentes de Fast Refresh;
+o build normal passou com 443,98 KB de JS principal e 78,01 KB de CSS.
+
+O percurso real de 2026-10-03 confirmou escolha de Cosmic Power por teclado,
+bloqueio dos controles enquanto a escolha estava pendente, nocaute tóxico de 130
+a zero, troca forçada para Heatmor (160/160), troca voluntária para Thundurus
+(154/154) e resultado por desconexão. Em viewport de 360 × 800 px, o conteúdo
+mediu 350 px sem rolagem horizontal. A grade acomodou dois tipos, TOX e sete
+modificadores no HUD próprio, crescendo de 360 para 442 px; HUDs e indicador fora
+do campo não se intersectaram. Evidências:
+[HUD denso final](evidence/phases-5-7/battle-360-dense-after.png),
+[medidas DOM](evidence/phases-5-7/battle-360-measurements.json),
+[troca](evidence/phases-5-7/battle-360-after-switch.png) e
+[resultado](evidence/phases-5-7/result-360-followup.png). O modal manteve o foco
+com Tab/Shift+Tab e retornou ao lobby com Escape.
+
+O rótulo de reviver e a quebra de nomes longos no resultado foram conferidos no
+código; Revival e derrota com nome contínuo de 24 caracteres não foram exercitados
+ao vivo. Os resultados completos estão na [validação conjunta](FASES_5_6_7_VALIDACAO.md).
+A validação documenta esses casos específicos, sem representar certificação de
+acessibilidade ou cobertura visual de todos os estados. A amostra de FPS é desktop
+e inclui o término dos efeitos finitos; **60 FPS e memória em celular intermediário
+real permanecem [VERIFICAR]**.

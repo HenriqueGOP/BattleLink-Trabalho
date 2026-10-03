@@ -60,7 +60,7 @@ export const BattleControls = memo(function BattleControls({
               onMouseEnter={() => {
                 if (canSwitch && !active && !fainted) audio.play('hover')
               }}
-              aria-label={`Trocar para ${member.pokemon}, ${member.hp} de ${member.maxHp} HP`}
+              aria-label={`${request?.kind === 'revive' ? 'Reviver' : 'Trocar para'} ${member.pokemon}, ${member.hp} de ${member.maxHp} HP`}
             >
               <span className={styles.portrait}>
                 <Sprite src={member.image} name={member.pokemon} size={40} />

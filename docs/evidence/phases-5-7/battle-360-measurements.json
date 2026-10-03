@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-03",
+  "requestedViewport": {
+    "width": 360,
+    "height": 800
+  },
+  "buttons": [
+    {
+      "height": 44,
+      "name": "Configurações de áudio",
+      "width": 44
+    },
+    {
+      "height": 44,
+      "name": "Pular animações",
+      "width": 136.75
+    },
+    {
+      "height": 44,
+      "name": "Sair",
+      "width": 52.609375
+    },
+    {
+      "height": 97,
+      "name": "Dragon DancePP 19/20dragon",
+      "width": 144
+    },
+    {
+      "height": 97,
+      "name": "Cosmic PowerPP 18/20psychic",
+      "width": 144
+    },
+    {
+      "height": 97,
+      "name": "Calm MindPP 18/20psychic",
+      "width": 144
+    },
+    {
+      "height": 97,
+      "name": "Double TeamPP 14/15normal",
+      "width": 144
+    },
+    {
+      "height": 44,
+      "name": "◀ VOLTAR",
+      "width": 296
+    }
+  ],
+  "clientWidth": 350,
+  "huds": [
+    {
+      "rect": {
+        "bottom": 247,
+        "height": 148,
+        "left": 25,
+        "right": 205,
+        "top": 99,
+        "width": 180,
+        "x": 25,
+        "y": 99
+      },
+      "side": "opponent"
+    },
+    {
+      "rect": {
+        "bottom": 515,
+        "height": 254,
+        "left": 145,
+        "right": 325,
+        "top": 261,
+        "width": 180,
+        "x": 145,
+        "y": 261
+      },
+      "side": "me"
+    }
+  ],
+  "hudsIntersect": false,
+  "indicator": {
+    "bottom": 578,
+    "height": 38,
+    "left": 124.015625,
+    "right": 225.984375,
+    "top": 540,
+    "width": 101.96875,
+    "x": 124.015625,
+    "y": 540
+  },
+  "indicatorIntersectsHuds": false,
+  "innerWidth": 360,
+  "ownHudText": "VOCÊQA MobilesmeargleLv50HP122/130TOXnormalgrass▲ATK+1▲DEF+2▲SPA+2▲SPD+4▲SPE+1▼ACC-1▲EVA+1",
+  "scrollWidth": 350,
+  "stage": {
+    "bottom": 528,
+    "height": 442,
+    "left": 12,
+    "right": 338,
+    "top": 86,
+    "width": 326,
+    "x": 12,
+    "y": 86
+  }
+}

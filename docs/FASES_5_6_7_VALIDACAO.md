@@ -1,6 +1,6 @@
 # Validação conjunta — fases 5, 6 e 7
 
-Data: 2026-10-02. O usuário autorizou executar as três fases juntas. A implementação
+Entrega: 2026-10-02. Validação móvel concluída em 2026-10-03. O usuário autorizou executar as três fases juntas. A implementação
 preserva o motor Gen 9 e o protocolo `pokemon-battle/3`, com mudanças na interface,
 nos IDs de arena e na apresentação de eventos.
 
@@ -19,8 +19,9 @@ até fechamento; avisos temporários pausam o prazo durante foco ou hover.
 
 ## Regressões automatizadas
 
-A suíte completa da raiz passou após as alterações finais de apresentação e recorte
-dos atlas. Não foi removido nenhum grupo anterior. O runner inclui os novos testes
+A suíte completa da raiz (`npm test`) passou novamente em 2026-10-03 após o ajuste
+da grade e dos textos acessíveis, incluindo os 1.564 cenários/turnos da fase 2B e os
+12 replays. Não foi removido nenhum grupo anterior. O runner inclui os novos testes
 de áudio, renderer e eventos reais.
 
 | Grupo | Evidência |
@@ -51,7 +52,8 @@ do build normal distribuído.
 | Início | [PNG](evidence/phases-5-7/home-before.png) | [JPG](evidence/phases-5-7/home-after.jpg) | [JPG](evidence/phases-5-7/home-360.jpg) |
 | Seleção | [PNG](evidence/phases-5-7/selection-before.png) | [JPG](evidence/phases-5-7/selection-after.jpg) | [JPG](evidence/phases-5-7/selection-360.jpg) |
 | Montagem | [PNG](evidence/phases-5-7/team-before.png) | [JPG](evidence/phases-5-7/team-after.jpg) | [JPG](evidence/phases-5-7/team-360.jpg) |
-| Batalha | [PNG](evidence/phases-5-7/battle-before.png) | [PNG após troca real](evidence/phases-5-7/battle-real-after-switch.png) | Captura final **[VERIFICAR]**, conforme limite abaixo |
+| Batalha | [PNG](evidence/phases-5-7/battle-before.png) | [Desktop final](evidence/phases-5-7/battle-desktop-followup.png) | [HUD com status e sete modificadores](evidence/phases-5-7/battle-360-dense-after.png) |
+| Resultado | — | [Partida real anterior](evidence/phases-5-7/result-real-after.png) | [Resultado final](evidence/phases-5-7/result-360-followup.png) |
 
 - Busca vazia, sorteio validado no servidor, seleção de golpes, confirmação e escolhas
   foram percorridos. As telas inspecionadas a 360 px não excederam a largura do
@@ -76,14 +78,41 @@ do build normal distribuído.
   Escape reiniciou a fixture. Capturas: [laboratório](evidence/phases-5-7/result-after.png),
   [partida real](evidence/phases-5-7/result-real-after.png).
 
-A captura final da batalha a 360 px continua **[VERIFICAR]**. A inspeção inicial
-identificou sobreposição e o layout foi ajustado. Na retomada, uma sessão de navegador
-ficou indisponível e a restante não aplicou o viewport solicitado, medindo 717 px.
-A [captura atual](evidence/phases-5-7/battle-current-717.png) está identificada por
-essa largura; não representa a verificação móvel final do indicador corrigido.
+### Fechamento da validação móvel — 2026-10-03
 
-Build final normal do servidor e cliente passou; o chunk principal tem 443,95 KB
-e o CSS 77,87 KB. O build normal exclui laboratório, galeria, fixture e instrumentação
+A nova sessão confirmou `innerWidth` de 360 px e altura de 800 px. A área útil do
+documento mediu 350 px por causa da scrollbar: `clientWidth` e `scrollWidth` foram
+iguais, sem rolagem horizontal. O HUD próprio tinha tipos Normal/Grass, TOX e todos
+os sete modificadores; o adversário usava o nome de 24 caracteres
+`ABCDEFGHIJKLMNOPQRSTUVWX`. O campo cresceu de 360 para 442 px conforme o conteúdo,
+com HUD próprio de 254 px e adversário de 148 px. Os HUDs não se cruzaram; o indicador
+ficou em linha própria fora do campo e não intersectou nenhum HUD. Evidências:
+[antes](evidence/phases-5-7/battle-360-dense-before.png),
+[depois](evidence/phases-5-7/battle-360-dense-after.png) e
+[medidas DOM](evidence/phases-5-7/battle-360-measurements.json).
+
+- Teclado: Enter abriu e fechou a equipe, abriu golpes e escolheu Cosmic Power.
+  Os controles ficaram desabilitados enquanto a escolha aguardava resolução.
+- O dano tóxico reduziu HP de 130 a zero; a troca forçada colocou Heatmor em campo
+  com 160/160. A troca voluntária posterior colocou Thundurus com 154/154:
+  [captura após troca](evidence/phases-5-7/battle-360-after-switch.png).
+- Os seis botões de equipe mediram 96 px de altura, os controles principais 44 px
+  e os botões de golpe 97 px. No desktop de 1280 px, o documento teve conteúdo de
+  1270 px e não apresentou rolagem horizontal:
+  [captura desktop](evidence/phases-5-7/battle-desktop-followup.png).
+- A vitória por desconexão abriu o resultado em 360 px. O conteúdo do modal mediu
+  350 px sem rolagem horizontal; o botão de lobby mediu 66,59 px de altura.
+  Tab/Shift+Tab mantiveram o foco nele; Escape retornou ao lobby com o campo de nome
+  focado: [resultado](evidence/phases-5-7/result-360-followup.png).
+
+O rótulo dos cards de reviver e a quebra de palavras no título/descrição do resultado
+foram corrigidos e revisados no código. Revival e derrota com nome contínuo de 24
+caracteres não foram exercitados ao vivo; o nome longo foi observado no HUD adversário.
+As medidas acima fecham a pendência específica da composição móvel, sem certificar
+todos os estados possíveis de layout ou a acessibilidade inteira da aplicação.
+
+Build final normal do servidor e cliente passou em 2026-10-03; o chunk principal tem 443,98 KB
+e o CSS 78,01 KB. O build normal exclui laboratório, galeria, fixture e instrumentação
 própria, e rejeita simulador/calculadora no navegador. Lint terminou com zero erros
 e os dois avisos anteriores de Fast Refresh. O build de perfil passou com o aviso
 esperado de chunk acima de 500 KB. `git diff --check` passou.

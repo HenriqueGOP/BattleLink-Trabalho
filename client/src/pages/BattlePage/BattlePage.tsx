@@ -154,11 +154,12 @@ export function BattlePage() {
                   />
                   <HudCard player={myPlayer} opponent={false} />
                 </div>
-                <div className={styles.turnDock}>
-                  <TurnIndicator myTurn={myTurn} finished={finished} />
-                </div>
               </section>
             </BattleProfiler>
+          </div>
+
+          <div className={styles.turnDock}>
+            <TurnIndicator myTurn={myTurn} finished={finished} />
           </div>
 
           <CommandBar
