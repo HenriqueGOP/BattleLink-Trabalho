@@ -7,6 +7,7 @@ import { audio, type SfxName } from '../lib/audio'
 import { pokemonAssets } from '../lib/assets'
 import type { CanonicalEvent, RoomSnapshot } from '../types/protocol'
 import type { GameState } from '../types/battle'
+import { reducedMotion, subscribeMotionPreference } from '../lib/presentation/motionPreference'
 export type { DamageTotals } from '../lib/presentation/BattleEventQueue'
 
 const sounds: Partial<Record<CanonicalEvent['type'], SfxName>> = {
@@ -49,7 +50,7 @@ export function useBattleEvents(
       stage: getStage,
       sprite: getPlayer,
       sound,
-      reducedMotion: forceMotion ? () => false : undefined,
+      reducedMotion: forceMotion ? () => false : reducedMotion,
     })
     const queue = new BattleEventQueue(director)
     return { director, queue }
@@ -68,18 +69,17 @@ export function useBattleEvents(
   }, [queue, state])
   useEffect(() => {
     const visibility = () => queue.setHidden(document.hidden)
-    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
     const reduce = () => {
-      if (preference.matches) queue.skip()
+      if (!forceMotion && reducedMotion()) queue.skip()
     }
     visibility()
     document.addEventListener('visibilitychange', visibility)
-    preference.addEventListener('change', reduce)
+    const unsubscribe = subscribeMotionPreference(reduce)
     return () => {
       document.removeEventListener('visibilitychange', visibility)
-      preference.removeEventListener('change', reduce)
+      unsubscribe()
     }
-  }, [queue])
+  }, [queue, forceMotion])
   const presented = useMemo(
     () => (presentation.wire ? presentSnapshot(presentation.wire) : state),
     [presentation.wire, state]

@@ -1,5 +1,13 @@
 # Fase 5 — menus e identidade visual
 
+## Atualização de frontend — 2026-10-03
+
+A reformulação **Battle Link** substitui a paleta creme e a tipografia anteriores por branco gelo/azul profundo, acentos vermelho/mint e fontes locais Oxanium/Nunito Sans. Início, catálogo, montagem e batalha foram redesenhados. Evidências e limites desta entrega ficam em [Frontend Refresh](FRONTEND_REFRESH.md).
+
+O conteúdo abaixo preserva o histórico da fase 5: suas capturas, medidas e contrastes correspondem à interface anterior. A validação atual usa dois terminais, com `npm run dev` em `server/` e em `client/`, e **http://localhost:5173/** em janelas normal e anônima. Resultados novos são registrados no relatório da reformulação quando verificados; FPS e memória em aparelho real continuam **[VERIFICAR]**.
+
+## Registro histórico da fase 5
+
 Última validação integrada: **2026-10-03**. A pendência da captura final da batalha a 360 px foi encerrada.
 
 ## Entrega

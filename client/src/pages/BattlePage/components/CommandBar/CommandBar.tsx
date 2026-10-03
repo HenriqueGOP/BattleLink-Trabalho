@@ -1,5 +1,6 @@
 import { TypeBadge } from '../../../../components/TypeBadge'
 import { moveEffects } from '../../../../lib/moves'
+import { categoryLabel, formatPokemonName } from '../../../../lib/format'
 import styles from './CommandBar.module.css'
 import type { PokemonMove } from '../../../../types/pokemon'
 
@@ -39,7 +40,7 @@ export function CommandBar({
   const target =
     message ||
     (myTurn
-      ? `O que ${myPokemon ?? 'seu Pokémon'} vai fazer?`
+      ? `O que ${myPokemon ? formatPokemonName(myPokemon) : 'seu Pokémon'} vai fazer?`
       : 'Aguarde a resolução das escolhas…')
   const text = target
 
@@ -51,7 +52,9 @@ export function CommandBar({
             <header className={styles.previewHead}>
               <h3 className={styles.previewName}>{preview.displayName ?? preview.name}</h3>
               <TypeBadge type={preview.type} small />
-              {preview.category && <span className={styles.category}>{preview.category}</span>}
+              {preview.category && (
+                <span className={styles.category}>{categoryLabel(preview.category)}</span>
+              )}
             </header>
 
             <dl className={styles.previewStats}>

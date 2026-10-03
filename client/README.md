@@ -4,7 +4,9 @@ Interface React 19, TypeScript e Vite 8. Rotas preservadas: `/`, `/selecao`, `/e
 
 ## Executar
 
-Na raiz: `npm start --prefix server` após build. Em outro terminal: `npm run dev --prefix client`. Abra duas abas em http://localhost:5173. Build: `npm run build --prefix client`; produção local: `npm run preview --prefix client`.
+Para desenvolvimento, abra dois terminais: dentro de `server/`, execute `npm run dev`; dentro de `client/`, execute `npm run dev`. Abra **http://localhost:5173/** em uma janela normal e em uma janela anônima, usando nomes diferentes. Após a primeira instalação, não é necessário fazer build para iniciar este fluxo. Passo a passo: [Como jogar](../docs/COMO_JOGAR.md).
+
+Na raiz, os equivalentes são `npm run dev:server` e `npm run dev:client`. Build: `npm run build`; produção local: `npm start` em `server/` e `npm run preview` em `client/`.
 
 Única variável de rede do frontend: `VITE_WS_URL`, padrão `ws://127.0.0.1:3002`. Para acesso remoto use WSS e origem explícita no backend. Chave do lobby permanece somente em memória. Catálogo e recursos são empacotados, sem REST/PokéAPI/CDN em runtime.
 
@@ -24,8 +26,22 @@ O motor e a calculadora de referência são proibidos no bundle por verificaçã
 
 ## Escopo visual
 
-GSAP, CSS Modules, tokens e fontes locais foram preservados. HP e nocaute seguem os eventos apresentados; a troca confirma o substituto entre saída e entrada. A barra principal e a fantasma animam por transform, sem estado React por frame. Pular e ocultar a aba aplicam a fila inteira; sair cancela efeitos e libera os clips. Movimento reduzido desativa efeitos finitos e mantém status em poses estáticas. Menus usam controles de 44 px, diálogos modais e foco visível. As seis arenas originais estão em `public/arenas`, e os três atlas/24 clips em `public/battle-vfx`, com hashes, prompts e procedência registrados.
+Desde a reformulação de **2026-10-03**, a direção **Battle Link** usa superfícies branco gelo, azul profundo e acentos vermelho/mint. Oxanium nos títulos e Nunito Sans no corpo são fontes locais com suporte a acentos. Início, catálogo, montagem da equipe e batalha compartilham tokens, CSS Modules e componentes; as regras continuam no servidor.
 
-Para medir commits React, gere o cliente com `npm run build -- --mode profile` e abra `/visual-check` no preview. Esse modo usa React DOM profiling e um cenário de nove snapshots produzidos pelo motor real. O laboratório força movimento completo apenas em sua cena, para validar efeitos mesmo quando o sistema pede movimento reduzido. O build normal exclui a rota e a fixture. Regenere o cenário com `node scripts/generate-presentation-fixture.cjs`, na raiz, após compilar o servidor.
+| Recurso local | Cobertura e fallback |
+|---|---|
+| Pokémon | Catálogo de 1.025 espécies; **868 espécies com 3.368 GIFs** animados, incluindo as variantes disponíveis de orientação e shiny. Recursos ausentes usam o sprite estático local. |
+| Arenas | **Seis WebP** ilustrados em `public/arenas`, com **seis SVG de fallback** locais para os mesmos temas. |
+| Efeitos de combate | Três atlas originais e 24 clips em `public/battle-vfx`, com hashes, prompts e procedência registrados. |
 
-Validação unificada: `npm test`, `npm run build`, `npm run lint` na raiz. O laboratório também tem galeria dos 24 clips, cancelamento e amostragem RAF; não é distribuído no build normal. Relatórios: [fase 3](../docs/FASE_3_INTEGRACAO.md), [fase 4](../docs/FASE_4_APRESENTACAO.md) e [validação das fases 5–7](../docs/FASES_5_6_7_VALIDACAO.md).
+HP e nocaute seguem os eventos apresentados; a troca confirma o substituto entre saída e entrada. A barra principal e a fantasma animam por transform, sem estado React por frame. Pular e ocultar a aba aplicam a fila inteira; sair cancela efeitos e libera os clips. Os controles adotam altura mínima de 44 px, diálogos modais e foco visível.
+
+O seletor **Animações** oferece **Sistema**, **Completo** e **Reduzido**. Sistema acompanha a preferência de movimento do sistema operacional; Completo solicita as animações completas; Reduzido substitui deslocamentos por feedback estático breve e mantém status em poses estáticas. A escolha fica salva quando o armazenamento local está disponível e não altera os resultados da partida. Áudio continua desligado para quem não possui uma preferência salva.
+
+## Laboratório e validação
+
+O laboratório `/visual-check` está disponível no servidor de **desenvolvimento** (`npm run dev`) e no build de **profile**. Inclui um cenário de nove snapshots do motor real, galeria dos 24 clips, seis arenas, cancelamento, amostragem RAF e prévias responsivas. A cena do laboratório força movimento completo para inspecionar os efeitos; o jogo respeita a preferência escolhida.
+
+Para medir commits React, gere o cliente com `npm run build -- --mode profile` e abra `/visual-check` no preview. Esse modo usa React DOM profiling. O **build normal exclui o laboratório, a fixture e a galeria**. Regenere o cenário com `node scripts/generate-presentation-fixture.cjs`, na raiz, após compilar o servidor.
+
+Validação unificada: `npm test`, `npm run build`, `npm run lint` na raiz. Evidências e limites da reformulação: [Frontend Refresh](../docs/FRONTEND_REFRESH.md). As medições históricas das fases 5–7 não certificam o frontend reformulado; FPS e memória em aparelho real continuam **[VERIFICAR]**. Relatórios anteriores: [fase 3](../docs/FASE_3_INTEGRACAO.md), [fase 4](../docs/FASE_4_APRESENTACAO.md) e [validação das fases 5–7](../docs/FASES_5_6_7_VALIDACAO.md).

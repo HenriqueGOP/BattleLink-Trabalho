@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-03",
+  "mode": "production profile",
+  "sample": {
+    "frames": 289,
+    "elapsedMs": 2006.6000000000058,
+    "averageFps": 144.02471842918328,
+    "p95Ms": 7
+  },
+  "profiles": [
+    {
+      "schema": 1,
+      "commits": [
+        {
+          "id": "battle-scene",
+          "phase": "mount",
+          "actualDuration": 0,
+          "baseDuration": 0,
+          "startTime": 131.90000000223517,
+          "commitTime": 401.19999999925494,
+          "event": "mount",
+          "sequence": null
+        },
+        {
+          "id": "battle-scene",
+          "phase": "update",
+          "actualDuration": 0.10000000149011612,
+          "baseDuration": 0,
+          "startTime": 76736.5,
+          "commitTime": 76736.80000000075,
+          "event": "idle",
+          "sequence": "5"
+        },
+        {
+          "id": "battle-scene",
+          "phase": "update",
+          "actualDuration": 0.7999999970197678,
+          "baseDuration": 0.3999999985098839,
+          "startTime": 76764.40000000224,
+          "commitTime": 76765.5,
+          "event": "mount",
+          "sequence": null
+        },
+        {
+          "id": "battle-scene",
+          "phase": "update",
+          "actualDuration": 0.4000000022351742,
+          "baseDuration": 0.5,
+          "startTime": 86224.69999999925,
+          "commitTime": 86225.19999999925,
+          "event": "mount",
+          "sequence": null
+        },
+        {
+          "id": "battle-scene",
+          "phase": "update",
+          "actualDuration": 0.20000000298023224,
+          "baseDuration": 0.19999999925494194,
+          "startTime": 86472.19999999925,
+          "commitTime": 86472.5,
+          "event": "mount",
+          "sequence": null
+        },
+        {
+          "id": "battle-scene",
+          "phase": "update",
+          "actualDuration": 0.19999999925494194,
+          "baseDuration": 0.19999999925494194,
+          "startTime": 88482.30000000075,
+          "commitTime": 88482.60000000149,
+          "event": "mount",
+          "sequence": null
+        }
+      ]
+    }
+  ],
+  "afterStop": "Canvases ativos: 0; relógios RAF do renderizador: 0.",
+  "canvasCountAfterStop": 0
+}

@@ -3,6 +3,7 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  z-index: var(--z-scene, 0);
 }
 .art,
 .fallback,
@@ -16,7 +17,8 @@
 }
 .art {
   object-fit: cover;
-  object-position: center 70%;
+  object-position: center 64%;
+  image-rendering: auto;
 }
 .fallback {
   background: linear-gradient(180deg, var(--arena-sky) 0 58%, var(--arena-floor) 59% 100%);
@@ -135,8 +137,12 @@
 :global([data-paused='true']) .atmosphere span {
   animation-play-state: paused;
 }
+:global(html[data-motion-preference='reduced']) .atmosphere span {
+  animation: none;
+  opacity: 0.2;
+}
 @media (prefers-reduced-motion: reduce) {
-  .atmosphere span {
+  :global(html:not([data-motion-preference='full'])) .atmosphere span {
     animation: none;
     opacity: 0.2;
   }

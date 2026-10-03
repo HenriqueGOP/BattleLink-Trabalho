@@ -3,6 +3,7 @@ import { BattleSprite } from '../BattleSprite'
 import { StatusAura } from '../StatusAura'
 import styles from './BattleSpot.module.css'
 import type { Player } from '../../../../types/player'
+import { useMotionPreference } from '../../../../hooks/useMotionPreference'
 
 export interface BattleSpotProps {
   player: Player | null
@@ -26,15 +27,18 @@ export const BattleSpot = memo(function BattleSpot({
   urgent = false,
   paused = false,
 }: BattleSpotProps) {
+  const { reduced } = useMotionPreference()
   const status = player?.pokemonData?.fainted ? null : (player?.pokemonData?.status ?? null)
   const confused = !player?.pokemonData?.fainted && (player?.pokemonData?.confusionTurns ?? 0) > 0
   return (
     <div
       className={`${styles.spot} ${opponent ? styles.opponent : styles.self}`}
       data-urgent={urgent ? 'true' : undefined}
+      data-motion-reduced={reduced ? 'true' : undefined}
+      data-motion-paused={paused ? 'true' : undefined}
     >
       <div className={styles.actor}>
-        <BattleSprite player={player} opponent={opponent} spriteRef={spriteRef} />
+        <BattleSprite player={player} opponent={opponent} spriteRef={spriteRef} paused={paused} />
         <StatusAura
           status={status}
           confused={confused}

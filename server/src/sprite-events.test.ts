@@ -7,6 +7,183 @@ import { AnimationDirector } from "../../client/src/lib/presentation/AnimationDi
 import { applyPresentedEvent } from "../../client/src/lib/presentation/BattleEventQueue";
 import { isChargingMove } from "../../client/src/lib/presentation/spriteRegistry";
 import { IMPACT } from "../../client/src/lib/presentation/impact";
+import {
+  actionVector,
+  moveProfile,
+} from "../../client/src/lib/presentation/moveProfiles";
+import { motionProfile } from "../../client/src/lib/presentation/motionProfiles";
+import {
+  emissionClip,
+  projectileMove,
+} from "../../client/src/lib/presentation/spriteRegistry";
+import {
+  reducedMotion,
+  setMotionPreference,
+  getMotionPreference,
+  subscribeMotionPreference,
+  MOTION_PREFERENCE_KEY,
+  syncMotionPreferenceRoot,
+} from "../../client/src/lib/presentation/motionPreference";
+
+function profileTests() {
+  for (const [id, family] of [
+    ["tackle", "contact"],
+    ["slash", "slash"],
+    ["bulletseed", "projectile"],
+    ["shadowball", "projectile"],
+    ["flamethrower", "beam"],
+    ["icebeam", "beam"],
+    ["hypervoice", "wave"],
+    ["psychicnoise", "wave"],
+    ["surf", "area"],
+    ["earthquake", "area"],
+    ["spore", "powder"],
+    ["sleeppowder", "powder"],
+    ["calmmind", "status"],
+    ["protect", "status"],
+    ["waterfall", "contact"],
+  ] as const) {
+    const profile = moveProfile(id);
+    assert.equal(
+      profile?.family,
+      family,
+      `${id}: família artística específica`,
+    );
+    assert.ok(profile && profile.anticipation > 0 && profile.recovery > 0);
+  }
+  assert.equal(
+    projectileMove("hypervoice"),
+    false,
+    "Golpe especial de onda não é um orb",
+  );
+  assert.equal(
+    projectileMove("flamethrower"),
+    false,
+    "Feixe usa geometria distinta do orb",
+  );
+  assert.equal(projectileMove("shadowball"), true);
+  assert.equal(
+    emissionClip("calmmind"),
+    "psychic",
+    "Status também prepara/emite sem antecipar sua aplicação",
+  );
+  assert.equal(emissionClip("willowisp"), "fire");
+  for (const id of [
+    "https://evil.test/a",
+    "../beam",
+    "__proto__",
+    "constructor",
+    "unknown",
+  ]) {
+    assert.equal(moveProfile(id), null);
+    assert.equal(emissionClip(id), null);
+  }
+  const a = { left: 0, top: 180, width: 100, height: 100 };
+  const b = { left: 300, top: 20, width: 100, height: 100 };
+  const vector = actionVector(a, b, 1);
+  assert.ok(
+    vector.x > 0 && vector.y < 0,
+    "Aproximação percorre a diagonal real",
+  );
+  assert.ok(Math.hypot(vector.x, vector.y) <= 230);
+  const reverse = actionVector(b, a, -1);
+  assert.equal(reverse.x, -vector.x);
+  assert.equal(reverse.y, -vector.y);
+  assert.deepEqual(actionVector(a, a, 1), { x: 0, y: 0 });
+  assert.deepEqual(actionVector(null, null, -1), { x: -34, y: -10 });
+  assert.equal(motionProfile("snorlax"), "heavy");
+  assert.equal(motionProfile("haunter"), "floating");
+  assert.equal(motionProfile("butterfree"), "flying");
+  assert.equal(motionProfile("arbok"), "low");
+  assert.equal(motionProfile("unknown"), "light");
+}
+
+function preferenceTests() {
+  const original = globalThis.window;
+  const saved = new Map<string, string>();
+  const events = new Map<string, EventListener>();
+  const mediaEvents = new Set<() => void>();
+  let matches = true,
+    changes = 0;
+  try {
+    globalThis.window = {
+      localStorage: {
+        getItem: (key: string) => saved.get(key) ?? null,
+        setItem: (key: string, value: string) => saved.set(key, value),
+      },
+      matchMedia: () => ({
+        matches,
+        addEventListener: (_: string, listener: () => void) =>
+          mediaEvents.add(listener),
+        removeEventListener: (_: string, listener: () => void) =>
+          mediaEvents.delete(listener),
+      }),
+      addEventListener: (name: string, listener: EventListener) =>
+        events.set(name, listener),
+      removeEventListener: (name: string) => events.delete(name),
+    } as unknown as Window & typeof globalThis;
+    setMotionPreference("system");
+    assert.equal(getMotionPreference(), "system");
+    assert.equal(reducedMotion(), true);
+    const unsubscribe = subscribeMotionPreference(() => changes++);
+    setMotionPreference("full");
+    assert.equal(
+      reducedMotion(),
+      false,
+      "Preferência explícita completa supera a preferência do sistema",
+    );
+    assert.equal(saved.get(MOTION_PREFERENCE_KEY), "full");
+    const root = { dataset: {} as DOMStringMap };
+    const restore = syncMotionPreferenceRoot(root, getMotionPreference());
+    assert.equal(
+      root.dataset.motionPreference,
+      "full",
+      "CSS recebe a escolha Completo mesmo com redução de movimento do sistema",
+    );
+    restore();
+    assert.equal(
+      root.dataset.motionPreference,
+      undefined,
+      "Desmontagem limpa o marcador global que o hook adicionou",
+    );
+    root.dataset.motionPreference = "system";
+    const restoreExisting = syncMotionPreferenceRoot(root, "reduced");
+    assert.equal(root.dataset.motionPreference, "reduced");
+    restoreExisting();
+    assert.equal(root.dataset.motionPreference, "system");
+    setMotionPreference("reduced");
+    assert.equal(reducedMotion(), true);
+    saved.set(MOTION_PREFERENCE_KEY, "system");
+    events.get("storage")?.({ key: MOTION_PREFERENCE_KEY } as unknown as Event);
+    assert.equal(
+      getMotionPreference(),
+      "system",
+      "Outra aba sincroniza a preferência",
+    );
+    matches = false;
+    for (const listener of mediaEvents) listener();
+    assert.equal(reducedMotion(), false);
+    setMotionPreference("reduced");
+    assert.equal(
+      reducedMotion(),
+      true,
+      "Escolha Reduzido reduz movimento mesmo quando o sistema permite animações",
+    );
+    setMotionPreference("full");
+    assert.equal(
+      reducedMotion(),
+      false,
+      "Escolha Completo permite movimento quando o sistema também permite",
+    );
+    assert.ok(changes >= 4);
+    unsubscribe();
+    assert.equal(mediaEvents.size, 0);
+    assert.equal(events.size, 0);
+    setMotionPreference("system");
+  } finally {
+    globalThis.window = original;
+  }
+}
 
 const SEED: RngSeed = [1, 2, 3, 4];
 class FixedRng implements RNG {
@@ -207,8 +384,11 @@ function nativeTokenTests() {
 
 class Node {
   static created: Node[] = [];
-  static animated: { frames: Keyframe[]; options: KeyframeAnimationOptions }[] =
-    [];
+  static animated: {
+    element: Node;
+    frames: Keyframe[];
+    options: KeyframeAnimationOptions;
+  }[] = [];
   parent: Node | null = null;
   children = new Set<Node>();
   selectors = new Map<string, Node>();
@@ -229,7 +409,7 @@ class Node {
     return this.selectors.get(selector) ?? null;
   }
   animate(frames: Keyframe[], options: KeyframeAnimationOptions) {
-    Node.animated.push({ frames, options });
+    Node.animated.push({ element: this, frames, options });
     return {
       finished: Promise.resolve(),
       playState: "finished",
@@ -275,6 +455,74 @@ async function directorTests() {
     stage.selectors.set('[data-hud-side="opponent"]', hud);
     hud.selectors.set("[data-hp-fill]", new Node());
     hud.selectors.set("[data-hp-ghost]", new Node());
+    const myBody = new Node(),
+      foeBody = new Node();
+    me.selectors.set("[data-motion-action]", myBody);
+    foe.selectors.set("[data-motion-action]", foeBody);
+    const gestureBattle = battle(["spore", "calmmind"], ["splash"]);
+    const gestureDirector = new AnimationDirector({
+      stage: () => stage as unknown as HTMLElement,
+      sprite: (side) => (side === "me" ? me : foe) as unknown as HTMLElement,
+      reducedMotion: () => false,
+    });
+    try {
+      const wire = snapshot(gestureBattle);
+      let commits = 0;
+      const originalWire = JSON.stringify(wire);
+      const before = Node.animated.length;
+      await gestureDirector.run(
+        {
+          type: "move",
+          actor: "p1s0",
+          target: "p2s0",
+          moveId: "spore",
+          round: 1,
+          sequence: 20,
+          audience: "public",
+        },
+        wire,
+        new AbortController().signal,
+        () => commits++,
+      );
+      assert.equal(commits, 1);
+      assert.ok(
+        Node.animated.slice(before).some((entry) => entry.element === myBody),
+      );
+      assert.ok(
+        Node.animated.slice(before).every((entry) => entry.element !== foeBody),
+        "Emissão não antecipa reação ao status",
+      );
+      const applied = Node.animated.length;
+      await gestureDirector.run(
+        {
+          type: "status",
+          target: "p2s0",
+          status: "slp",
+          round: 1,
+          sequence: 21,
+          audience: "public",
+        },
+        wire,
+        new AbortController().signal,
+        () => commits++,
+      );
+      assert.equal(commits, 2);
+      assert.ok(
+        Node.animated.slice(applied).some((entry) => entry.element === foeBody),
+      );
+      assert.ok(
+        Node.animated.slice(applied).every((entry) => entry.element !== foe),
+        "Corpo interno recebe a pose; âncora externa permanece estável",
+      );
+      assert.equal(
+        JSON.stringify(wire),
+        originalWire,
+        "Diretor não modifica snapshot privado ou público",
+      );
+    } finally {
+      gestureDirector.dispose();
+      gestureBattle.destroy();
+    }
     // Physical release movement is exercised in the browser. A null actor allows
     // running every native turn event without replacing or mocking GSAP internals.
     const director = new AnimationDirector({
@@ -463,6 +711,8 @@ async function directorTests() {
 }
 
 async function run() {
+  profileTests();
+  preferenceTests();
   nativeTokenTests();
   await directorTests();
   console.log(

@@ -11,6 +11,7 @@ import { Button } from '../../components/Button'
 import { EndOverlay } from './components/EndOverlay'
 import { AudioSettings } from '../../components/AudioSettings'
 import { SpriteGallery } from './SpriteGallery'
+import { battleBackgrounds } from '../../config/battleBackgrounds'
 import styles from './BattlePage.module.css'
 
 const snapshots = fixture as unknown as { label: string; state: RoomSnapshot }[]
@@ -94,10 +95,11 @@ function Scenario({ restart }: { restart: () => void }) {
     </>
   )
 }
-/** Rota compilada somente no modo profile; nenhuma fixture ou opção de override no jogo distribuído. */
+/** Inspeção somente em desenvolvimento/profile; sem controles de override no jogo distribuído. */
 export function PresentationLab() {
   const [epoch, setEpoch] = useState(0),
     [mounted, setMounted] = useState(true)
+  const [preview, setPreview] = useState<'mobile' | 'desktop' | null>(null)
   return (
     <main className={styles.page}>
       <h1>Laboratório de apresentação</h1>
@@ -119,6 +121,40 @@ export function PresentationLab() {
       <BattleProfiler>
         <SpriteGallery enabled={!mounted} />
       </BattleProfiler>
+      <section aria-label="Galeria das seis arenas" className={styles.arenaGallery}>
+        {battleBackgrounds.map((arena) => (
+          <article key={arena.id}>
+            <h2 className={styles.arenaTitle}>{arena.name}</h2>
+            <div className={styles.arenaPreview}>
+              <BattleBackground background={arena.id} />
+            </div>
+          </article>
+        ))}
+      </section>
+      <section aria-label="Prévia responsiva">
+        <p>Cliente real em uma janela independente. A largura pertence ao documento interno.</p>
+        <Button onClick={() => setPreview('mobile')}>Abrir cliente em 360 px</Button>
+        <Button onClick={() => setPreview('desktop')}>Abrir cliente em 1280 px</Button>
+        <Button onClick={() => setPreview(null)}>Fechar prévia</Button>
+        {preview && (
+          <div style={{ overflowX: 'auto', marginTop: 16 }}>
+            <iframe
+              key={preview}
+              title="Cliente responsivo"
+              src="/"
+              width={preview === 'mobile' ? 360 : 1280}
+              height={800}
+              style={{
+                display: 'block',
+                boxSizing: 'content-box',
+                maxWidth: 'none',
+                border: '1px solid var(--line)',
+                borderRadius: 12,
+              }}
+            />
+          </div>
+        )}
+      </section>
     </main>
   )
 }

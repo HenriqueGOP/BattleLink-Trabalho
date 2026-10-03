@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-03",
+  "hidden": {
+    "animation": "idle",
+    "paused": true,
+    "clips": 0,
+    "sequence": 13
+  },
+  "afterResumeAndSkip": {
+    "animation": "idle",
+    "clips": 0,
+    "hp": [
+      {
+        "max": "130",
+        "value": "130"
+      },
+      {
+        "max": "130",
+        "value": "130"
+      }
+    ],
+    "paused": false,
+    "sequence": "22"
+  }
+}

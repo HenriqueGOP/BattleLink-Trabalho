@@ -1,5 +1,13 @@
 # Validação conjunta — fases 5, 6 e 7
 
+## Atualização de frontend — 2026-10-03
+
+A entrega **Battle Link** reformula menus e batalha, acrescenta seis arenas WebP com fallback SVG, GIFs locais para 868 espécies e a preferência **Sistema / Completo / Reduzido**. A verificação desta versão é registrada em [Frontend Refresh](FRONTEND_REFRESH.md); os resultados abaixo permanecem como histórico da implementação anterior.
+
+O modo de execução pedido pelo usuário é **`npm run dev` dentro de `server/` e de `client/`, em dois terminais**, abrindo **http://localhost:5173/** em uma janela normal e outra anônima. `/visual-check` está disponível em desenvolvimento ou profile e excluído do build normal. Capturas, dimensões, tamanho de build e medições anteriores não substituem a validação da reformulação; FPS e memória em aparelho real continuam **[VERIFICAR]**.
+
+## Registro histórico das fases 5–7
+
 Entrega: 2026-10-02. Validação móvel concluída em 2026-10-03. O usuário autorizou executar as três fases juntas. A implementação
 preserva o motor Gen 9 e o protocolo `pokemon-battle/3`, com mudanças na interface,
 nos IDs de arena e na apresentação de eventos.

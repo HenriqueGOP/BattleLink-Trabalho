@@ -1,7 +1,9 @@
 ﻿import { useCallback, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AudioSettings } from '../../components/AudioSettings'
+import { MotionSettings } from '../../components/MotionSettings/MotionSettings'
 import { Button } from '../../components/Button'
+import { resolveBackground } from '../../config/battleBackgrounds'
 import { useAudio } from '../../hooks/useAudio'
 import { useBattle } from '../../hooks/useBattle'
 import { useBattleContext } from '../../context/BattleProvider'
@@ -42,7 +44,7 @@ export function BattlePage() {
 
   // Um painel por vez, como no menu original: LUTAR abre os golpes,
   // POKÉMON abre a equipe. Abrir um fecha o outro.
-  const [panel, setPanel] = useState<'moves' | 'party' | null>('moves')
+  const [panel, setPanel] = useState<'moves' | 'party'>('moves')
   // golpe destacado no menu: vira a ficha exibida na caixa de mensagem
   const [previewMove, setPreviewMove] = useState<PokemonMove | null>(null)
   const stageRef = useRef<HTMLDivElement>(null)
@@ -99,12 +101,13 @@ export function BattlePage() {
         <div className={styles.brand}>
           <i className={styles.ball} aria-hidden="true" />
           <span>
-            POKéMON <b>BATTLE</b>
+            BATTLE <b>LINK</b>
           </span>
         </div>
         <span className={styles.room}>{status}</span>
         <div className={styles.tools}>
           <AudioSettings />
+          <MotionSettings />
           <Button variant="ghost" size="sm" onClick={skip} disabled={!busy}>
             Pular animações
           </Button>
@@ -124,10 +127,20 @@ export function BattlePage() {
                 ? 'Aguardando o oponente confirmar a equipe…'
                 : 'Preparando a batalha…'}
           </h2>
-          <p>O campo é liberado para os dois jogadores ao mesmo tempo, direto do servidor.</p>
+          <p>Quase lá! Sua equipe vai entrar em campo assim que os dois estiverem prontos.</p>
         </section>
       ) : (
         <>
+          <div className={styles.battleHeading}>
+            <div>
+              <span className={styles.eyebrow}>BATALHA ONLINE</span>
+              <h1>{resolveBackground(state.field.background).name}</h1>
+            </div>
+            <div className={styles.turnDock}>
+              <span className={styles.round}>Rodada {state.wire.battle?.round ?? 1}</span>
+              <TurnIndicator myTurn={myTurn} finished={finished} />
+            </div>
+          </div>
           <div className={styles.layout}>
             <BattleProfiler>
               <section
@@ -139,9 +152,11 @@ export function BattlePage() {
                 data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
                 data-event-sequence={current?.id ?? state.wire.sequence}
               >
-                {/* profundidade: cenário → clima → spots(círculos+sprites) → efeitos → HUD */}
+                {/* O cenário, os atores e os efeitos compartilham o mesmo campo. */}
                 <BattleBackground background={state.field.background} />
-                <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
+                {(state.field.weather || state.field.terrain) && (
+                  <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
+                )}
                 <div className={styles.spots}>
                   <HudCard player={opponent} opponent />
                   <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} paused={hidden} />
@@ -158,15 +173,33 @@ export function BattlePage() {
             </BattleProfiler>
           </div>
 
-          <div className={styles.turnDock}>
-            <TurnIndicator myTurn={myTurn} finished={finished} />
-          </div>
-
+          <nav className={styles.actionTabs} aria-label="Menu de batalha">
+            <span>Sua ação</span>
+            <Button
+              variant={activePanel === 'moves' ? 'fight' : 'ghost'}
+              size="sm"
+              aria-pressed={activePanel === 'moves'}
+              onClick={() => setPanel('moves')}
+            >
+              LUTAR
+            </Button>
+            <Button
+              variant={activePanel === 'party' ? 'party' : 'ghost'}
+              size="sm"
+              aria-pressed={activePanel === 'party'}
+              onClick={() => setPanel('party')}
+            >
+              POKÉMON
+            </Button>
+            <Button variant="ghost" size="sm" onClick={leaveAndHome}>
+              FUGIR
+            </Button>
+          </nav>
           <CommandBar
             message={lastLogMessage}
             myTurn={myTurn}
             myPokemon={myPlayer?.pokemon}
-            panelMode={activePanel === 'moves'}
+            panelMode
             preview={!busy && activePanel === 'moves' ? previewMove : null}
           >
             {activePanel === 'moves' ? (
@@ -180,42 +213,8 @@ export function BattlePage() {
                   onPreview={setPreviewMove}
                   bare
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={styles.backBtn}
-                  onClick={() => setPanel(null)}
-                >
-                  ◀ VOLTAR
-                </Button>
               </>
             ) : (
-              <>
-                <Button
-                  variant="fight"
-                  className={styles.commandBtn}
-                  aria-expanded={false}
-                  onClick={() => setPanel('moves')}
-                >
-                  LUTAR
-                </Button>
-                <Button
-                  variant="party"
-                  className={styles.commandBtn}
-                  aria-expanded={activePanel === 'party'}
-                  onClick={() => setPanel((open) => (open === 'party' ? null : 'party'))}
-                >
-                  POKÉMON
-                </Button>
-                <Button variant="run" className={styles.commandBtn} onClick={leaveAndHome}>
-                  FUGIR
-                </Button>
-              </>
-            )}
-          </CommandBar>
-
-          <div className={styles.drawer}>
-            {activePanel === 'party' && (
               <BattleControls
                 player={myPlayer}
                 myTurn={myTurn}
@@ -224,6 +223,9 @@ export function BattlePage() {
                 onSwitch={switchTo}
               />
             )}
+          </CommandBar>
+
+          <div className={styles.drawer}>
             <BattleLog entries={logEntries} />
           </div>
         </>

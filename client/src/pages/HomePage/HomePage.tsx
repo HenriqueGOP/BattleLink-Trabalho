@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { PokeballSpinner } from '../../components/PokeballSpinner'
+import { AudioSettings } from '../../components/AudioSettings'
+import { GameIcon } from '../../components/GameIcon/GameIcon'
 import { useBattleContext } from '../../context/BattleProvider'
 import { useAudio } from '../../hooks/useAudio'
 import { audio } from '../../lib/audio'
@@ -40,108 +42,134 @@ export function HomePage() {
 
   return (
     <main className={styles.page}>
-      {/* céu + chão desenhados, no lugar dos gradientes soltos de antes */}
-      <div className={styles.scene} aria-hidden="true">
-        <span className={styles.ground} />
-        <span className={`${styles.cloud} ${styles.cloudOne}`} />
-        <span className={`${styles.cloud} ${styles.cloudTwo}`} />
-      </div>
+      <div className={styles.scene} aria-hidden="true" />
+      <header className={styles.header}>
+        <span className={styles.brand}>
+          <GameIcon name="ball" size={26} /> BATTLE LINK
+        </span>
+        <span className={styles.headerNote}>Pokémon · batalha por turnos</span>
+        <AudioSettings />
+      </header>
+      <div className={styles.hero}>
+        <section className={styles.titleCard} aria-label="Pokémon Battle">
+          <p className={styles.eyebrow}>Seu próximo rival está aqui</p>
+          <h1 className={`gb-title ${styles.title}`}>
+            <span>Prepare.</span>
+            <span>Conecte.</span>
+            <span className={styles.titleAccent}>Batalhe.</span>
+          </h1>
+          <p className={styles.tagline}>
+            Batalha por turnos · dois treinadores · tempo real. Escolha sua equipe e faça cada
+            jogada contar.
+          </p>
+          <ol className={styles.steps} aria-label="Etapas da partida">
+            <li>
+              <b>01</b> Escolha seis
+            </li>
+            <li>
+              <b>02</b> Prepare os golpes
+            </li>
+            <li>
+              <b>03</b> Entre na arena
+            </li>
+          </ol>
+        </section>
 
-      <section className={styles.titleCard} aria-label="Pokémon Battle">
-        <span className={`gb-ball ${styles.logoBall}`} aria-hidden="true" />
-        <h1 className={`gb-title ${styles.title}`}>
-          <span className={styles.titleTop}>POKéMON</span>
-          <span className={styles.titleBottom}>BATTLE</span>
-        </h1>
-        <p className={styles.tagline}>Batalha por turnos · dois treinadores · tempo real</p>
-      </section>
+        <section className={`gb-panel ${styles.card}`} aria-label="Cartão de treinador">
+          <header className={styles.cardHeader}>
+            <GameIcon name="ball" />
+            <div>
+              <p className={styles.cardKicker}>Conexão de batalha</p>
+              <h2 className={styles.cardTitle}>Cartão de Treinador</h2>
+            </div>
+          </header>
 
-      <section className={`gb-panel ${styles.card}`} aria-label="Cartão de treinador">
-        <header className={styles.cardHeader}>
-          <span className={`gb-ball ${styles.ballMark}`} aria-hidden="true" />
-          <h2 className={styles.cardTitle}>Cartão de Treinador</h2>
-        </header>
-
-        <form
-          className={styles.form}
-          aria-busy={waiting}
-          onSubmit={(event) => {
-            event.preventDefault()
-            submit()
-          }}
-        >
-          <label className={styles.label} htmlFor="trainer-name">
-            Seu nome
-          </label>
-          <input
-            ref={inputRef}
-            id="trainer-name"
-            className={styles.input}
-            value={name}
-            maxLength={MAX_NAME_LENGTH}
-            required
-            aria-describedby="trainer-hint"
-            placeholder="Ex.: Ash"
-            onChange={(event) => setName(event.target.value)}
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <details>
-            <summary>O servidor exige uma chave de acesso?</summary>
-            <label className={styles.label} htmlFor="access-key">
-              Chave de acesso
+          <form
+            className={styles.form}
+            aria-busy={waiting}
+            onSubmit={(event) => {
+              event.preventDefault()
+              submit()
+            }}
+          >
+            <label className={styles.label} htmlFor="trainer-name">
+              Seu nome
             </label>
             <input
-              id="access-key"
+              ref={inputRef}
+              id="trainer-name"
               className={styles.input}
-              type="password"
-              value={accessKey}
-              maxLength={256}
+              value={name}
+              maxLength={MAX_NAME_LENGTH}
+              required
+              disabled={waiting}
+              aria-describedby="trainer-hint"
+              placeholder="Ex.: Ash"
+              onChange={(event) => setName(event.target.value)}
               autoComplete="off"
-              onChange={(event) => setAccessKey(event.target.value)}
+              spellCheck={false}
             />
-          </details>
-          <Button
-            type="submit"
-            variant="fight"
-            size="lg"
-            disabled={connected || !name.trim()}
-            className={styles.cta}
+            <details>
+              <summary>O servidor exige uma chave de acesso?</summary>
+              <label className={styles.label} htmlFor="access-key">
+                Chave de acesso
+              </label>
+              <input
+                id="access-key"
+                className={styles.input}
+                type="password"
+                value={accessKey}
+                maxLength={256}
+                autoComplete="off"
+                onChange={(event) => setAccessKey(event.target.value)}
+              />
+            </details>
+            <Button
+              type="submit"
+              variant="fight"
+              size="lg"
+              disabled={connected || !name.trim()}
+              className={styles.cta}
+            >
+              ENTRAR NA FILA ▶
+            </Button>
+          </form>
+
+          <div
+            className={styles.status}
+            data-state={waiting ? 'on' : 'off'}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
-            ENTRAR NA FILA ▶
-          </Button>
-        </form>
+            {waiting ? (
+              <>
+                <PokeballSpinner size={22} label="Procurando oponente" />
+                <span className={styles.statusText}>Procurando oponente…</span>
+                <button
+                  className={styles.cancel}
+                  onClick={() => {
+                    audio.play('click')
+                    leave()
+                  }}
+                >
+                  cancelar
+                </button>
+              </>
+            ) : (
+              <span className={styles.statusText}>{status}</span>
+            )}
+          </div>
 
-        <div
-          className={styles.status}
-          data-state={waiting ? 'on' : 'off'}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {waiting ? (
-            <>
-              <PokeballSpinner size={22} label="Procurando oponente" />
-              <span className={styles.statusText}>Procurando oponente…</span>
-              <button
-                className={styles.cancel}
-                onClick={() => {
-                  audio.play('click')
-                  leave()
-                }}
-              >
-                cancelar
-              </button>
-            </>
-          ) : (
-            <span className={styles.statusText}>{status}</span>
-          )}
-        </div>
-
-        <p className={styles.hint} id="trainer-hint">
-          Dois navegadores = duas vagas na fila. O servidor emparelha aos pares.
-        </p>
-      </section>
+          <p className={styles.hint} id="trainer-hint">
+            Ao entrar na fila, você encontra outro treinador para preparar uma partida.
+          </p>
+        </section>
+      </div>
+      <footer className={styles.footer}>
+        <span>Seis Pokémon. Uma equipe. Sua estratégia.</span>
+        <span>Pokémon Battle · Battle Link</span>
+      </footer>
     </main>
   )
 }

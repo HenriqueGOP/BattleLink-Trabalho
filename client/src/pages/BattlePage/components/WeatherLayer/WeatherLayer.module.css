@@ -9,25 +9,25 @@
 .sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #0e1630 0%, #1d2c52 55%, #31486e 100%);
+  background: transparent;
   transition: background 1s ease;
   overflow: hidden;
 }
 
 .weather-rain .sky {
-  background: linear-gradient(180deg, #0a1226 0%, #182c4e 55%, #27405f 100%);
+  background: linear-gradient(180deg, #0a122655, #182c4e22, transparent);
 }
 
 .weather-sun .sky {
-  background: linear-gradient(180deg, #241a0e 0%, #6e4a1e 55%, #b97a24 100%);
+  background: linear-gradient(180deg, #b97a2422, transparent);
 }
 
 .weather-sandstorm .sky {
-  background: linear-gradient(180deg, #241d10 0%, #5c4a26 55%, #a8874a 100%);
+  background: linear-gradient(180deg, #a8874a44, transparent);
 }
 
 .weather-snow .sky {
-  background: linear-gradient(180deg, #101c2e 0%, #2a4560 55%, #6d94b4 100%);
+  background: linear-gradient(180deg, #6d94b433, transparent);
 }
 
 .sun {
@@ -128,6 +128,7 @@
 }
 
 .ground {
+  display: none;
   position: absolute;
   left: -6%;
   right: -6%;
@@ -252,8 +253,7 @@
 .platform {
   position: absolute;
   border-radius: 50%;
-  background:
-    radial-gradient(ellipse at 50% 30%, #39466e, #161d33 75%);
+  background: radial-gradient(ellipse at 50% 30%, #39466e, #161d33 75%);
   box-shadow:
     inset 0 6px 12px rgba(255, 255, 255, 0.08),
     0 10px 0 rgba(0, 0, 0, 0.35);
@@ -279,7 +279,13 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(5, 8, 18, 0.42), transparent 26%, transparent 70%, rgba(5, 8, 18, 0.55)),
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 18, 0.42),
+      transparent 26%,
+      transparent 70%,
+      rgba(5, 8, 18, 0.55)
+    ),
     radial-gradient(ellipse at center, transparent 55%, rgba(5, 8, 18, 0.5) 100%);
 }
 

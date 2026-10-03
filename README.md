@@ -6,6 +6,8 @@ Jogo de batalha Pokémon singles: dois jogadores, seis Pokémon por equipe e esc
 
 **Reformulação implementada até a fase 7:** motor, protocolo `pokemon-battle/3`, terminal, React, apresentação sincronizada, menus acessíveis, seis arenas originais e 24 efeitos de combate em spritesheets locais. A medição de 60 FPS em celular real continua pendente. Consulte os relatórios de [menus](docs/FASE_5_MENUS.md), [arenas](docs/FASE_6_ARENAS.md), [animações](docs/FASE_7_ANIMACOES.md), [validação conjunta](docs/FASES_5_6_7_VALIDACAO.md) e o [ADR](docs/adr/battle-overhaul.md).
 
+**Atualização visual de 03/10/2026:** pesquisa de jogos oficiais e fangames, interface Battle Link, seis arenas ilustradas e 3.368 GIFs locais para 868 espécies. A camada que encobria as arenas e as falhas de recuperação/preferência de animação foram corrigidas. [Relatório, referências e capturas](docs/FRONTEND_REFRESH.md).
+
 ## Requisitos
 
 - Node.js 20.19 ou superior;
@@ -69,16 +71,17 @@ Use IDs canônicos: `charizard`, `icebeam`, `willowisp`. Os golpes escolhidos pr
 
 O front-end fica em `client/` (React 19 + Vite + TypeScript + React Router + GSAP + Howler). O navegador usa WebSocket em `127.0.0.1:3002`, porque browsers nao abrem sockets TCP brutos; a ponte fica no mesmo processo do servidor. O catálogo é empacotado no frontend. A API HTTP local em `127.0.0.1:3003` permanece disponível para consultar IDs, nomes e números.
 
-Em um terminal, inicie o servidor:
+### Abrir o jogo em desenvolvimento (duas janelas)
+
+Partindo da raiz do projeto, em um terminal, inicie o servidor:
 
 ```powershell
 cd server
 npm install
-npm run build
-npm start
+npm run dev
 ```
 
-Em outro terminal, inicie o React:
+Em outro terminal, também partindo da raiz, inicie o cliente:
 
 ```powershell
 cd client
@@ -86,7 +89,13 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:5173`. Para jogar no navegador, abra duas abas e informe nomes diferentes. Cada aba entra na fila, monta a equipe de seis, ajusta os golpes e confirma a equipe. O servidor libera a batalha após a confirmação das equipes e a preparação dos dois clientes (preload local com limite de três segundos). A partir daí, os golpes ficam travados e os snapshots oficiais conduzem as animações, sons e HUD.
+Mantenha os dois terminais abertos. Abra `http://localhost:5173/` em uma janela normal e o mesmo endereço em uma janela anônima/privativa. Informe nomes diferentes: cada janela representa um jogador. O modo anônimo também mantém as preferências locais separadas.
+
+Cada jogador entra na fila, monta a equipe de seis, ajusta os golpes e confirma a equipe. O servidor libera a batalha após a confirmação das equipes e a preparação dos dois clientes (preload local com limite de três segundos). A partir daí, os golpes ficam travados e os snapshots oficiais conduzem as animações, sons e HUD.
+
+Os scripts da raiz `npm run dev:server` e `npm run dev:client` oferecem a mesma execução, cada um em seu terminal. Dentro de `server/` e `client/`, o comando é `npm run dev`. Se uma porta já estiver ocupada, encerre a instância anterior antes de iniciar outra; use o endereço que o cliente informar no terminal.
+
+Guia completo: [como abrir e jogar](docs/COMO_JOGAR.md).
 
 Para gerar o front-end executavel:
 
@@ -139,7 +148,8 @@ Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo me
 - `server/src/contracts`: protocolo, decoder, catálogo e textos de eventos compartilhados;
 - `server/src/game/engine`: fachada isolada do simulador;
 - `server/src/data`: catálogo gerado da versão fixada;
-- `client/public/pokemon`: 5.125 recursos locais (19,01 MB), manifesto e licenças;
+- `client/public/pokemon`: 5.125 recursos originais (19,01 MB) e 3.368 GIFs animados para 868 espécies (165,27 MB), com manifestos e créditos; somente os recursos da equipe são carregados na partida;
+- `client/public/arenas`: seis fundos originais WebP de 166–345 KB, com SVGs locais de fallback;
 - `data/moves.json` e o importador antigo permanecem apenas para regressões históricas; não atendem partidas;
 - `docs`: protocolo, arquitetura e [guia explicado do codigo](docs/GUIA_DO_CODIGO.md).
 

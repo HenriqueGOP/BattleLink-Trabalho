@@ -1,6 +1,7 @@
 import { moveById } from '../catalog'
 import type { StatusName } from '../../types/player'
 import type { CanonicalEvent } from '../../types/protocol'
+import { moveProfile } from './moveProfiles'
 
 export const VFX_ATLASES = {
   attacks: '/battle-vfx/attacks.webp',
@@ -70,7 +71,20 @@ export function attackClip(moveId: string): SpriteClipId | null {
   }
   return elements[move.type] ?? 'impact'
 }
-export const projectileMove = (moveId: string) => moveById(moveId)?.category === 'Special'
+export const projectileMove = (moveId: string) => moveProfile(moveId)?.family === 'projectile'
+/** Sinal de emissão; status aplicado só aparece no evento canônico correspondente. */
+export function emissionClip(moveId: string): SpriteClipId | null {
+  const move = moveById(moveId)
+  if (!move) return null
+  if (move.category !== 'Status') return attackClip(moveId)
+  if (move.type === 'fire') return 'fire'
+  if (move.type === 'electric') return 'electric'
+  if (move.type === 'grass' || /powder|spore/.test(move.id)) return 'grass'
+  if (move.type === 'poison') return 'shadow'
+  if (move.type === 'water') return 'water'
+  if (move.type === 'ice') return 'ice'
+  return 'psychic'
+}
 export function isChargingMove(
   event: Extract<CanonicalEvent, { type: 'move' }>,
   next?: CanonicalEvent

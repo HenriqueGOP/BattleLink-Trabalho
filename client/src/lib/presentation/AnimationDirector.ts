@@ -2,8 +2,10 @@ import gsap from 'gsap'
 import type { CanonicalEvent, RoomSnapshot, CombatantId } from '../../types/protocol'
 import type { EventRunner } from './BattleEventQueue'
 import { IMPACT } from './impact'
-import { playSprite } from './SpriteRenderer'
-import { attackClip, projectileMove, isChargingMove, type SpriteClipId } from './spriteRegistry'
+import { playSprite, type SpriteOptions } from './SpriteRenderer'
+import { attackClip, emissionClip, isChargingMove, type SpriteClipId } from './spriteRegistry'
+import { actionVector, moveProfile, type MoveProfile } from './moveProfiles'
+import { reducedMotion } from './motionPreference'
 
 interface Scene {
   stage: () => HTMLElement | null
@@ -68,21 +70,34 @@ class EffectScope {
       for (const animation of this.animations)
         if (animation.playState === 'paused') animation.play()
   }
-  lunge(element: HTMLElement, direction: number) {
+  lunge(element: HTMLElement, vector: { x: number; y: number }, profile: MoveProfile) {
     if (this.cancelled) return Promise.resolve()
     return new Promise<void>((resolve) => {
       const context = gsap.context(() => {
         gsap
           .timeline({ onComplete: resolve })
-          .to(element, { x: -direction * 5, scaleX: 0.94, duration: 0.07 })
           .to(element, {
-            x: direction * 28,
-            y: -6,
-            scaleX: 1.05,
-            duration: 0.13,
+            x: -vector.x * 0.08,
+            y: 3,
+            scaleY: 0.96,
+            duration: profile.anticipation / 1000,
+          })
+          .to(element, {
+            x: vector.x,
+            y: vector.y,
+            scaleX: 1.035,
+            scaleY: 1.015,
+            duration: profile.travel / 1000,
             ease: 'power2.out',
           })
-          .to(element, { x: 0, y: 0, scaleX: 1, duration: 0.18, ease: 'power2.inOut' })
+          .to(element, {
+            x: 0,
+            y: 0,
+            scaleX: 1,
+            scaleY: 1,
+            duration: profile.recovery / 1000,
+            ease: 'power2.inOut',
+          })
       })
       this.own(() => {
         context.revert()
@@ -122,12 +137,41 @@ export class AnimationDirector implements EventRunner {
     if (!id || wire.battle?.active[id.startsWith('p1') ? 'p1' : 'p2'] !== id) return null
     return this.scene.sprite(this.side(id, wire))
   }
+  /** A referência é uma âncora estável; o corpo interno recebe deslocamentos. */
+  private body(anchor: HTMLElement | null) {
+    return anchor?.querySelector<HTMLElement>('[data-motion-action]') ?? anchor
+  }
+  private hold(scope: EffectScope, anchor: HTMLElement | null) {
+    if (!anchor) return
+    anchor.setAttribute('data-acting', 'true')
+    scope.own(() => anchor.removeAttribute?.('data-acting'))
+    // GIFs não obedecem animation-play-state; o PNG local congela a pose durante a ação.
+    const creature = anchor.querySelector<HTMLImageElement>('[data-creature-sprite]')
+    const original = creature?.getAttribute('src')
+    const still = creature?.getAttribute('data-static-src')
+    if (creature && original && still && original !== still) {
+      const orientation = anchor.querySelector<HTMLElement>('[data-motion-orientation]')
+      const priorOrientation = orientation?.style.transform ?? ''
+      if (orientation)
+        orientation.style.transform =
+          orientation.getAttribute('data-static-mirrored') === 'true' ? 'scaleX(-1)' : 'scaleX(1)'
+      creature.src = still
+      scope.own(() => {
+        if (creature.isConnected && creature.getAttribute('src') === still) {
+          creature.src = original
+          if (orientation?.isConnected) orientation.style.transform = priorOrientation
+        }
+      })
+    }
+  }
   private fx(
     scope: EffectScope,
     parent: HTMLElement | null,
     id: SpriteClipId,
     size?: number,
-    travelTo?: HTMLElement | null
+    travelTo?: HTMLElement | null,
+    presentation?: SpriteOptions['presentation'],
+    staticFrame = false
   ) {
     const controller = new AbortController()
     scope.own(() => controller.abort())
@@ -136,6 +180,8 @@ export class AnimationDirector implements EventRunner {
       signal: controller.signal,
       size,
       travelTo,
+      presentation,
+      static: staticFrame,
       paused: () => scope.spritePaused,
     })
   }
@@ -194,32 +240,101 @@ export class AnimationDirector implements EventRunner {
     if (signal.aborted) return
     const scope = new EffectScope(signal)
     this.scopes.add(scope)
+    let committed = false
+    const confirm = () => {
+      if (committed || scope.cancelled) return
+      committed = true
+      commit()
+    }
     try {
       if (!this.scene.stage()) await scope.paint()
       if (scope.cancelled) return
-      const reduced =
-        this.scene.reducedMotion?.() ??
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const reduced = this.scene.reducedMotion?.() ?? reducedMotion()
       this.scene.sound?.(event, wire)
-      if (!this.scene.stage() || reduced) {
-        commit()
+      if (!this.scene.stage()) {
+        confirm()
         return
       }
       const target = 'target' in event ? this.element(event.target, wire) : null
+      if (reduced) {
+        // Feedback legível e curto conserva os fatos sem tremores ou deslocamentos.
+        const clip =
+          event.type === 'status'
+            ? (majorClips[event.status ?? ''] ?? 'heal')
+            : event.type === 'boost'
+              ? event.after > event.before
+                ? 'buff'
+                : 'debuff'
+              : event.type === 'heal'
+                ? 'heal'
+                : event.type === 'damage'
+                  ? (majorClips[event.cause ?? ''] ?? attackClip(event.cause ?? '') ?? 'impact')
+                  : null
+        if (clip && target) {
+          const feedback = this.fx(scope, target, clip, 80, null, undefined, true)
+          await scope.wait(120)
+          confirm()
+          scope.dispose()
+          await feedback
+        } else confirm()
+        return
+      }
+      const targetBody = this.body(target)
       switch (event.type) {
         case 'move': {
           this.critical.clear()
           if (isChargingMove(event, next)) break
           const actor = this.element(event.actor, wire)
-          const clip = attackClip(event.moveId)
-          const projectile = projectileMove(event.moveId)
+          const actorBody = this.body(actor)
+          const profile = moveProfile(event.moveId)
+          const clip = emissionClip(event.moveId)
+          if (!profile) break
+          this.hold(scope, actor)
+          const contact =
+            (profile.family === 'contact' || profile.family === 'slash') &&
+            event.target !== event.actor
+          const presentation: SpriteOptions['presentation'] =
+            profile.family === 'projectile'
+              ? 'orb'
+              : profile.family === 'slash' || profile.family === 'status'
+                ? 'contact'
+                : profile.family
+          const travelling =
+            profile.family === 'projectile' ||
+            profile.family === 'beam' ||
+            profile.family === 'wave' ||
+            profile.family === 'powder'
+          const vector = actionVector(
+            actor?.getBoundingClientRect?.() ?? null,
+            target?.getBoundingClientRect?.() ?? null,
+            event.actor.startsWith(wire.viewer) ? 1 : -1
+          )
           await Promise.all([
             clip
-              ? this.fx(scope, actor, clip, undefined, projectile ? target : null)
+              ? this.fx(
+                  scope,
+                  contact ? actorBody : actor,
+                  clip,
+                  profile.statusMove ? 100 : profile.size,
+                  travelling && event.target !== event.actor ? target : null,
+                  presentation
+                )
               : Promise.resolve(),
-            actor && !projectile && clip && event.target !== event.actor
-              ? scope.lunge(actor, event.actor.startsWith(wire.viewer) ? 1 : -1)
-              : Promise.resolve(),
+            actorBody && contact
+              ? scope.lunge(actorBody, vector, profile)
+              : scope.animate(
+                  actorBody,
+                  [
+                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(3px) scale(.96, 1.02)', offset: 0.2 },
+                    { transform: 'translateY(-5px) scale(1.03)', offset: 0.55 },
+                    { transform: 'translateY(0) scale(1)' },
+                  ],
+                  {
+                    duration: profile.anticipation + profile.travel + profile.recovery,
+                    easing: 'ease-in-out',
+                  }
+                ),
           ])
           break
         }
@@ -237,13 +352,16 @@ export class AnimationDirector implements EventRunner {
             event.cause !== 'recoil' &&
             pendingCrit
           const shake =
-            !healing && target
+            !healing && targetBody
               ? scope.animate(
-                  target,
+                  targetBody,
                   [
                     { transform: 'translateX(0)' },
-                    { transform: `translateX(${crit ? -8 : -4}px)`, offset: 0.2 },
-                    { transform: `translateX(${crit ? 6 : 3}px)`, offset: 0.5 },
+                    {
+                      transform: `translate(${crit ? -11 : -6}px, 3px) rotate(-3deg) scaleY(.97)`,
+                      offset: 0.2,
+                    },
+                    { transform: `translate(${crit ? 8 : 4}px, -2px) rotate(2deg)`, offset: 0.5 },
                     { transform: 'translateX(0)' },
                   ],
                   { duration: IMPACT.shake }
@@ -267,6 +385,7 @@ export class AnimationDirector implements EventRunner {
               crit ? 185 : undefined
             ),
           ]
+          this.hold(scope, target)
           if (!healing && target)
             await scope.hitStop(crit ? IMPACT.criticalHitStop : IMPACT.hitStop)
           await Promise.all(effects)
@@ -275,28 +394,45 @@ export class AnimationDirector implements EventRunner {
         case 'switch': {
           if (event.round === 0 && !event.previous) break
           const previous = this.element(event.previous, wire)
-          await Promise.all([
-            this.fx(scope, previous, 'recall'),
-            scope.animate(
-              previous,
-              [
-                { opacity: 1, transform: 'scale(1)' },
-                { opacity: 0, transform: 'scale(.4)' },
-              ],
-              { duration: IMPACT.exit }
-            ),
-          ])
+          const departed = [
+            ...(wire.battle?.ownTeam ?? []),
+            ...(wire.battle?.opponentTeam ?? []),
+          ].find((pokemon) => pokemon.id === event.previous)
+          const alreadyFainted = departed && !('hidden' in departed) && departed.fainted
+          this.hold(scope, previous)
+          if (!alreadyFainted)
+            await Promise.all([
+              this.fx(scope, previous, event.forced ? 'dodge' : 'recall'),
+              scope.animate(
+                this.body(previous),
+                event.forced
+                  ? [
+                      { opacity: 1, transform: 'translateX(0)' },
+                      {
+                        opacity: 0,
+                        transform: `translateX(${event.target.startsWith(wire.viewer) ? -90 : 90}px)`,
+                      },
+                    ]
+                  : [
+                      { opacity: 1, transform: 'scale(1)' },
+                      { opacity: 0, transform: 'scale(.25)' },
+                    ],
+                { duration: IMPACT.exit, easing: 'ease-in' }
+              ),
+            ])
           if (scope.cancelled) return
-          commit()
+          confirm()
           await scope.paint()
           if (scope.cancelled) return
           const incoming = this.scene.sprite(this.side(event.target, wire))
+          this.hold(scope, incoming)
           await Promise.all([
             this.fx(scope, incoming, 'summon'),
             scope.animate(
-              incoming,
+              this.body(incoming),
               [
-                { opacity: 0, transform: 'translateY(10px) scale(.65)' },
+                { opacity: 0, transform: 'translateY(-10px) scale(.3)' },
+                { opacity: 1, transform: 'translateY(4px) scale(1.05, .95)', offset: 0.75 },
                 { opacity: 1, transform: 'translateY(0) scale(1)' },
               ],
               { duration: IMPACT.enter, easing: 'ease-out' }
@@ -305,26 +441,36 @@ export class AnimationDirector implements EventRunner {
           break
         }
         case 'faint':
+          this.hold(scope, target)
           await Promise.all([
             this.fx(scope, target, 'faint'),
             scope.animate(
-              target,
+              targetBody,
               [
                 { opacity: 1, transform: 'translateY(0) rotate(0)' },
-                { opacity: 0.24, transform: 'translateY(14px) rotate(-8deg)' },
+                {
+                  opacity: 0.6,
+                  transform: 'translateY(10px) rotate(-5deg) scaleY(.93)',
+                  offset: 0.35,
+                },
+                { opacity: 0, transform: 'translateY(52px) rotate(-7deg) scaleY(.85)' },
               ],
               { duration: IMPACT.faint, easing: 'ease-in' }
             ),
           ])
           break
         case 'miss':
+          this.hold(scope, target)
           await Promise.all([
             this.fx(scope, target, 'dodge'),
             scope.animate(
-              target,
+              targetBody,
               [
                 { transform: 'translateX(0)' },
-                { transform: 'translateX(18px)', offset: 0.35 },
+                {
+                  transform: `translateX(${event.target?.startsWith(wire.viewer) ? -24 : 24}px) rotate(-4deg)`,
+                  offset: 0.35,
+                },
                 { transform: 'translateX(0)' },
               ],
               { duration: 360 }
@@ -350,6 +496,7 @@ export class AnimationDirector implements EventRunner {
           ])
           break
         case 'boost':
+          this.hold(scope, target)
           await Promise.all([
             this.fx(scope, target, event.after > event.before ? 'buff' : 'debuff'),
             this.text(
@@ -358,13 +505,53 @@ export class AnimationDirector implements EventRunner {
               `${event.after > event.before ? '↑' : '↓'} ${event.stat.toUpperCase()}`,
               'info'
             ),
+            scope.animate(
+              targetBody,
+              event.after > event.before
+                ? [
+                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(-7px) scale(1.035)', offset: 0.45 },
+                    { transform: 'translateY(0) scale(1)' },
+                  ]
+                : [
+                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(4px) scale(.96)', offset: 0.45 },
+                    { transform: 'translateY(0) scale(1)' },
+                  ],
+              { duration: 460, easing: 'ease-in-out' }
+            ),
           ])
           break
         case 'status':
-          await this.fx(scope, target, majorClips[event.status ?? ''] ?? 'heal')
+          this.hold(scope, target)
+          await Promise.all([
+            this.fx(scope, target, majorClips[event.status ?? ''] ?? 'heal'),
+            scope.animate(
+              targetBody,
+              event.status === 'slp'
+                ? [
+                    { transform: 'scale(1) rotate(0deg)' },
+                    { transform: 'scaleY(.96) rotate(-3deg)' },
+                  ]
+                : event.status === 'par'
+                  ? [
+                      { transform: 'translateX(0)' },
+                      { transform: 'translateX(-3px)', offset: 0.3 },
+                      { transform: 'translateX(3px)', offset: 0.6 },
+                      { transform: 'translateX(0)' },
+                    ]
+                  : [
+                      { transform: 'translateY(0) scale(1)' },
+                      { transform: 'translateY(3px) scale(.97)', offset: 0.4 },
+                      { transform: 'translateY(0) scale(1)' },
+                    ],
+              { duration: 420, easing: 'ease-in-out' }
+            ),
+          ])
           break
         case 'unable': {
           const actor = this.element(event.actor, wire)
+          this.hold(scope, actor)
           await Promise.all([
             majorClips[event.reason]
               ? this.fx(scope, actor, majorClips[event.reason])
@@ -372,15 +559,41 @@ export class AnimationDirector implements EventRunner {
                 ? this.fx(scope, actor, 'psychic', 90)
                 : Promise.resolve(),
             this.text(scope, actor, 'NÃO CONSEGUIU AGIR', 'info'),
+            scope.animate(
+              this.body(actor),
+              [
+                { transform: 'translateX(0) scale(1)' },
+                {
+                  transform: `translateX(${event.reason === 'par' ? -3 : 0}px) scaleY(.96)`,
+                  offset: 0.35,
+                },
+                {
+                  transform: `translateX(${event.reason === 'par' ? 3 : 0}px) scaleY(.98)`,
+                  offset: 0.65,
+                },
+                { transform: 'translateX(0) scale(1)' },
+              ],
+              { duration: 440 }
+            ),
           ])
           break
         }
         case 'effect':
           if (event.effectId === 'substitute') this.critical.clear()
           if (event.operation === 'prepare') {
+            this.hold(scope, target)
             await Promise.all([
               this.fx(scope, target, 'psychic', 100),
               this.text(scope, target, 'CARREGANDO', 'info'),
+              scope.animate(
+                targetBody,
+                [
+                  { transform: 'translateY(0) scale(1)' },
+                  { transform: 'translateY(-4px) scale(1.04)', offset: 0.5 },
+                  { transform: 'translateY(0) scale(1)' },
+                ],
+                { duration: 620, easing: 'ease-in-out' }
+              ),
             ])
           } else if (event.operation === 'mustrecharge') {
             await this.fx(scope, target, 'psychic', 90)
@@ -403,10 +616,11 @@ export class AnimationDirector implements EventRunner {
           await Promise.all(
             ['me', 'opponent'].map((side) => {
               const sprite = this.scene.sprite(side as 'me' | 'opponent')
+              this.hold(scope, sprite)
               return Promise.all([
                 this.fx(scope, sprite, 'summon'),
                 scope.animate(
-                  sprite,
+                  this.body(sprite),
                   [
                     { opacity: 0, transform: 'translateY(14px) scale(.8)' },
                     { opacity: 1, transform: 'translateY(0) scale(1)' },
@@ -419,17 +633,31 @@ export class AnimationDirector implements EventRunner {
           break
         case 'battle_end':
           await Promise.all(
-            ['me', 'opponent'].map((side) =>
-              this.fx(
-                scope,
-                this.scene.sprite(side as 'me' | 'opponent'),
-                event.result.winner === null
-                  ? 'draw'
-                  : (event.result.winner === wire.viewer) === (side === 'me')
-                    ? 'victory'
-                    : 'defeat'
-              )
-            )
+            ['me', 'opponent'].map((side) => {
+              const sprite = this.scene.sprite(side as 'me' | 'opponent')
+              const winner =
+                event.result.winner !== null &&
+                (event.result.winner === wire.viewer) === (side === 'me')
+              this.hold(scope, sprite)
+              return Promise.all([
+                this.fx(
+                  scope,
+                  sprite,
+                  event.result.winner === null ? 'draw' : winner ? 'victory' : 'defeat'
+                ),
+                winner
+                  ? scope.animate(
+                      this.body(sprite),
+                      [
+                        { transform: 'translateY(0) scale(1)' },
+                        { transform: 'translateY(-12px) scale(1.04)', offset: 0.4 },
+                        { transform: 'translateY(0) scale(1)' },
+                      ],
+                      { duration: 520, easing: 'ease-in-out' }
+                    )
+                  : Promise.resolve(),
+              ])
+            })
           )
           this.critical.clear()
           break
@@ -442,7 +670,7 @@ export class AnimationDirector implements EventRunner {
         default:
           break
       }
-      if (!scope.cancelled) commit()
+      if (!scope.cancelled) confirm()
     } finally {
       if (scope.cancelled) this.critical.clear()
       scope.dispose()

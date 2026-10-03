@@ -27,12 +27,45 @@ export interface MoveEffect {
   tone: EffectTone
 }
 
+function statTarget(target: PokemonMove['target']): string {
+  switch (target) {
+    case 'self':
+    case 'user':
+      return 'do usuário'
+    case 'allies':
+      return 'do usuário e dos aliados'
+    case 'allySide':
+      return 'da equipe'
+    case 'adjacentAlly':
+      return 'do aliado'
+    case 'adjacentAllyOrSelf':
+      return 'do usuário ou de um aliado'
+    case 'all':
+    case 'allAdjacent':
+      return 'de todos os alvos'
+    case 'allAdjacentFoes':
+    case 'foeSide':
+      return 'dos oponentes'
+    case 'normal':
+    case 'adjacentFoe':
+    case 'randomNormal':
+      return 'do oponente'
+    default:
+      return 'do alvo'
+  }
+}
+
+function statLabel(id: string): string {
+  const name = STAT_NAMES[id]
+  if (!name) return 'um atributo'
+  return `${id === 'attack' || id === 'specialAttack' ? 'o' : 'a'} ${name}`
+}
+
 /** Resumo genérico do que o golpe faz — sem números de regra, em português.
  *  Cálculo permanece no servidor; isto é só descrição do catálogo. */
 export function moveEffects(move: PokemonMove): MoveEffect[] {
   const effects: MoveEffect[] = []
-  const selfTarget = move.target === 'self' || move.target === 'user' || move.target === 'allySide'
-  const maybe = (move.statChance ?? 100) < 100 ? 'Pode ' : ''
+  const uncertainStat = (move.statChance ?? 100) < 100
 
   if ((move.healing ?? 0) > 0) effects.push({ label: 'Recupera HP', tone: 'heal' })
   if ((move.drain ?? 0) > 0) effects.push({ label: 'Drena HP do alvo', tone: 'heal' })
@@ -44,17 +77,23 @@ export function moveEffects(move: PokemonMove): MoveEffect[] {
     effects.push({ label: sure ? `Causa ${ailment}` : `Pode causar ${ailment}`, tone: 'ailment' })
   }
   for (const change of move.statChanges ?? []) {
-    const stat = STAT_NAMES[change.stat] ?? change.stat
-    const verb = change.change > 0 ? 'Aumenta' : 'Reduz'
+    const stat = statLabel(change.stat)
+    const verb = uncertainStat
+      ? change.change > 0
+        ? 'Pode aumentar'
+        : 'Pode reduzir'
+      : change.change > 0
+        ? 'Aumenta'
+        : 'Reduz'
     effects.push({
-      label: selfTarget ? `${maybe}${verb} ${stat}` : `${maybe}${verb} ${stat} do oponente`,
+      label: `${verb} ${stat} ${statTarget(move.target)}`,
       tone: change.change > 0 ? 'buff' : 'debuff',
     })
   }
   for (const change of move.selfStatChanges ?? []) {
-    const stat = STAT_NAMES[change.stat] ?? change.stat
+    const stat = statLabel(change.stat)
     effects.push({
-      label: `${change.change > 0 ? 'Aumenta' : 'Reduz'} ${stat} próprio`,
+      label: `${change.change > 0 ? 'Aumenta' : 'Reduz'} ${stat} do usuário`,
       tone: change.change > 0 ? 'buff' : 'debuff',
     })
   }
@@ -65,7 +104,10 @@ export function moveEffects(move: PokemonMove): MoveEffect[] {
   if ((move.priority ?? 0) < 0) effects.push({ label: 'Age por último', tone: 'info' })
   if ((move.critRate ?? 0) > 0) effects.push({ label: 'Maior chance de crítico', tone: 'info' })
   if (effects.length === 0) {
-    effects.push({ label: move.power == null ? 'Golpe de status' : 'Causa dano', tone: 'info' })
+    effects.push({
+      label: move.category?.toLowerCase() === 'status' ? 'Golpe de status' : 'Causa dano',
+      tone: 'info',
+    })
   }
   return effects
 }

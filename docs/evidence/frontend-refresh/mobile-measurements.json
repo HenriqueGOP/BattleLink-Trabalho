@@ -1,0 +1,135 @@
+{
+  "assets": [
+    {
+      "loaded": true,
+      "src": "/arenas/forest.webp"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/front/693.png"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/back/6.png"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/front/6.png"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/front/120.png"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/front/105.png"
+    },
+    {
+      "loaded": true,
+      "src": "/pokemon/front/972.png"
+    },
+    {
+      "loaded": false,
+      "src": "/pokemon/front/156.png"
+    },
+    {
+      "loaded": false,
+      "src": "/pokemon/front/987.png"
+    }
+  ],
+  "buttons": [
+    {
+      "height": 44,
+      "name": "Configurações de áudio",
+      "width": 44
+    },
+    {
+      "height": 44,
+      "name": "Pular animações",
+      "width": 113.5625
+    },
+    {
+      "height": 44,
+      "name": "Sair",
+      "width": 44
+    },
+    {
+      "height": 44,
+      "name": "LUTAR",
+      "width": 73.203125
+    },
+    {
+      "height": 44,
+      "name": "POKÉMON",
+      "width": 96.234375
+    },
+    {
+      "height": 44,
+      "name": "FUGIR",
+      "width": 69.046875
+    },
+    {
+      "height": 121,
+      "name": "Trocar para charizard, 153 de 153 HP",
+      "width": 146
+    },
+    {
+      "height": 121,
+      "name": "Trocar para staryu, 105 de 105 HP",
+      "width": 146
+    },
+    {
+      "height": 121,
+      "name": "Trocar para marowak, 135 de 135 HP",
+      "width": 146
+    },
+    {
+      "height": 121,
+      "name": "Trocar para houndstone, 147 de 147 HP",
+      "width": 146
+    },
+    {
+      "height": 121,
+      "name": "Trocar para quilava, 133 de 133 HP",
+      "width": 146
+    },
+    {
+      "height": 121,
+      "name": "Trocar para fluttermane, 130 de 130 HP",
+      "width": 146
+    },
+    {
+      "height": 54,
+      "name": "Voltar ao lobby",
+      "width": 159.984375
+    },
+    {
+      "height": 44,
+      "name": "Fechar aviso",
+      "width": 44
+    }
+  ],
+  "date": "2026-10-03",
+  "dialog": {
+    "focus": "Voltar ao lobby",
+    "rect": {
+      "bottom": 800,
+      "height": 800,
+      "left": 0,
+      "right": 350,
+      "top": 0,
+      "width": 350,
+      "x": 0,
+      "y": 0
+    },
+    "text": "VITÓRIA POR DESISTÊNCIA!O oponente desconectou. A partida foi encerrada.Dano causado1Dano recebido0Voltar ao lobby"
+  },
+  "heading": "Floresta",
+  "mode": "Vite dev em localhost:5173",
+  "viewport": {
+    "clientWidth": 350,
+    "height": 800,
+    "scrollWidth": 350,
+    "width": 360
+  }
+}

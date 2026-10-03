@@ -1,121 +1,114 @@
 .bar {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: var(--space-4);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 12px;
   align-items: stretch;
 }
 .message {
   position: relative;
   display: flex;
-  align-items: flex-start;
-  height: 264px;
-  min-height: 264px;
+  align-items: center;
+  min-height: 216px;
+  max-height: 270px;
   overflow-y: auto;
-  padding: var(--space-5) var(--space-6) var(--space-5) var(--space-5);
+  padding: 24px;
   background: var(--msg-face);
   color: var(--hud-ink);
-  border: var(--border-width) solid var(--msg-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--panel-shadow);
+  border: 1px solid var(--msg-edge);
+  border-left: 4px solid var(--menu-edge);
+  border-radius: 14px;
 }
 .messageText {
-  font-size: 26px;
-  line-height: 1.3;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
   color: var(--hud-ink);
-  min-height: 2.6em;
+  overflow-wrap: anywhere;
 }
 .cursor {
-  position: absolute;
-  right: var(--space-3);
-  bottom: var(--space-3);
-  font-size: 18px;
-  line-height: 1;
-  color: var(--msg-edge);
+  display: none;
 }
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, 1fr);
-  gap: var(--space-3);
-  padding: var(--space-3);
+  gap: 8px;
+  padding: 12px;
   background: var(--menu-face);
-  border: var(--border-width) solid var(--menu-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--menu-shadow);
+  border: 1px solid var(--menu-edge);
+  border-radius: 14px;
+}
+.grid > :last-child:nth-child(3) {
+  grid-column: 1/-1;
 }
 .panel {
-  display: block;
-  padding: var(--space-3);
+  min-width: 0;
+  padding: 12px;
   background: var(--menu-face);
-  border: var(--border-width) solid var(--menu-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--menu-shadow);
+  border: 1px solid var(--hud-edge);
+  border-radius: 14px;
 }
 .diamond {
   display: none;
 }
 .preview {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  width: 100%;
+  gap: 12px;
 }
 .previewHead {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  padding-bottom: var(--space-2);
-  border-bottom: 2px dashed var(--hud-edge-soft);
+  gap: 8px;
 }
 .previewName {
-  font-family: var(--font-ui);
-  font-size: 28px;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.35;
   color: var(--hud-ink);
+  overflow-wrap: anywhere;
 }
 .category {
-  font-size: var(--font-size-small);
-  text-transform: uppercase;
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-sm);
-  color: var(--hud-face);
-  background: var(--hud-ink-soft);
+  font-size: 11px;
+  color: var(--hud-ink-soft);
+  font-weight: 700;
 }
 .previewStats {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-5);
+  gap: 24px;
   margin: 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--hud-edge-soft);
 }
 .previewStats div {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 3px;
 }
 .previewStats dt {
-  font-size: var(--font-size-small);
-  text-transform: uppercase;
+  font-size: 11px;
   color: var(--hud-ink-soft);
 }
 .previewStats dd {
   margin: 0;
-  font-size: 26px;
-  color: var(--hud-ink);
+  font-size: 18px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .previewEffects {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
+  gap: 4px;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 .previewEffects li {
-  font-size: var(--font-size-small);
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-sm);
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 5px;
   color: var(--on-accent);
 }
 .heal,
@@ -130,30 +123,34 @@
   background: var(--hud-ink-soft);
 }
 .previewDesc {
-  font-size: 22px;
-  line-height: 1.2;
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--hud-ink-soft);
 }
 @media (max-width: 760px) {
   .bar {
     grid-template-columns: 1fr;
-    gap: var(--space-3);
+    gap: 10px;
   }
   .message {
-    height: 210px;
-    min-height: 210px;
-    padding: var(--space-4) var(--space-5);
+    min-height: 84px;
+    max-height: 220px;
+    padding: 16px;
   }
   .messageText {
-    font-size: 24px;
+    font-size: 16px;
   }
   .preview {
-    gap: var(--space-2);
+    gap: 8px;
   }
   .previewName {
-    font-size: 24px;
+    font-size: 16px;
+  }
+  .previewStats {
+    gap: 20px;
+    padding: 6px 0;
   }
   .previewDesc {
-    font-size: 20px;
+    font-size: 12px;
   }
 }

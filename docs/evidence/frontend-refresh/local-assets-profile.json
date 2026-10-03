@@ -1,0 +1,154 @@
+{
+  "page": "http://localhost:4173/visual-check",
+  "summary": {
+    "byKind": {
+      "font": 6,
+      "image": 13,
+      "other": 0,
+      "script": 11,
+      "stylesheet": 4,
+      "video": 0
+    },
+    "inlineSvgCount": 1,
+    "totalCount": 34
+  },
+  "assets": [
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/index-BkHDnQP1.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/rolldown-runtime-CbXtAM7H.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/assets-CkZXFq0m.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/react-CBRzf86S.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/animated-assets-BF300_q9.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/species-D9ItPtcU.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/moves-PeDvFCqI.js"
+    },
+    {
+      "kind": "stylesheet",
+      "url": "http://localhost:4173/assets/index-CATHewC-.css"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/PresentationLab-CX8PoKQA.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/TypeBadge-TYvOVFht.js"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/BattlePage.module-CaMPp_i4.js"
+    },
+    {
+      "kind": "stylesheet",
+      "url": "http://localhost:4173/assets/TypeBadge-OSDAwJu2.css"
+    },
+    {
+      "kind": "stylesheet",
+      "url": "http://localhost:4173/assets/BattlePage-BEhDkYSH.css"
+    },
+    {
+      "kind": "script",
+      "url": "http://localhost:4173/assets/animation-CvDoa17S.js"
+    },
+    {
+      "kind": "stylesheet",
+      "url": "http://localhost:4173/assets/PresentationLab-C1JwGV_X.css"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/nunito-sans-latin-ext-400-normal-BoHsJHPR.woff2"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/nunito-sans-latin-400-normal-AkRraKH2.woff2"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/beach.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/pokemon/front/235.png"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/stadium.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/pokemon/back/235.png"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/forest.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/cave.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/space.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/arenas/night-city.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/favicon.svg"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/oxanium-latin-ext-700-normal-BSlCClLu.woff2"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/nunito-sans-latin-ext-700-normal-DBq_Pukt.woff2"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/oxanium-latin-700-normal-l0hKEjh4.woff2"
+    },
+    {
+      "kind": "font",
+      "url": "http://localhost:4173/assets/nunito-sans-latin-700-normal-CICRJDmU.woff2"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/battle-vfx/transitions.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/battle-vfx/attacks.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/battle-vfx/statuses.webp"
+    },
+    {
+      "kind": "image",
+      "url": "http://localhost:4173/pokemon/front/133.png"
+    }
+  ],
+  "external": []
+}

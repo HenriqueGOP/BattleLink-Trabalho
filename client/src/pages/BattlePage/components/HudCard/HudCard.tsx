@@ -1,6 +1,7 @@
 ﻿import { memo } from 'react'
 import { HealthBar } from '../../../../components/HealthBar'
 import { TypeBadge } from '../../../../components/TypeBadge'
+import { formatPokemonName } from '../../../../lib/format'
 import { STAT_SHORT, STATUS_LABELS, STATUS_SHORT } from '../shared'
 import styles from './HudCard.module.css'
 import type { Player } from '../../../../types/player'
@@ -64,7 +65,7 @@ export const HudCard = memo(function HudCard({ player, opponent }: HudCardProps)
 
       <div className={styles.nameRow}>
         <h3 className={styles.pokemonName}>
-          {player?.pokemon ?? '-'}
+          {player?.pokemon ? formatPokemonName(player.pokemon) : '—'}
           {data?.isShiny && (
             <span className={styles.shiny} title="Shiny!">
               ★

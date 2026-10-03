@@ -102,11 +102,17 @@ async function assetTests() {
       for (let index = 0; index < clip.frames; index++) {
         const rect = frameRect(1254, 1254, clip, index);
         assert.equal(rect.width, 156.75);
-        assert.equal(rect.height, 156.75 * (1 - (clip.cropTop ?? 0) - (clip.cropBottom ?? 0)));
+        assert.equal(
+          rect.height,
+          156.75 * (1 - (clip.cropTop ?? 0) - (clip.cropBottom ?? 0)),
+        );
         assert.equal(rect.x, index * 156.75);
         assert.equal(rect.y, (clip.row + (clip.cropTop ?? 0)) * 156.75);
         assert.ok((clip.cropTop ?? 0) >= 0 && (clip.cropBottom ?? 0) >= 0);
-        assert.ok((clip.cropTop ?? 0) + (clip.cropBottom ?? 0) <= .25, "Recorte conserva pelo menos75% da célula e evita pixels da família vizinha");
+        assert.ok(
+          (clip.cropTop ?? 0) + (clip.cropBottom ?? 0) <= 0.25,
+          "Recorte conserva pelo menos75% da célula e evita pixels da família vizinha",
+        );
         assert.ok(rect.x >= 0 && rect.x + rect.width <= 1254);
         assert.ok(rect.y >= 0 && rect.y + rect.height <= 1254);
       }
@@ -177,6 +183,13 @@ class ControlledCanvas {
 class ControlledParent {
   children = new Set<ControlledCanvas>();
   rect = { left: 0, top: 0, width: 100, height: 100 };
+  stage: ControlledParent | null = null;
+  clientLeft = 0;
+  clientTop = 0;
+  closest(selector: string) {
+    assert.equal(selector, "[data-fx-stage]");
+    return this.stage;
+  }
   getBoundingClientRect() {
     return this.rect;
   }
@@ -307,6 +320,11 @@ async function rendererTests() {
     assert.equal(canvas.width, 200, "Device pixel ratio limitado a dois");
     assert.equal(canvas.height, 200);
     assert.equal(canvas.style.width, "100px");
+    assert.equal(
+      canvas.style.maxWidth,
+      "none",
+      "Reset global não comprime canvas no holder do Pokémon",
+    );
     assert.equal(canvas.attributes.get("aria-hidden"), "true");
     tick(0);
     assert.deepEqual(canvas.draws[0].slice(1, 5), [0, 313.5, 156.75, 156.75]);
@@ -563,6 +581,79 @@ async function rendererTests() {
     assert.equal(pausedParent.children.size, 0);
     assertIdle();
 
+    const plane = new ControlledParent(),
+      anchor = new ControlledParent(),
+      beamTarget = new ControlledParent();
+    plane.rect = { left: 20, top: 40, width: 600, height: 300 };
+    anchor.rect = { left: 120, top: 120, width: 100, height: 100 };
+    beamTarget.rect = { left: 420, top: 50, width: 100, height: 100 };
+    anchor.stage = plane;
+    const beamController = new AbortController();
+    const beamPlay = playSprite(asElement(anchor), "fire", {
+      signal: beamController.signal,
+      presentation: "beam",
+      travelTo: asElement(beamTarget),
+    });
+    await flush();
+    assert.equal(
+      anchor.children.size,
+      0,
+      "Efeito transitório sai do stacking context da criatura",
+    );
+    const beam = [...plane.children][0];
+    assert.equal(beam.style.left, "300px");
+    assert.equal(beam.style.top, "95px");
+    assert.equal(beam.style.zIndex, "var(--z-effects, 30)");
+    assert.equal(beam.style.width, `${Math.hypot(300, -70)}px`);
+    tick(10000);
+    tick(10180);
+    assert.match(beam.style.transform, /^translate\(-50%, -50%\) rotate\(-/);
+    assert.ok(
+      Number(beam.style.opacity) > 0.9,
+      "Feixe mantém arte perceptível no centro do efeito",
+    );
+    tick(10450);
+    await beamPlay;
+    assert.equal(plane.children.size, 0);
+    assertIdle();
+
+    const powderController = new AbortController();
+    const powderPlay = playSprite(asElement(anchor), "poison", {
+      signal: powderController.signal,
+      presentation: "powder",
+      travelTo: asElement(beamTarget),
+    });
+    await flush();
+    const powder = [...plane.children][0];
+    assert.equal(powder.style.left, "150px");
+    assert.equal(powder.style.top, "130px");
+    tick(12000);
+    tick(12875);
+    assert.equal(
+      powder.style.transform,
+      "translate(calc(-50% + 300px), calc(-50% + -70px)) scale(1.15)",
+      "Pó viaja até o alvo sem antecipar confirmação de status",
+    );
+    tick(13000);
+    await powderPlay;
+    assertIdle();
+
+    const areaController = new AbortController();
+    const areaPlay = playSprite(asElement(anchor), "water", {
+      signal: areaController.signal,
+      presentation: "area",
+    });
+    await flush();
+    const area = [...plane.children][0];
+    assert.equal(area.style.left, "300px");
+    assert.ok(Math.abs(Number.parseFloat(area.style.top) - 168) < 1e-9);
+    assert.equal(area.style.width, "440px");
+    tick(14000);
+    tick(14450);
+    await areaPlay;
+    assert.equal(plane.children.size, 0);
+    assertIdle();
+
     markVfxFailed(VFX_ATLASES.statuses);
     const fallback = new ControlledParent(),
       fallbackController = new AbortController();
@@ -613,6 +704,9 @@ async function failureTests() {
   const callbacks = new Map<number, FrameRequestCallback>();
   let nextTimer = 1,
     nextFrame = 1;
+  const originalNow = Date.now;
+  let clock = 10000;
+  Date.now = () => clock;
   const globals = {
     document: { createElement: () => new ControlledCanvas() },
     window: { devicePixelRatio: 1 },
@@ -707,10 +801,56 @@ async function failureTests() {
     assert.equal(spriteStats().framesPending, 0);
     assert.equal(callbacks.size, 0);
     assert.equal(timers.size, 0);
+    clock += 1001;
+    const recovered = new ControlledParent(),
+      recoveryController = new AbortController();
+    const recoveryPlay = playSprite(asElement(recovered), "protect", {
+      signal: recoveryController.signal,
+    });
+    assert.equal(
+      ControlledImage.created.length,
+      4,
+      "Erro não permanece como promessa null na cache da sessão",
+    );
+    ControlledImage.created[3].load();
+    await flush();
+    assert.equal(
+      recovered.children.size,
+      1,
+      "Atlas volta a ser desenhado no mesmo aplicativo após cooldown",
+    );
+    const recoveryFrames = [...callbacks.values()];
+    callbacks.clear();
+    for (const callback of recoveryFrames) callback(0);
+    assert.equal(
+      ([...recovered.children][0].draws[0][0] as ControlledImage).src,
+      VFX_ATLASES.statuses,
+    );
+    recoveryController.abort();
+    await recoveryPlay;
+    const afterDeadline = new ControlledParent(),
+      afterDeadlineController = new AbortController();
+    const afterDeadlinePlay = playSprite(asElement(afterDeadline), "summon", {
+      signal: afterDeadlineController.signal,
+    });
+    assert.equal(
+      ControlledImage.created.length,
+      5,
+      "Timeout transitório permite nova tentativa sem reload",
+    );
+    ControlledImage.created[4].load();
+    await flush();
+    assert.equal(afterDeadline.children.size, 1);
+    afterDeadlineController.abort();
+    await afterDeadlinePlay;
+    assert.equal(spriteStats().active, 0);
+    assert.equal(callbacks.size, 0);
+    assert.equal(timers.size, 0);
     console.log(
-      "Sprite cold-load failures: error, 1500 ms deadline, shared fallback and cancellation passed.",
+      "Sprite cold-load failures: error, 1500 ms deadline, shared fallback, cancellation and recovery without reload passed.",
     );
   } finally {
+    Date.now = originalNow;
     for (const [key, descriptor] of originals) {
       if (descriptor) Object.defineProperty(globalThis, key, descriptor);
       else Reflect.deleteProperty(globalThis, key);

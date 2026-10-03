@@ -11,18 +11,16 @@
   display: grid;
   place-items: center;
   background: var(--bg-panel);
-  border: 2px solid var(--border-strong);
-  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
   color: var(--text);
   box-shadow: var(--shadow-2);
-  transition:
-    color var(--dur-fast),
-    transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-fast);
 }
 
 .gear:hover {
   color: var(--text);
-  transform: rotate(30deg);
+  background: var(--bg-raised);
 }
 
 .dialog {
@@ -43,6 +41,10 @@
   background: rgba(8, 24, 38, 0.62);
 }
 
+.dialog :focus-visible {
+  outline-color: var(--focus-on-light);
+}
+
 .panel {
   position: fixed;
   right: var(--space-4);
@@ -51,7 +53,7 @@
   max-height: calc(100dvh - 108px);
   overflow-y: auto;
   background: var(--panel-face);
-  border: 3px solid var(--border-strong);
+  border: 1px solid var(--hud-edge-soft);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-3);
   padding: var(--space-4);
@@ -67,7 +69,7 @@
 }
 
 .title {
-  font-size: 11px;
+  font-size: 19px;
   color: var(--panel-ink);
   line-height: 1.6;
 }
@@ -76,9 +78,9 @@
   flex: none;
   width: 44px;
   height: 44px;
-  border: 2px solid var(--border-strong);
-  border-radius: 50%;
-  font-size: 28px;
+  border: 1px solid var(--hud-edge-soft);
+  border-radius: var(--radius);
+  font-size: 24px;
   line-height: 1;
   background: var(--hud-face-2);
 }
@@ -134,7 +136,7 @@
   padding: var(--space-2) var(--space-3);
   min-height: 44px;
   background: var(--panel-ink);
-  border: 2px solid var(--border-strong);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   color: var(--panel-face);
 }

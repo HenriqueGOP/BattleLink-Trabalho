@@ -1,7 +1,7 @@
 import type { GameState } from '../types/battle'
 import type { CanonicalEvent } from '../types/protocol'
 import type { BattleEvent, LogEntry, Side } from '../types/events'
-import { eventMessage } from '../../../server/src/contracts/events'
+import { battleMessage } from './battleMessages'
 import { statusNames } from './battleView'
 
 const sideOf = (id: string | null, myIndex: number): Side =>
@@ -19,7 +19,7 @@ export function animateEvent(
     type: 'info',
     actor: 'system',
     target: 'system',
-    message: eventMessage(event, state.wire),
+    message: battleMessage(event, state.wire),
   }
   if ('actor' in event) output.actor = sideOf(event.actor, myIndex)
   if ('target' in event) output.target = sideOf(event.target, myIndex)

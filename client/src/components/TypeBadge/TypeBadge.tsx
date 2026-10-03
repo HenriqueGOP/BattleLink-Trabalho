@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { CSSProperties } from 'react'
 import styles from './TypeBadge.module.css'
+import { typeLabel } from '../../lib/format'
 
 export interface TypeBadgeProps {
   type: string
@@ -15,7 +16,7 @@ export const TypeBadge = memo(function TypeBadge({ type, small = false }: TypeBa
       className={small ? `${styles.badge} ${styles.small}` : styles.badge}
       style={{ '--type-color': `var(--type-${type}, var(--type-normal))` } as CSSProperties}
     >
-      {type}
+      {typeLabel(type)}
     </span>
   )
 })

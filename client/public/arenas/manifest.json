@@ -1,56 +1,128 @@
 {
   "forest": {
-    "path": "/arenas/forest.svg",
-    "bytes": 2716,
-    "sha256": "b6a90fddc07e862b02a50ac4c3ce0191be1852ea60fe74baecda923d575fb2ed",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/forest.webp",
+    "bytes": 345300,
+    "sha256": "a95d090582aaf0827fc7a87aa193f2f9b08a34b7995aa6bcaa4a31d5512c660f",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "ed447c24a4c77c241058bf162c3f6a0a1a39294384b6340821de089f84b89103",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/forest.svg",
+      "bytes": 2716,
+      "sha256": "b6a90fddc07e862b02a50ac4c3ce0191be1852ea60fe74baecda923d575fb2ed",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   },
   "stadium": {
-    "path": "/arenas/stadium.svg",
-    "bytes": 2812,
-    "sha256": "596383c6e43dfe761a5e90dc5be7bae554f71145f628c7f717911d117afe3ad8",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/stadium.webp",
+    "bytes": 252034,
+    "sha256": "30c168a741cbcf302c20dee7abd81b33ed57a1f348edb097a6a5b954cb17bc07",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "ff66d6effe51f193b9401492fd5f8646cbcd45282831b9b0f3a4c31246c22dfd",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/stadium.svg",
+      "bytes": 2812,
+      "sha256": "596383c6e43dfe761a5e90dc5be7bae554f71145f628c7f717911d117afe3ad8",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   },
   "cave": {
-    "path": "/arenas/cave.svg",
-    "bytes": 2570,
-    "sha256": "1717c5565ba772313e4dd516f0d0ab58363cdade96fac7d71d601e72c2784e97",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/cave.webp",
+    "bytes": 168082,
+    "sha256": "b4ad216443a77a2c8d2603142d792404f863f0a66b89c77fb227e1a46717aec8",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "00ee920d4f07c890998e41591b3952454227a172fba7e185f639bb6056cceaf2",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/cave.svg",
+      "bytes": 2570,
+      "sha256": "1717c5565ba772313e4dd516f0d0ab58363cdade96fac7d71d601e72c2784e97",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   },
   "beach": {
-    "path": "/arenas/beach.svg",
-    "bytes": 2655,
-    "sha256": "2afa54db2d3a2a5879655830c16e4281d5ef2bafa0e4d4747beebb1308644189",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/beach.webp",
+    "bytes": 196196,
+    "sha256": "4ce64b09b282b7c0b923cf4a352ad3d8abcb36639a53fa9919a175aa8631ba64",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "6a23fb9e4c0c2167e76c1c4c4250811a01c942f64760058a4ae6e374b9414f96",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/beach.svg",
+      "bytes": 2655,
+      "sha256": "2afa54db2d3a2a5879655830c16e4281d5ef2bafa0e4d4747beebb1308644189",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   },
   "space": {
-    "path": "/arenas/space.svg",
-    "bytes": 2913,
-    "sha256": "0f36461dab6afe33e734eb8fbbc705d9fc633f2c0293a100d075b81956ae8bbf",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/space.webp",
+    "bytes": 187012,
+    "sha256": "ce67bc9a05abf7aead5f4a3f24f33b5f871fc0170dcafa7c5c53b95472637219",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "80b0a6b1c6f6b794cc1ba2b4181db7c1a3b363a19375044be0d992b7a869b716",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/space.svg",
+      "bytes": 2913,
+      "sha256": "0f36461dab6afe33e734eb8fbbc705d9fc633f2c0293a100d075b81956ae8bbf",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   },
   "night-city": {
-    "path": "/arenas/night-city.svg",
-    "bytes": 2894,
-    "sha256": "03030facfd47cfc3d0cdcf4e92b224ad6f2090620e8109c5b4de3e26a10aaa51",
-    "width": 1200,
-    "height": 700,
-    "license": "CC0-1.0",
-    "origin": "original-vector-art"
+    "path": "/arenas/night-city.webp",
+    "bytes": 166356,
+    "sha256": "a2f77f983e9f8b72c7757154d2f97f8e976c3fa12b5bdbcd208bd325475c212d",
+    "width": 1672,
+    "height": 941,
+    "origin": "original-imagegen-art",
+    "license": "project-original-generated-art",
+    "sourceSha256": "8caef3e2887f298ec71d0a565cbfb004162fa98df8e6975d124429a9648fc86c",
+    "prompt": "docs/art-prompts/arena-refresh.json",
+    "encoding": "WebP quality 82; original dimensions",
+    "fallback": {
+      "path": "/arenas/night-city.svg",
+      "bytes": 2894,
+      "sha256": "03030facfd47cfc3d0cdcf4e92b224ad6f2090620e8109c5b4de3e26a10aaa51",
+      "width": 1200,
+      "height": 700,
+      "license": "CC0-1.0",
+      "origin": "original-vector-art"
+    }
   }
 }

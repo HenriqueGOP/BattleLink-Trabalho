@@ -3,6 +3,7 @@ import { playSprite } from '../../../../lib/presentation/SpriteRenderer'
 import { statusClip } from '../../../../lib/presentation/spriteRegistry'
 import type { StatusName } from '../../../../types/player'
 import styles from './StatusAura.module.css'
+import { useMotionPreference } from '../../../../hooks/useMotionPreference'
 
 export interface StatusAuraProps {
   status: StatusName | null | undefined
@@ -18,8 +19,8 @@ export const StatusAura = memo(function StatusAura({
   paused = false,
 }: StatusAuraProps) {
   const holder = useRef<HTMLSpanElement>(null)
+  const { reduced } = useMotionPreference()
   useEffect(() => {
-    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
     let controller: AbortController | null = null
     const start = () => {
       controller?.abort()
@@ -29,7 +30,7 @@ export const StatusAura = memo(function StatusAura({
       const options = {
         signal: controller.signal,
         loop: true,
-        static: preference.matches,
+        static: reduced,
         position: 'above' as const,
       }
       if (clip) void playSprite(holder.current, clip, options)
@@ -38,13 +39,11 @@ export const StatusAura = memo(function StatusAura({
     }
     start()
     document.addEventListener('visibilitychange', start)
-    preference.addEventListener('change', start)
     return () => {
       controller?.abort()
       document.removeEventListener('visibilitychange', start)
-      preference.removeEventListener('change', start)
     }
-  }, [status, confused, side, paused])
+  }, [status, confused, side, paused, reduced])
   if (!status && !confused) return null
   return <span ref={holder} className={styles.auraLayer} aria-hidden="true" />
 })

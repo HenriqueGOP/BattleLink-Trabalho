@@ -1,7 +1,8 @@
 import { SPRITE_CLIPS, VFX_ATLASES, type SpriteClip, type SpriteClipId } from './spriteRegistry'
 
 const images = new Map<string, Promise<HTMLImageElement | null>>()
-const failed = new Set<string>()
+const failed = new Map<string, number>()
+const FAILURE_COOLDOWN_MS = 1000
 type Job = (now: number) => boolean
 const jobs = new Set<Job>()
 const instances = new Set<object>()
@@ -29,10 +30,20 @@ export const spriteStats = () => ({
   cached: images.size,
 })
 export function markVfxFailed(path: string) {
-  if (Object.values(VFX_ATLASES).some((value) => value === path)) failed.add(path)
+  if (Object.values(VFX_ATLASES).some((value) => value === path)) {
+    failed.set(path, Date.now() + FAILURE_COOLDOWN_MS)
+    images.delete(path)
+  }
+}
+export function markVfxLoaded(path: string) {
+  if (failed.delete(path)) images.delete(path)
 }
 function load(path: string): Promise<HTMLImageElement | null> {
-  if (failed.has(path) || typeof Image === 'undefined') return Promise.resolve(null)
+  if (!Object.values(VFX_ATLASES).some((value) => value === path) || typeof Image === 'undefined')
+    return Promise.resolve(null)
+  const until = failed.get(path)
+  if (until !== undefined && until > Date.now()) return Promise.resolve(null)
+  if (until !== undefined) failed.delete(path)
   const cached = images.get(path)
   if (cached) return cached
   const pending = new Promise<HTMLImageElement | null>((resolve) => {
@@ -44,15 +55,37 @@ function load(path: string): Promise<HTMLImageElement | null> {
       settled = true
       clearTimeout(timer)
       image.onload = image.onerror = null
-      if (!value) failed.add(path)
+      if (!value) {
+        failed.set(path, Date.now() + FAILURE_COOLDOWN_MS)
+        images.delete(path)
+      } else failed.delete(path)
       resolve(value)
     }
-    image.onload = () => done(image.naturalWidth > 0 && image.naturalHeight > 0 ? image : null)
+    image.onload = () => {
+      const decoded = image.decode ? image.decode() : Promise.resolve()
+      void decoded.then(
+        () => done(image.naturalWidth > 0 && image.naturalHeight > 0 ? image : null),
+        () => done(null)
+      )
+    }
     image.onerror = () => done(null)
     image.src = path
   })
   images.set(path, pending)
   return pending
+}
+
+/** Warm the same decoded atlas cache used by playback; cancellation is per waiter. */
+export function preloadSpriteAtlas(path: string, signal: AbortSignal): Promise<void> {
+  if (signal.aborted) return Promise.resolve()
+  return new Promise<void>((resolve) => {
+    const finish = () => {
+      signal.removeEventListener('abort', finish)
+      resolve()
+    }
+    signal.addEventListener('abort', finish, { once: true })
+    void load(path).then(finish, finish)
+  })
 }
 /** Dimensões reais do atlas; a geração pode entregar tamanho diferente do prompt. */
 export function frameRect(width: number, height: number, clip: SpriteClip, index: number) {
@@ -77,6 +110,8 @@ export interface SpriteOptions {
   delay?: number
   travelTo?: HTMLElement | null
   paused?: () => boolean
+  presentation?: 'orb' | 'beam' | 'wave' | 'area' | 'powder' | 'contact'
+  rotate?: number
 }
 
 /** Um canvas por clip, relógio compartilhado, zero estado React por frame. */
@@ -125,13 +160,54 @@ export function playSprite(
       const ratio = Math.min(2, window.devicePixelRatio || 1)
       canvas.width = canvas.height = Math.round(size * ratio)
       canvas.style.width = canvas.style.height = `${size}px`
+      canvas.style.maxWidth = 'none'
       canvas.className = `battle-sprite-fx${options.position === 'above' ? ' battle-sprite-fx-above' : ''}`
       canvas.setAttribute('aria-hidden', 'true')
       canvas.setAttribute('data-sprite-clip', id)
-      parent.appendChild(canvas)
       const source = image
       const origin = parent.getBoundingClientRect?.()
       const destination = options.travelTo?.getBoundingClientRect?.()
+      // Short-lived effects use the stage plane rather than a transformed actor
+      // stacking context. Persistent auras remain anchored to their local holder.
+      const stage =
+        !options.loop && !options.static ? parent.closest?.<HTMLElement>('[data-fx-stage]') : null
+      const stageRect = stage?.getBoundingClientRect()
+      ;(stage ?? parent).appendChild(canvas)
+      const center = (rect: DOMRect | undefined) =>
+        rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : null
+      const startPoint = center(origin),
+        endPoint = center(destination)
+      const dx = startPoint && endPoint ? endPoint.x - startPoint.x : 0
+      const dy = startPoint && endPoint ? endPoint.y - startPoint.y : 0
+      const angle = options.rotate ?? (Math.atan2(dy, dx) * 180) / Math.PI
+      const presentation = options.presentation ?? 'orb'
+      if (stage && stageRect && startPoint) {
+        let anchor = startPoint
+        if (presentation === 'area')
+          anchor = {
+            x: stageRect.left + stageRect.width / 2,
+            y: stageRect.top + stageRect.height * 0.56,
+          }
+        if (presentation === 'beam' && endPoint)
+          anchor = { x: (startPoint.x + endPoint.x) / 2, y: (startPoint.y + endPoint.y) / 2 }
+        canvas.style.left = `${anchor.x - stageRect.left - stage.clientLeft}px`
+        canvas.style.top = `${anchor.y - stageRect.top - stage.clientTop}px`
+        canvas.style.zIndex = 'var(--z-effects, 30)'
+        if (presentation === 'beam' && endPoint) {
+          const width = Math.max(32, Math.min(900, Math.hypot(dx, dy)))
+          const height = Math.max(28, size * 0.38)
+          canvas.style.width = `${width}px`
+          canvas.style.height = `${height}px`
+          canvas.width = Math.round(width * ratio)
+          canvas.height = Math.round(height * ratio)
+        } else if (presentation === 'wave') {
+          canvas.style.width = `${size * 1.4}px`
+          canvas.style.height = `${size * 0.75}px`
+        } else if (presentation === 'area') {
+          const area = Math.min(440, stageRect.width * 0.78)
+          canvas.style.width = canvas.style.height = `${area}px`
+        }
+      }
       const travel =
         origin && destination
           ? {
@@ -183,9 +259,20 @@ export function playSprite(
         if (index !== previous) {
           draw(index)
           previous = index
-          if (travel) {
+          if (presentation === 'beam') {
+            const pulse = Math.sin(Math.min(1, step / (clip.frames - 1)) * Math.PI)
+            canvas!.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scaleY(${0.3 + pulse * 0.7})`
+            canvas!.style.opacity = `${0.25 + pulse * 0.75}`
+          } else if (presentation === 'powder') {
+            const progress = Math.min(1, step / (clip.frames - 1))
+            canvas!.style.transform = `translate(calc(-50% + ${(travel?.x ?? 0) * progress}px), calc(-50% + ${(travel?.y ?? 0) * progress}px)) scale(${0.5 + progress * 0.65})`
+          } else if (presentation === 'area') {
+            const progress = Math.min(1, step / (clip.frames - 1))
+            canvas!.style.transform = `translate(-50%, -50%) scale(${0.5 + progress * 0.65})`
+          } else if (travel) {
             const progress = Math.min(1, step / (clip.frames - 1))
             canvas!.style.transform = `translate(calc(-50% + ${travel.x * progress}px), calc(-50% + ${travel.y * progress}px))`
+            if (presentation === 'wave') canvas!.style.transform += ` rotate(${angle}deg)`
           }
         }
         return true

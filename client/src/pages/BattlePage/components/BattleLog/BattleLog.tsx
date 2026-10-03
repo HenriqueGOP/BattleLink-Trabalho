@@ -24,13 +24,13 @@ export const BattleLog = memo(function BattleLog({ entries }: BattleLogProps) {
   const visible = entries.slice(-40).reverse()
 
   return (
-    <section className={styles.panel} aria-label="Registro de combate">
-      <header className={styles.header}>
-        <h2 className={styles.title}>Registro de combate</h2>
+    <details className={styles.panel} aria-label="Registro de combate">
+      <summary className={styles.header}>
+        <span className={styles.title}>Registro de combate</span>
         <span className={styles.count}>{entries.length} eventos</span>
-      </header>
+      </summary>
       <ol className={styles.list}>
-        {visible.map(entry => (
+        {visible.map((entry) => (
           <li key={entry.id} className={`${styles.item} ${styles[entry.category]}`}>
             <b className={styles.tag} aria-hidden="true">
               {LABELS[entry.category]}
@@ -38,8 +38,10 @@ export const BattleLog = memo(function BattleLog({ entries }: BattleLogProps) {
             <span className={styles.text}>{entry.text}</span>
           </li>
         ))}
-        {entries.length === 0 && <li className={styles.empty}>A batalha aparece aqui em tempo real.</li>}
+        {entries.length === 0 && (
+          <li className={styles.empty}>A batalha aparece aqui em tempo real.</li>
+        )}
       </ol>
-    </section>
+    </details>
   )
 })

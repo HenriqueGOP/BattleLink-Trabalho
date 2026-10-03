@@ -1,0 +1,100 @@
+# Referências de interface Pokémon — direção Battle Link
+
+**Pesquisa:** 2026-10-03. **Escopo:** interface, hierarquia visual e interação. Este documento antecede a reformulação do frontend; não contém implementação nem certifica que arenas ou efeitos estejam aparecendo no jogo atual.
+
+## Método e força da evidência
+
+Foram abertas e lidas as 11 fontes primárias abaixo: sites da Pokémon/Nintendo, manuais distribuídos pela Nintendo, publicações dos próprios desenvolvedores de fangames e código do mantenedor do Pokémon Essentials. Resultados de busca foram usados para localizar essas fontes. Sites de download não vinculados pelos autores não foram usados como referência.
+
+- **Confirmado por texto/manual:** instruções e elementos nomeados na fonte.
+- **Confirmado por código:** estrutura, dados e estados definidos no código público do projeto; não equivale a executar o jogo.
+- **Proposta/inferência:** decisão de adaptação para este projeto, identificada nas seções seguintes.
+
+Os manuais PDF foram abertos e tiveram o conteúdo textual examinado. A ferramenta de captura retornou identificadores sem expor as figuras neste agente; o navegador deste agente também não estava disponível. Portanto, esta pesquisa não afirma inspeção visual de cada screenshot, reprodução de paletas dos jogos, medição de contraste ou identificação de suas famílias tipográficas. Links para figuras oficiais são fornecidos para consulta. Nenhum recurso remoto foi baixado ou incorporado.
+
+## 1. Seleção de fontes primárias
+
+| # | Fonte aberta | Evidência confirmada | Aplicação proposta e limite |
+|---|---|---|---|
+| 1 | [Pokémon Emerald — sistema e apresentação de batalha](https://www.pokemon.co.jp/game/gba/emerald/battle.html), Pokémon, Gen 3 | O texto descreve animações de entrada expressivas e diferentes por espécie, incluindo Pikachu e Ludicolo. | Dar presença ao Pokémon com entrada, reação e saída reconhecíveis. A página fundamenta a importância do movimento de personagem; não fornece um contrato de menus nem permite concluir aqui detalhes de sua tipografia. |
+| 2 | [Pokémon Pearl — manual Nintendo](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_Pearl), Gen 4 | Página PDF 9: nome, nível, HP e indicadores de equipe; comando Fight abre golpes; Cancel retorna; PP zero impede uso. Página 10: equipe → membro → Shift. Página 6: Dex pesquisável por ordem alfabética/número e sumário em páginas. Página 8: animações podem ser desligadas, mantendo ações por texto. Toque e direcional/confirmação são caminhos equivalentes. | Separar campo, decisão e detalhes; ter Voltar explícito, PP e estado indisponível; preservar informação quando efeitos forem desativados. Não trazer EXP para uma partida de nível fixo. |
+| 3 | [Pokémon White — manual Nintendo](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_White), Gen 5 | Página PDF 9: HUD com HP/nível/equipe; Fight abre golpes; Pokémon abre troca/sumário. O comando Bag muda para Launcher em Link Battles. Páginas 7–8: menu navegável por toque/direcional e opções de apresentação. | Um console muda conforme o contexto. A identidade Gen 5 não exige copiar quatro comandos de outro modo de jogo: este PvP deve mostrar suas ações disponíveis. Não acrescentar Bag, captura ou Launcher por aparência. |
+| 4 | [BDSP Trainers Guide — Battling](https://diamondpearl.pokemon.com/en-us/trainersguide/fundamentals/battling/), Pokémon | Battle abre golpes e Cancel volta; equipe comporta até seis. A fonte nomeia Poder, Precisão e PP; distingue ícones de categoria física/especial e descreve rótulos de eficácia sob nomes dos golpes. | Mostrar dados úteis na decisão e categoria com ícone acompanhado de nome acessível. Qualquer eficácia sugerida deve usar somente informação pública e regras atuais. O guia é referência de apresentação, não autoridade para o motor Gen 9. |
+| 5 | [Let's Go — How to Play](https://pokemonletsgo.pokemon.com/en-us/how-to-play/), Pokémon | A fonte separa captura e batalha contra treinador; neste último caso descreve equipes de até seis, golpes e confronto de tipos. Há screenshots próprios na seção de batalha. | Usar o campo como principal área de leitura dos personagens, com interface localizada ao redor. Essa composição é uma proposta; anéis e gestos de captura pertencem a outro fluxo e não serão adotados no PvP. |
+| 6 | [Scarlet/Violet — 12 dicas oficiais](https://www.nintendo.com/en-gb/News/2022/November/12-spoiler-free-tips-to-kickstart-your-Pokemon-Scarlet-Pokemon-Violet-adventure--2302635.html), Nintendo, 18/11/2022 | Sumário → Moves and Stats permite editar golpes; busca de Boxes filtra tipo, golpes e habilidade; Poké Portal reúne funções multiplayer. A fonte também descreve abrir um registro do Dex para consultar seus detalhes. | Home como entrada clara na conexão; catálogo filtrável e ficha detalhada; montagem separa equipe de configuração do membro. Não inferir desenho de cursor, cor ou família tipográfica a partir destas instruções. |
+| 7 | [Pokémon Insurgence — site do projeto](https://p-insurgence.com/) | Desenvolvedores e artistas são identificados; a apresentação enfatiza região própria, variantes Delta, personalização e modos de desafio. | Manter uma identidade autoral consistente em nome, telas e arte. A página não documenta grade de comandos, foco ou acessibilidade; não serve de evidência para afirmar esses padrões. Não importar variantes/modos que o nosso jogo não suporta. |
+| 8 | [Pokémon Reborn — Still Alive!](https://www.rebornevo.com/pr/development/records/still-alive-r105/), enu, 10/03/2024 | O desenvolvedor distingue atualização do motor de mudança gráfica, informa melhorias de controle/acessibilidade e explica a base compartilhada entre Reborn, Rejuvenation e Desolation. A melhoria de UI citada ainda não estava pronta naquele anúncio. | A reformulação precisa tratar interação e dados além da aparência. Esta fonte não comprova o layout final de Reborn nem suas cores. As páginas específicas Player experience improvements e Accessibility foram localizadas, mas a abertura retornou 403; não entram na seleção como fontes examinadas. |
+| 9 | [Pokémon Infinite Fusion — tópico do desenvolvedor Schrroms](https://www.pokecommunity.com/threads/v6-7-pok%C3%A9mon-infinite-fusion-new-pok%C3%A9mon-character-customization-and-more.347883/) | O autor descreve gráficos inspirados nas gerações 4–5, sprites próprios, cartões de treinador personalizáveis e aceleração integrada. O tópico fornece screenshots e vínculo para o repositório do projeto. | Uma linguagem visual familiar pode conviver com arte e marca próprias; opção de acelerar apresentação deve ser clara. O tópico mistura informações de várias versões e não comprova foco/semântica web ou suporte móvel atual. Não reutilizar sprites de fusões. |
+| 10 | [Pokémon Essentials — menus de batalha](https://github.com/Maruno17/pokemon-essentials/blob/master/Data/Scripts/011_Battle/004_Scene/005_Battle_Scene_Menus.rb), mantenedor Maruno17 | Código confirmado: comandos e golpes em duas colunas/duas linhas; nomes nos botões; tipo e PP do golpe selecionado; estados de seleção distintos; faixas de PP diferenciam zero, baixo e restante. Usa fonte estreita para a área de golpes, sem identificar aqui uma família. | Adotar quatro golpes 2×2, seleção evidente e números legíveis. Na web, mostrar Poder/Precisão/PP em cada cartão evita depender de hover; essa ampliação é nossa. Cores reforçam estados acompanhados por texto. |
+| 11 | [Pokémon Essentials — interface da equipe](https://github.com/Maruno17/pokemon-essentials/blob/master/Data/Scripts/016_UI/005_UI_Party.rb), mantenedor Maruno17 | Código confirmado: seis painéis em duas colunas, com leve deslocamento entre colunas, ícones, HP e status; gráficos distinguem apto, selecionado, nocaute e troca. Direcionais navegam, confirmação e cancelamento são separados. | Equipe compacta com leitura do ativo e condição de cada membro; foco e escolha confirmada precisam ser distinguíveis. Usar a estrutura conceitual, sem copiar coordenadas, bitmaps ou comportamento de controle próprio do RPG Maker. |
+
+### Pontos de consulta visual nas fontes
+
+- **Gen 4:** [manual Pearl na página 10 do PDF](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_Pearl#page=10), correspondente à página de batalha de índice 9: consultar diagrama de HUD/comandos; página seguinte trata troca.
+- **Gen 5:** [manual White na página 10 do PDF](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_White#page=10): consultar diagrama do campo e comandos. O número do leitor PDF e a paginação impressa são diferentes.
+- **Let's Go:** [screenshot oficial de batalha](https://pokemonletsgo.pokemon.com/assets/img/en-us/p24_03.jpg), vinculado pela própria página. A inspeção visual do agente principal confirmou Pikachu próximo à esquerda, Ekans distante à direita, vegetação no fundo, piso contínuo e HUDs compactos. `p24_01.jpg` mostra exploração e não foi usado como referência de batalha.
+- **BDSP:** [seções Basics of Battle e Preview the Effectiveness of Your Moves](https://diamondpearl.pokemon.com/en-us/trainersguide/fundamentals/battling/) possuem exemplos oficiais do menu e descrições que acompanham os golpes.
+- **Fangames:** as fontes autorais de [Insurgence](https://p-insurgence.com/) e [Infinite Fusion](https://www.pokecommunity.com/threads/v6-7-pok%C3%A9mon-infinite-fusion-new-pok%C3%A9mon-character-customization-and-more.347883/) contêm material de apresentação. Servem para consulta, não como permissão de reutilização de arte.
+
+## 2. Síntese de padrões e adaptação
+
+**Inferência desta pesquisa:** a sensação de interface Pokémon vem da relação entre campo, estado e escolha. Os manuais Gen 4–5 e o código do Essentials dão suporte a uma sequência simples: observar o confronto, abrir uma ação, escolher golpe ou membro, confirmar e receber a resposta. Uma reformulação deve preservar essa sequência em todas as larguras. [Pearl](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_Pearl), [White](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_White), [Essentials](https://github.com/Maruno17/pokemon-essentials/blob/master/Data/Scripts/011_Battle/004_Scene/005_Battle_Scene_Menus.rb).
+
+| Dimensão | Decisão proposta para Battle Link |
+|---|---|
+| Hierarquia | Campo e Pokémon dominam a batalha; HUD informa; console inferior decide; histórico fica recolhível. Arena e efeito não podem ser cobertos por painéis opacos extensos. |
+| Informação | HP, condição e turno permanecem visíveis. Modificadores numerosos ocupam área própria que pode crescer, sem atravessar sprites, indicador ou controles. |
+| Golpes | Quatro posições estáveis em 2×2. Nome, tipo, categoria, Poder, Precisão e PP sempre legíveis; descrição completa acessível por detalhe explícito. Sem dado inexistente inventado. |
+| Equipe | Seis posições estáveis; identificar ativo, HP e status. Troca normal, troca obrigatória e reviver precisam de títulos e verbos diferentes. |
+| Estado de ação | Separar visualmente foco, seleção e escolha enviada. Durante espera, conservar resumo da decisão e explicar o bloqueio dos controles. A ação privada do adversário não aparece. |
+| Movimento | Entrada, lançamento, contato, reação e conclusão têm funções diferentes. Sono/status e derrota precisam ser reconhecíveis mesmo com efeitos reduzidos. Texto e HP continuam sendo informação persistente. |
+| Idioma | Rótulos em português; nomes do catálogo preservados. Espaço previsto para acentos e nomes longos. Atalhos permanecem secundários ao texto da ação. |
+
+## 3. Direção visual proposta: Battle Link
+
+Todas as decisões desta seção são originais do projeto. A pesquisa não identificou Oxanium ou Nunito Sans como fontes usadas nos jogos Pokémon.
+
+- **Referência principal:** organização de um handheld DS/Gen 5 reinterpretada para web: divisões claras entre tela de confronto e console de decisão, bordas finas, elementos compactos e seleção visível.
+- **Paleta:** superfícies claras, tinta azul marinho e acento vermelho na ação principal. Mint marca confirmação/prontidão. Cor de tipo entra como faixa ou badge, acompanhada pelo nome; HP/status têm semântica independente dos acentos decorativos.
+- **Forma:** cantos moderadamente arredondados, faixas de cabeçalho e separadores limpos. Ícones originais simples de batalha, equipe, retorno e áudio; sem depender de moldura de console ou logotipo oficial para criar reconhecimento.
+- **Tipografia:** Oxanium em títulos curtos e números destacados; Nunito Sans em textos, controles e descrições. Arquivos locais com cobertura Latin/Latin Extended, incluindo caracteres portugueses. Verificar os arquivos de licença e metadados dos pesos escolhidos antes de incorporar; não deduzir licença somente pelo nome da fonte.
+- **Escala proposta:** texto de corpo e controles a partir de 16 px, metadados a partir de 13–14 px após inspeção real; tamanho de toque mínimo 44 px. A fonte decorativa não ocupa descrições longas. Rótulos não ficam todos em maiúsculas.
+- **Arte:** sprites grandes, base de sombra simples e arenas ilustradas autorais em camadas. Cada arena tem composição que deixa os dois personagens e suas áreas de impacto livres. Iluminação ambiental combina com a arena; HUD mantém contraste estável.
+
+### Propostas por tela
+
+| Tela | Desktop | Celular de 360 px | Estados a contemplar |
+|---|---|---|---|
+| Home / fila | Central de conexão: nome da experiência, cenário ilustrado e cartão único de treinador com nome, chave quando necessária e entrada na fila. Explicação curta do fluxo próximo ao botão. | Conteúdo em uma coluna; arte recortada sem reduzir o formulário; botão principal largo; configurações acessíveis no cabeçalho. | Conexão, chave exigida/inválida, nome inválido, procurando rival, cancelar fila, falha e retorno. |
+| Catálogo / seleção | Dex de escolha com busca e filtros; grade de sprites à esquerda e ficha do Pokémon escolhido à direita; seis vagas da equipe em faixa persistente. Número, nome e tipos formam a leitura de cada cartão. | Grade de duas colunas; ficha como área/diálogo explícito; vagas da equipe compactas; ações de sortear/continuar em rodapé que não encubra itens. | Carregamento, busca sem resultado, erro com tentar novamente, selecionado, equipe incompleta/completa e sorteio pendente. |
+| Montagem da equipe | Lista de seis membros e detalhe do selecionado: sprite, tipos, atributos relevantes, quatro slots de golpes e catálogo de golpes. Botão de confirmar equipe com resumo de prontidão. | Seis seletores compactos na parte superior; ficha e quatro golpes em bloco; lista pesquisável abaixo. Confirmar depois das pendências, com indicação textual. | Membro ativo na edição, golpe escolhido/indisponível, quatro golpes completos, confirmação pendente e adversário ainda preparando. |
+| Batalha | Cena ampla, rival em posição superior/direita e jogador inferior/esquerda; HUD em regiões próprias; console abaixo da cena abre Golpes ou Equipe. Turno/espera em faixa curta; log recolhível lateral ou inferior. | Cena dimensionada pela composição dos sprites; HUDs em zonas livres que acomodem nomes/status; turno fora do campo; golpes 2×2 e equipe em painel próprio, sem overflow horizontal. | Preparo dos recursos, pronto, sua escolha, escolha enviada, resolução, troca obrigatória, recurso ausente, desconexão e fim. |
+| Resultado | Modal com vitória/derrota/empate, resumo textual e voltar ao lobby. Fundo conserva o último estado apresentado do combate. | Diálogo dentro da largura útil; nomes quebram linha; ação principal ampla. | Resultado normal/desconexão; texto longo; foco inicial, retorno de foco e Escape. |
+| Configurações | Painel curto de áudio e apresentação: cada preferência tem texto e estado claros. | Mesmo conteúdo, sem controles menores; diálogo com foco contido. | Áudio desligado inicialmente, escolha salva, movimento reduzido e fechamento por teclado. |
+
+As propostas de busca e ficha adaptam as navegações documentadas no [manual Pearl](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_Pearl) e nas [dicas oficiais de Scarlet/Violet](https://www.nintendo.com/en-gb/News/2022/November/12-spoiler-free-tips-to-kickstart-your-Pokemon-Scarlet-Pokemon-Violet-adventure--2302635.html). As escolhas de composição, responsividade, fontes e cores da tabela são nossas.
+
+## 4. Interação, foco e legibilidade
+
+**Proposta para web:** conservar botões e campos nativos, ordem de Tab previsível e foco visível em todas as telas. Enter/Espaço confirmam o controle focado; Escape fecha o painel secundário e retorna o foco ao controle que o abriu. Direcionais em grades podem ser uma conveniência adicional, sem remover Tab. Foco de teclado não envia uma escolha automaticamente.
+
+Os manuais confirmam a separação entre navegação, confirmação e cancelamento; o mapeamento para teclas de navegador é uma adaptação. Não esconder uma decisão ou informação necessária em hover. Leitor de tela recebe estado de espera, erros e resultado com anúncios curtos; a grade inteira do catálogo não é uma região live. Ações de recuo/desistência não devem ser confundidas com Voltar de submenu. [Pearl](https://csassets.nintendo.com/noaext/image/private/t_KA_PDF/DS_Pokemon_Pearl), [Essentials equipe](https://github.com/Maruno17/pokemon-essentials/blob/master/Data/Scripts/016_UI/005_UI_Party.rb).
+
+**Critérios propostos:** contraste AA medido na interface efetiva; alvo mínimo 44 px; conteúdo sem rolagem horizontal a 360 px; zoom e nomes longos contemplados; foco contido e restaurado em modais. São requisitos de aceite, não resultados obtidos nesta pesquisa.
+
+## 5. Arenas e animações: vínculo com o problema relatado
+
+A pesquisa não determina por que o usuário não vê os recursos atuais. Antes de tratar a reformulação como solução, a integração precisa registrar qual versão está em execução e observar arena/efeitos no fluxo de batalha real. A existência de imagens ou de um laboratório de apresentação não comprova que a partida os usa.
+
+**Proposta de apresentação:** manter arena e personagens como uma cena única, com camadas identificáveis de fundo, plataformas, sprites e efeitos. A área de impacto deve coincidir com a posição apresentada do alvo em desktop e celular. Menus não devem cobrir essa área durante a resolução. A animação de troca retira e insere os participantes na ordem dos eventos; derrota conclui antes do resultado. Uma opção de reduzir/pular movimento preserva os dados exibidos.
+
+**Aceite específico recomendado:** em uma partida de dois clientes, registrar entrada de arena, ataque físico e especial, falha/esquiva, status, buff/debuff, troca e derrota. Verificar também recurso indisponível, aba oculta, pular animações e tela de 360 px. A seleção dos cenários e a ordem dos eventos continuam subordinadas ao servidor. FPS e memória em aparelho físico exigem medição própria.
+
+## 6. Limites e decisão recomendada
+
+- Pesquisa documental não substitui jogar os fangames nem medir contraste, foco ou animação em suas versões atuais. Os sites de Insurgence/Reborn/Infinite Fusion deram contexto autoral; o Essentials e os manuais deram a evidência mais direta para organização de menus.
+- Não foram identificadas com segurança as famílias tipográficas dos jogos de referência. As fontes propostas precisam de verificação de licença e renderização portuguesa no build do projeto.
+- A base de regras continua Gen 9 do simulador existente. Referências antigas não reabrem mecânicas excluídas, nem justificam expor equipe privada ou escolhas pendentes.
+- Não foram alterados arquivos de implementação, executados testes ou copiados assets nesta tarefa. O único arquivo criado é este relatório.
+
+**Recomendação:** prosseguir com Battle Link como direção autoral. Preservar a hierarquia de decisões documentada nos jogos, ampliar a legibilidade dos dados para web e fazer o campo, os sprites e os efeitos ocuparem a área principal. Produzir a composição das seis telas antes de consolidar o tema e validar a integração de arenas/animações na partida real.

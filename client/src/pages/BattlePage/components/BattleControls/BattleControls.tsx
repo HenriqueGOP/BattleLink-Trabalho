@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { audio } from '../../../../lib/audio'
 import { Sprite } from '../../../../components/Sprite'
+import { formatPokemonName } from '../../../../lib/format'
 import { STATUS_SHORT } from '../shared'
 import styles from './BattleControls.module.css'
 import type { Player } from '../../../../types/player'
@@ -69,7 +70,7 @@ export const BattleControls = memo(function BattleControls({
 
               <span className={styles.info}>
                 <span className={styles.nameRow}>
-                  <b className={styles.name}>{member.pokemon}</b>
+                  <b className={styles.name}>{formatPokemonName(member.pokemon)}</b>
                   {member.status && (
                     <i className={`${styles.status} ${styles[member.status]}`}>
                       {STATUS_SHORT[member.status]}

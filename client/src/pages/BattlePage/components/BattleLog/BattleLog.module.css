@@ -1,58 +1,70 @@
 .panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
+  padding: 0 16px;
   background: var(--hud-face);
   color: var(--hud-ink);
-  border: var(--border-width) solid var(--hud-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--panel-shadow);
+  border: 1px solid var(--hud-edge);
+  border-radius: 12px;
 }
 .header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: 12px;
+  cursor: pointer;
+  min-height: 48px;
+  list-style: none;
+}
+.header::after {
+  content: '+';
+  font-size: 20px;
+  color: var(--hud-ink-soft);
+}
+.panel[open] .header::after {
+  content: '−';
+}
+.header::-webkit-details-marker {
+  display: none;
 }
 .title {
-  font-family: var(--font-ui);
-  font-size: 24px;
-  letter-spacing: 0.03em;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
   color: var(--hud-ink);
 }
 .count {
-  font-size: var(--font-size-small);
+  font-size: 11px;
   color: var(--hud-ink-soft);
+  margin-left: auto;
 }
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  max-height: 200px;
+  gap: 10px;
+  max-height: 240px;
   overflow-y: auto;
-  padding-right: var(--space-1);
   list-style: none;
   margin: 0;
+  padding: 12px 0 16px;
+  border-top: 1px solid var(--hud-edge-soft);
   overscroll-behavior: contain;
 }
 .item {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
-  font-size: 22px;
-  line-height: 1.15;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--hud-ink-soft);
 }
 .tag {
-  flex: 0 0 auto;
-  min-width: 52px;
+  flex: none;
+  min-width: 46px;
   text-align: center;
-  font-family: var(--font-ui);
-  font-size: 17px;
-  line-height: 1;
-  padding: var(--space-1) 6px;
-  border-radius: var(--radius-sm);
+  font-size: 9px;
+  line-height: 1.4;
+  font-weight: 700;
+  padding: 3px 5px;
+  border-radius: 4px;
   background: var(--hud-face-2);
   color: var(--hud-ink);
 }
@@ -81,24 +93,13 @@
 }
 .item.result .text {
   color: var(--hud-ink);
-  font-weight: bold;
+  font-weight: 700;
 }
 .text {
   min-width: 0;
   overflow-wrap: anywhere;
 }
 .empty {
-  font-size: var(--font-size-label);
+  font-size: 13px;
   color: var(--hud-ink-soft);
-}
-@media (max-width: 700px) {
-  .panel {
-    padding: var(--space-3);
-  }
-  .list {
-    max-height: 170px;
-  }
-  .item {
-    font-size: 20px;
-  }
 }

@@ -3,44 +3,172 @@
   display: grid;
   place-items: center;
   width: fit-content;
+  min-width: 80px;
+  isolation: isolate;
 }
-
-/* Pose persistente após a conclusão do evento faint, até a troca. */
-.holder[data-fainted='true'] {
-  opacity: 0.24;
-  transform: translateY(14px) rotate(-8deg);
+.action,
+.idle,
+.orientation {
+  display: grid;
+  place-items: center;
+  transform-origin: 50% 90%;
 }
-
-.holder[data-fainted='true'] .sprite {
-  animation: none;
+.action {
+  z-index: 1;
 }
-
 .sprite {
-  width: clamp(96px, 10vw, 164px);
-  height: auto;
+  display: block;
+  width: clamp(160px, 17vw, 220px);
+  height: clamp(160px, 17vw, 220px);
+  min-height: 64px;
+  object-fit: contain;
   image-rendering: pixelated;
-  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.35));
-  animation: bob 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 2px 1px rgb(0 0 0 / 15%));
 }
-
-.mirrored {
+.orientation.mirrored {
   transform: scaleX(-1);
 }
-
-@keyframes bob {
+.holder[data-battle-anchor='opponent'] .sprite {
+  width: clamp(135px, 14vw, 180px);
+  height: clamp(135px, 14vw, 180px);
+}
+.shadow {
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  width: 66%;
+  height: 11%;
+  border-radius: 50%;
+  background: rgb(12 20 27 / 27%);
+  filter: blur(2px);
+}
+/* O GIF contém sua própria pose; PNGs locais recebem um movimento corporal discreto. */
+.holder:not([data-native-animation='true']) .idle {
+  animation: breathe 2.9s ease-in-out infinite;
+}
+.holder[data-motion-profile='heavy']:not([data-native-animation='true']) .idle {
+  animation: heavy 3.8s ease-in-out infinite;
+}
+.holder[data-motion-profile='flying']:not([data-native-animation='true']) .idle {
+  animation: wing 2.2s ease-in-out infinite;
+}
+.holder[data-motion-profile='floating']:not([data-native-animation='true']) .idle {
+  animation: float 2.8s ease-in-out infinite;
+}
+.holder[data-motion-profile='low']:not([data-native-animation='true']) .idle {
+  animation: low 3.3s ease-in-out infinite;
+}
+.holder[data-motion-status='sleep'] .idle {
+  animation: sleep 4.2s ease-in-out infinite;
+}
+.holder[data-motion-status='paralysis'] .idle {
+  animation: paralysis 4s ease-in-out infinite;
+}
+.holder[data-motion-status='poison'] .idle,
+.holder[data-motion-status='bad_poison'] .idle {
+  animation: poison 3.2s ease-in-out infinite;
+}
+.holder[data-motion-status='freeze'] .idle {
+  animation: none;
+}
+.holder[data-motion-status='freeze'] .sprite {
+  filter: saturate(0.55) drop-shadow(0 0 5px rgb(165 220 255 / 70%));
+}
+.holder[data-fainted='true'] .action,
+.holder[data-fainted='true'] .shadow {
+  opacity: 0;
+}
+.holder[data-fainted='true'] .idle {
+  animation: none;
+}
+.holder[data-acting='true'] .idle,
+.holder[data-motion-paused='true'] .idle {
+  animation-play-state: paused;
+}
+.holder[data-motion-reduced='true'] .idle {
+  animation: none;
+}
+@keyframes breathe {
   0%,
   100% {
-    translate: 0 0;
+    transform: translateY(0) scaleY(1);
   }
   50% {
-    translate: 0 -6px;
+    transform: translateY(-2px) scaleY(1.018);
   }
 }
-
+@keyframes heavy {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.012);
+  }
+}
+@keyframes wing {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-1px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes low {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(1.015) translateX(1px);
+  }
+}
+@keyframes sleep {
+  0%,
+  100% {
+    transform: scaleY(0.96) rotate(-2deg);
+  }
+  50% {
+    transform: scaleY(0.99) rotate(-2deg);
+  }
+}
+@keyframes paralysis {
+  0%,
+  80%,
+  100% {
+    transform: translateX(0);
+  }
+  84%,
+  92% {
+    transform: translateX(-1px);
+  }
+  88%,
+  96% {
+    transform: translateX(1px);
+  }
+}
+@keyframes poison {
+  0%,
+  100% {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg) scaleY(0.98);
+  }
+}
 .placeholder {
-  /* Pokébola local em CSS: fallback do recurso empacotado. */
   display: block;
-  width: clamp(72px, 8vw, 104px);
+  width: clamp(84px, 9vw, 118px);
   aspect-ratio: 1;
   border-radius: 50%;
   border: 4px solid var(--poke-black);
@@ -57,17 +185,14 @@
       var(--poke-black) 46% 54%,
       var(--poke-white) 54% 100%
     );
-  opacity: 0.85;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
 }
-
 .sparkle {
   position: absolute;
   top: -4px;
   right: -6px;
   width: 18px;
   height: 18px;
-  background: radial-gradient(circle, #ffffff 0%, #ffd94a 40%, transparent 70%);
+  background: radial-gradient(circle, #fff 0%, #ffd94a 40%, transparent 70%);
   clip-path: polygon(
     50% 0,
     61% 35%,
@@ -80,28 +205,33 @@
     2% 35%,
     39% 35%
   );
-  animation: sparkle 1.8s ease-in-out infinite;
+  animation: sparkle 2.8s ease-in-out infinite;
   pointer-events: none;
 }
-
 @keyframes sparkle {
   0%,
   100% {
-    opacity: 0.25;
-    transform: scale(0.7) rotate(0deg);
+    opacity: 0.35;
+    transform: scale(0.8);
   }
   50% {
-    opacity: 1;
-    transform: scale(1.15) rotate(20deg);
+    opacity: 0.85;
+    transform: scale(1.1) rotate(20deg);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
+.holder[data-motion-paused='true'] .sparkle {
+  animation-play-state: paused;
+}
+.holder[data-motion-reduced='true'] .sparkle {
+  animation: none;
+}
+@media (max-width: 480px) {
   .sprite {
-    animation: none;
+    width: clamp(130px, 38vw, 155px);
+    height: clamp(130px, 38vw, 155px);
   }
-  .sparkle {
-    animation: none;
-    opacity: 0.5;
+  .holder[data-battle-anchor='opponent'] .sprite {
+    width: clamp(110px, 32vw, 130px);
+    height: clamp(110px, 32vw, 130px);
   }
 }

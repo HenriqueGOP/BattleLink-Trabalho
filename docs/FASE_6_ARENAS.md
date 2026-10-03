@@ -1,5 +1,13 @@
 # Fase 6 — arenas locais e preparação
 
+## Atualização de frontend — 2026-10-03
+
+A reformulação passa a apresentar **seis arenas ilustradas em WebP**, preservando os **seis SVG locais como fallback** e os IDs de tema. Evidências, inventário e limites atuais ficam em [Frontend Refresh](FRONTEND_REFRESH.md). O laboratório `/visual-check` está disponível em desenvolvimento ou profile e permanece excluído do build normal.
+
+O registro abaixo preserva a entrega anterior em SVG; seus tamanhos e capturas não são medidas dos novos WebP. A validação atual usa `npm run dev` em `server/` e em `client/`, em dois terminais, com **http://localhost:5173/** em janelas normal e anônima. Desempenho e memória em aparelho real continuam **[VERIFICAR]**.
+
+## Registro histórico da fase 6
+
 Entrega: 2026-10-02. Validação móvel concluída em 2026-10-03. As arenas e a preparação estão implementadas; o percurso integrado
 das fases 5–7 está registrado na validação conjunta. O pedido mais recente autorizou
 executar as três fases em sequência.

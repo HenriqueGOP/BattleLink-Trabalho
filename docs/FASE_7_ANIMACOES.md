@@ -1,5 +1,13 @@
 # Fase 7 — animações de combate em spritesheets
 
+## Atualização de frontend — 2026-10-03
+
+A reformulação amplia a apresentação com **3.368 GIFs locais para 868 espécies**, usando sprites estáticos locais quando uma variante animada não existe, além dos atlas de efeitos. O controle **Animações** oferece **Sistema / Completo / Reduzido**; a preferência não altera regras de combate. Evidências e limites atuais ficam em [Frontend Refresh](FRONTEND_REFRESH.md).
+
+O relatório abaixo preserva o histórico dos atlas e da validação anterior; essas capturas não certificam os novos recursos em execução. `/visual-check` está disponível em desenvolvimento ou profile e é excluído do build normal. O fluxo atual usa `npm run dev` em `server/` e em `client/`, em dois terminais, com **http://localhost:5173/** em janelas normal e anônima. FPS e memória em aparelho real continuam **[VERIFICAR]**.
+
+## Registro histórico da fase 7
+
 **Status:** implementada. Esta etapa foi adicionada a pedido do usuário após a fase 4 e executada junto das fases 5 e 6. A composição móvel final foi validada em 2026-10-03; 60 FPS e memória em celular real continuam pendentes.
 
 ## Objetivo

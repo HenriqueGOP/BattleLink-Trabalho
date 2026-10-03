@@ -2,16 +2,16 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-3);
+  padding: 0;
   background: var(--menu-face);
-  border: var(--border-width) solid var(--menu-edge);
+  border: 0;
   border-radius: var(--radius-lg);
-  box-shadow: var(--menu-shadow);
+  box-shadow: none;
 }
 .urgent {
   padding: var(--space-3);
   border-radius: var(--radius);
-  font-size: 24px;
+  font-size: 15px;
   line-height: 1.1;
   color: var(--on-accent);
   background: var(--poke-red-dark);
@@ -30,7 +30,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: var(--space-3);
   align-items: center;
-  min-height: 96px;
+  min-height: 88px;
   padding: var(--space-3);
   text-align: left;
   color: var(--hud-ink);
@@ -61,8 +61,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--portrait-face);
   border: 2px solid var(--hud-edge);
@@ -79,7 +79,7 @@
   translate: -50% 0;
   white-space: nowrap;
   font-style: normal;
-  font-size: 14px;
+  font-size: 8px;
   line-height: 1;
   padding: 2px 4px;
   border-radius: 5px;
@@ -105,8 +105,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1;
   text-transform: capitalize;
 }
@@ -189,6 +189,24 @@
 }
 @media (max-width: 620px) {
   .roster {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .slot {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  .portrait {
+    justify-self: center;
+  }
+  .name {
+    font-size: 12px;
+  }
+  .status {
+    font-size: 9px;
+  }
+  .hpText {
+    font-size: 11px;
   }
 }

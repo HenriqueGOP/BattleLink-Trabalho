@@ -16,6 +16,180 @@ import type {
   CanonicalEvent,
   RoomSnapshot,
 } from "../../client/src/types/protocol";
+import type { BattleEventData } from "./game/engine";
+import { battleMessage } from "../../client/src/lib/battleMessages";
+import {
+  animateEvent,
+  buildLogEntries,
+} from "../../client/src/lib/eventEngine";
+import { presentSnapshot } from "../../client/src/lib/battleView";
+
+function messageTests() {
+  const room = fixtureRoom();
+  const original = room.getStateFor("p1");
+  const wire: RoomSnapshot = {
+    ...original,
+    battle: {
+      ...original.battle!,
+      ownTeam: original.battle!.ownTeam.map((pokemon, index) =>
+        index === 0 ? { ...pokemon, speciesId: "blastoise" } : pokemon,
+      ),
+    },
+  };
+  let sequence = wire.sequence;
+  const event = (data: BattleEventData): CanonicalEvent => ({
+    ...data,
+    sequence: ++sequence,
+    round: 1,
+    audience: "public",
+  });
+  const effect = (operation: string, effectId: string | null) =>
+    event({
+      type: "effect",
+      operation,
+      effectId,
+      target: "p1s0",
+      side: "p1",
+    });
+  const protect = effect("singleturn", "protect");
+  const examples: readonly [CanonicalEvent, string][] = [
+    [protect, "Blastoise se protegeu!"],
+    [effect("activate", "protect"), "Blastoise bloqueou o golpe!"],
+    [effect("start", "confusion"), "Blastoise ficou confuso!"],
+    [effect("end", "confusion"), "Blastoise saiu da confusão!"],
+    [effect("start", "substitute"), "Blastoise criou um substituto!"],
+    [effect("end", "substitute"), "Blastoise perdeu seu substituto!"],
+    [effect("mustrecharge", null), "Blastoise precisa recuperar energia!"],
+    [effect("prepare", "solarblade"), "Blastoise está preparando Solar Blade!"],
+    [effect("fail", null), "O golpe falhou!"],
+    [
+      event({ type: "status", target: "p1s0", status: "brn" }),
+      "Blastoise ficou com uma queimadura!",
+    ],
+    [
+      event({ type: "status", target: "p1s0", status: "slp" }),
+      "Blastoise adormeceu!",
+    ],
+    [
+      event({ type: "unable", actor: "p1s0", reason: "par" }),
+      "Blastoise está paralisado e não conseguiu se mover!",
+    ],
+    [
+      event({
+        type: "boost",
+        target: "p1s0",
+        stat: "atk",
+        before: 0,
+        after: 2,
+      }),
+      "O Ataque de Blastoise aumentou bastante!",
+    ],
+    [
+      event({
+        type: "boost",
+        target: "p1s0",
+        stat: "def",
+        before: 0,
+        after: -1,
+      }),
+      "A Defesa de Blastoise diminuiu!",
+    ],
+    [
+      event({ type: "hit_count", target: "p1s0", hits: 3 }),
+      "O golpe atingiu Blastoise 3 vezes!",
+    ],
+  ];
+  for (const [canonical, expected] of examples) {
+    const untouched = JSON.stringify({ canonical, wire });
+    assert.equal(battleMessage(canonical, wire), expected);
+    assert.equal(
+      animateEvent(canonical, presentSnapshot(wire), 0)?.message,
+      expected,
+    );
+    assert.equal(
+      JSON.stringify({ canonical, wire }),
+      untouched,
+      "Texto local não altera o evento nem o snapshot autoritativo",
+    );
+  }
+  const internalOperations = [
+    "start",
+    "end",
+    "singleturn",
+    "singlemove",
+    "activate",
+    "prepare",
+    "mustrecharge",
+    "fail",
+    "block",
+    "notarget",
+    "sidestart",
+    "sideend",
+    "fieldstart",
+    "fieldend",
+    "fieldactivate",
+    "cureteam",
+    "ohko",
+    "nothing",
+    "swapboost",
+    "copyboost",
+    "clearboost",
+    "clearallboost",
+    "clearpositiveboost",
+    "clearnegativeboost",
+    "invertboost",
+    "setboost",
+    "candynamax",
+  ];
+  for (const operation of internalOperations) {
+    const text = battleMessage(
+      effect(operation, "unknown_internal_effect"),
+      wire,
+    );
+    assert.ok(
+      text &&
+        !text.includes(operation) &&
+        !text.includes("unknown_internal_effect"),
+      `Operação ${operation} nunca aparece como texto técnico`,
+    );
+  }
+  for (const id of [
+    "../asset",
+    "https://evil.test/animation",
+    "__proto__",
+    "constructor",
+  ]) {
+    assert.equal(
+      battleMessage(
+        event({ type: "move", actor: "p1s0", target: "p2s0", moveId: id }),
+        wire,
+      ),
+      "Blastoise usou um golpe!",
+    );
+    assert.equal(
+      battleMessage(event({ type: "unable", actor: "p1s0", reason: id }), wire),
+      "Blastoise não conseguiu agir!",
+    );
+    assert.ok(!battleMessage(effect("start", id), wire).includes(id));
+  }
+  const hidden = event({ type: "faint", target: "p2s1" });
+  assert.equal(
+    battleMessage(hidden, wire),
+    "O Pokémon foi nocauteado!",
+    "Nome de Pokémon oculto não é inferido da equipe ou de escolhas pendentes",
+  );
+  const entries = buildLogEntries(
+    presentSnapshot({ ...wire, events: [protect] }),
+    0,
+  );
+  assert.equal(entries.at(-1)?.text, "Blastoise se protegeu!");
+  assert.equal(
+    entries.at(-1)?.id,
+    protect.sequence,
+    "Identificador de log continua canônico",
+  );
+  room.destroy();
+}
 
 class ManualRunner implements EventRunner {
   pending: {
@@ -408,7 +582,8 @@ async function directorTests() {
       "Conclusão cancelada não remove efeitos do próximo impacto",
     );
     assert.equal(
-      FakeNode.created.filter((node) => node.className === "battle-particle").length,
+      FakeNode.created.filter((node) => node.className === "battle-particle")
+        .length,
       0,
       "Arte CSS removida; limite e liberação dos clips estão cobertos em sprite-animation.test",
     );
@@ -453,6 +628,29 @@ async function directorTests() {
     await switched;
     assert.equal(commits, 3, "Entrada cancelada não confirma duas vezes");
     assert.equal(me.children.size, 0);
+    const completedSwitchBefore = FakeNode.animations.length;
+    const completedSwitch = director.run(
+      switching,
+      switchWire,
+      new AbortController().signal,
+      () => commits++,
+    );
+    FakeNode.animations[completedSwitchBefore].finish();
+    await until(() => FakeNode.animations.length > completedSwitchBefore + 1);
+    assert.equal(
+      commits,
+      4,
+      "Troca completa confirma no limite entre saída e entrada",
+    );
+    for (const animation of FakeNode.animations.slice(completedSwitchBefore))
+      animation.finish();
+    await completedSwitch;
+    assert.equal(
+      commits,
+      4,
+      "Entrada concluída não confirma o mesmo evento outra vez",
+    );
+    assert.equal(me.children.size, 0);
     assert.ok(
       FakeNode.frames.every((value) =>
         value.frames.every((frame) =>
@@ -483,7 +681,7 @@ async function directorTests() {
       1,
       "Movimento reduzido preserva a escolha explícita de áudio",
     );
-    assert.equal(commits, 4);
+    assert.equal(commits, 5);
     reduced.dispose();
   } finally {
     globalThis.document = originalDocument;
@@ -502,6 +700,7 @@ async function directorTests() {
   for (let i = 0; i < 100; i++) assert.equal(a(), b());
 }
 void (async () => {
+  messageTests();
   await queueTests();
   await directorTests();
   console.log(

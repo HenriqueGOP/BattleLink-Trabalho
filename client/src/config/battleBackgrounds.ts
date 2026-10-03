@@ -5,6 +5,8 @@ export interface BattleBackgroundConfig {
   readonly id: ArenaId
   readonly name: string
   readonly background: string | null
+  readonly primary: string
+  readonly fallback: string
   readonly overlay: 'dark' | 'soft'
   readonly animation: 'leaves' | 'dust' | 'lights' | 'waves' | 'stars' | null
   readonly theme: 'nature' | 'stadium' | 'cave' | 'beach' | 'space' | 'night'
@@ -15,7 +17,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'forest',
       name: 'Floresta',
-      background: '/arenas/forest.svg',
+      background: '/arenas/forest.webp',
+      primary: '/arenas/forest.webp',
+      fallback: '/arenas/forest.svg',
       overlay: 'soft',
       animation: 'leaves',
       theme: 'nature',
@@ -23,7 +27,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'stadium',
       name: 'Estádio',
-      background: '/arenas/stadium.svg',
+      background: '/arenas/stadium.webp',
+      primary: '/arenas/stadium.webp',
+      fallback: '/arenas/stadium.svg',
       overlay: 'soft',
       animation: 'lights',
       theme: 'stadium',
@@ -31,7 +37,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'cave',
       name: 'Caverna',
-      background: '/arenas/cave.svg',
+      background: '/arenas/cave.webp',
+      primary: '/arenas/cave.webp',
+      fallback: '/arenas/cave.svg',
       overlay: 'dark',
       animation: 'dust',
       theme: 'cave',
@@ -39,7 +47,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'beach',
       name: 'Praia',
-      background: '/arenas/beach.svg',
+      background: '/arenas/beach.webp',
+      primary: '/arenas/beach.webp',
+      fallback: '/arenas/beach.svg',
       overlay: 'soft',
       animation: 'waves',
       theme: 'beach',
@@ -47,7 +57,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'space',
       name: 'Espaço',
-      background: '/arenas/space.svg',
+      background: '/arenas/space.webp',
+      primary: '/arenas/space.webp',
+      fallback: '/arenas/space.svg',
       overlay: 'dark',
       animation: 'stars',
       theme: 'space',
@@ -55,7 +67,9 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
     {
       id: 'night-city',
       name: 'Cidade Noturna',
-      background: '/arenas/night-city.svg',
+      background: '/arenas/night-city.webp',
+      primary: '/arenas/night-city.webp',
+      fallback: '/arenas/night-city.svg',
       overlay: 'dark',
       animation: 'lights',
       theme: 'night',
@@ -63,14 +77,25 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
   ].map((config) => Object.freeze(config as BattleBackgroundConfig))
 )
 
-const failed = new Set<string>()
+const failed = new Map<string, number>()
 export const markBackgroundFailed = (path: string): void => {
-  if (battleBackgrounds.some((config) => config.background === path)) failed.add(path)
+  if (battleBackgrounds.some((config) => config.primary === path || config.fallback === path))
+    failed.set(path, Date.now() + 1000)
+}
+export const markBackgroundLoaded = (path: string): void => {
+  failed.delete(path)
+}
+function coolingDown(path: string) {
+  const until = failed.get(path)
+  if (until === undefined) return false
+  if (until > Date.now()) return true
+  failed.delete(path)
+  return false
 }
 
 export function resolveBackground(id: string | null | undefined): BattleBackgroundConfig {
   const config = battleBackgrounds.find((entry) => entry.id === id) ?? battleBackgrounds[0]
-  return config.background && failed.has(config.background)
-    ? { ...config, background: null }
+  return coolingDown(config.primary)
+    ? { ...config, background: coolingDown(config.fallback) ? null : config.fallback }
     : config
 }

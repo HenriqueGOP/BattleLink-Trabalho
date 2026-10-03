@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { CSSProperties } from 'react'
 import { audio } from '../../../../lib/audio'
+import { categoryLabel, typeLabel } from '../../../../lib/format'
 import styles from './MoveMenu.module.css'
 import type { Player } from '../../../../types/player'
 import type { PokemonMove } from '../../../../types/pokemon'
@@ -78,11 +79,20 @@ export const MoveMenu = memo(function MoveMenu({
               onBlur={() => onPreview?.(null)}
             >
               <span className={styles.name}>{move?.displayName ?? moveName}</span>
+              <span className={styles.stats}>
+                <span>
+                  Poder <b>{move?.power || '—'}</b>
+                </span>
+                <span>
+                  Precisão <b>{move?.accuracy != null ? `${move.accuracy}%` : '—'}</b>
+                </span>
+                <span>{categoryLabel(move?.category ?? 'Status')}</span>
+              </span>
               <span className={styles.foot}>
                 <b className={low ? `${styles.pp} ${styles.ppLow}` : styles.pp}>
                   PP {current ?? '-'}/{total ?? '-'}
                 </b>
-                <b className={styles.type}>{type}</b>
+                <b className={styles.type}>{typeLabel(type)}</b>
               </span>
             </button>
           )
@@ -96,7 +106,11 @@ export const MoveMenu = memo(function MoveMenu({
             </span>
           ))}
 
-        {moves.length === 0 && <p className={styles.empty}>Nenhum golpe equipado.</p>}
+        {moves.length === 0 && (
+          <p className={styles.empty}>
+            {disabled ? 'Preparando os golpes deste Pokémon…' : 'Nenhum golpe equipado.'}
+          </p>
+        )}
       </div>
 
       {disabled && (

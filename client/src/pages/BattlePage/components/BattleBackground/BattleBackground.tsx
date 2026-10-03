@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { markBackgroundFailed, resolveBackground } from '../../../../config/battleBackgrounds'
+import {
+  markBackgroundFailed,
+  markBackgroundLoaded,
+  resolveBackground,
+} from '../../../../config/battleBackgrounds'
 import type { BattleBackgroundConfig } from '../../../../config/battleBackgrounds'
 import styles from './BattleBackground.module.css'
 
@@ -9,36 +13,54 @@ export interface BattleBackgroundProps {
 
 function ArenaScene({ config }: { config: BattleBackgroundConfig }) {
   const scene = useRef<HTMLDivElement>(null)
-  const [failed, setFailed] = useState(false)
+  const [source, setSource] = useState<string | null>(config.background ?? config.fallback)
+  const retry = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const attempts = useRef(0)
+  const retryPrimary = () => {
+    if (retry.current || attempts.current >= 2) return
+    const delay = 1100 * (attempts.current + 1)
+    retry.current = setTimeout(() => {
+      retry.current = null
+      attempts.current++
+      setSource(config.primary)
+    }, delay)
+  }
   useEffect(() => {
     const update = () => {
       if (scene.current) scene.current.dataset.hidden = String(document.hidden)
     }
     update()
     document.addEventListener('visibilitychange', update)
-    return () => document.removeEventListener('visibilitychange', update)
+    return () => {
+      document.removeEventListener('visibilitychange', update)
+      if (retry.current) clearTimeout(retry.current)
+    }
   }, [])
-  const background = failed ? null : config.background
   return (
     <div
       ref={scene}
       className={`${styles.scene} ${styles[`theme-${config.theme}`]}`}
       data-background={config.id}
       data-arena-name={config.name}
-      data-arena-fallback={background ? undefined : 'true'}
+      data-arena-fallback={source === config.primary ? undefined : 'true'}
       aria-hidden="true"
     >
       <div className={styles.fallback} />
-      {background && (
+      {source && (
         <img
           className={styles.art}
-          src={background}
+          src={source}
           alt=""
           draggable={false}
           decoding="async"
+          onLoad={() => {
+            markBackgroundLoaded(source)
+            if (source !== config.primary) retryPrimary()
+          }}
           onError={() => {
-            markBackgroundFailed(background)
-            setFailed(true)
+            markBackgroundFailed(source)
+            setSource(source === config.primary ? config.fallback : null)
+            retryPrimary()
           }}
         />
       )}

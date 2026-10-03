@@ -198,3 +198,18 @@ Builds, lint, suítes e evidências de navegador são registrados na
   prompts, cobertura, preload e orçamento estão registrados na validação conjunta.
   FPS e memória em aparelho real continuam **[VERIFICAR]**.
   Especificação: [fase 7](../FASE_7_ANIMACOES.md).
+
+## Atualização visual — 2026-10-03
+
+A pesquisa e a reformulação Battle Link posteriores às fases 5–7 estão registradas em
+[FRONTEND_REFRESH](../FRONTEND_REFRESH.md). Incorporam GIFs locais por frames, seis
+ilustrações WebP com SVG de fallback, perfis separados de criatura/golpe e preferência
+Sistema/Completo/Reduzido. A recuperação de falhas temporárias foi corrigida e uma
+camada antiga que encobria o cenário foi removida. Regras, exclusões e protocolo v3
+continuam preservados. Instrumentação e fixtures abrem em DEV/profile; o bundle normal
+as rejeita. Evidências atuais incluem partida real no Vite, 360 px, fila/cancelamento,
+inventário local e React Profiler. FPS em aparelho real permanece **[VERIFICAR]**.
+
+O modo de uso informado pelo usuário está no [guia de abertura](../COMO_JOGAR.md):
+`npm run dev` dentro de server e client em terminais separados, `localhost:5173` em
+janela normal e em janela anônima.

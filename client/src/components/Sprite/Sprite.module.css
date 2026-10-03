@@ -8,9 +8,19 @@
 .fallback {
   display: block;
   border-radius: 50%;
-  border: 3px solid var(--poke-black);
+  border: 2px solid var(--poke-black);
   background:
-    radial-gradient(circle at 50% 50%, var(--poke-white) 0 15%, var(--poke-black) 15% 22%, transparent 22%),
-    linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+    radial-gradient(
+      circle at 50% 50%,
+      var(--poke-white) 0 15%,
+      var(--poke-black) 15% 22%,
+      transparent 22%
+    ),
+    linear-gradient(
+      180deg,
+      var(--poke-red) 0 46%,
+      var(--poke-black) 46% 54%,
+      var(--poke-white) 54% 100%
+    );
   opacity: 0.75;
 }

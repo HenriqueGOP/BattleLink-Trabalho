@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/PokeAPI/sprites",
+  "revision": "bfb75391935310368065096fa08c51e8970bc43e",
+  "directory": "sprites/pokemon/versions/generation-v/black-white/animated",
+  "format": "Unmodified animated GIF",
+  "licenseNotice": "../sprites-LICENSE.txt",
+  "maximumBytes": 524288,
+  "workers": 8
+}
