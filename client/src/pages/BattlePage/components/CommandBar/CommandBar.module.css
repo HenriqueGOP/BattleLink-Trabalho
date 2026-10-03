@@ -16,7 +16,9 @@
   display: flex;
   /* o texto começa no topo, como nas caixas de diálogo do jogo */
   align-items: flex-start;
-  min-height: 96px;
+  height: 204px;
+  min-height: 204px;
+  overflow-y: auto;
   padding: 16px 30px 16px 18px;
   background: var(--msg-face);
   color: var(--hud-ink);
@@ -34,7 +36,7 @@
   line-height: 1.35;
   letter-spacing: 0.01em;
   color: var(--hud-ink);
-  /* o texto entra letra a letra; reservar altura evita o layout pular */
+  /* Altura estável evita deslocar o menu sob o cursor ao trocar mensagens. */
   min-height: 2.7em;
 }
 
@@ -49,7 +51,9 @@
   animation: blink 0.9s steps(2, end) infinite;
 }
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ---------- menu de comandos 2×2 ---------- */
@@ -87,14 +91,25 @@
 }
 
 @media (max-width: 760px) {
-  .bar { grid-template-columns: 1fr; }
-  .panel { padding: 8px; }
-  .message { min-height: 76px; }
-  .messageText { font-size: 19px; }
+  .bar {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    padding: 8px;
+  }
+  .message {
+    height: 184px;
+    min-height: 184px;
+  }
+  .messageText {
+    font-size: 19px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cursor { animation: none; }
+  .cursor {
+    animation: none;
+  }
 }
 
 /* ---------- ficha do golpe destacado (ocupa a caixa de mensagem) ---------- */
@@ -182,10 +197,16 @@
 
 /* tons de lib/moves.ts */
 .heal,
-.buff { background: #2f7a3f; }
+.buff {
+  background: #2f7a3f;
+}
 .ailment,
-.debuff { background: #963434; }
-.info { background: var(--hud-ink-soft); }
+.debuff {
+  background: #963434;
+}
+.info {
+  background: var(--hud-ink-soft);
+}
 
 .previewDesc {
   font-size: 17px;

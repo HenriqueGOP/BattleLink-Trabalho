@@ -76,6 +76,7 @@ export function presentSnapshot(wire: RoomSnapshot): GameState {
               status: member.status,
               isShiny: member.isShiny,
               level: pokemon.level,
+              fainted: pokemon.fainted,
               statStages: {
                 attack: pokemon.boosts.atk ?? 0,
                 defense: pokemon.boosts.def ?? 0,

@@ -158,8 +158,18 @@ h4 {
   border-radius: 50%;
   border: 3px solid var(--poke-black);
   background:
-    radial-gradient(circle at 50% 50%, var(--poke-white) 0 18%, var(--poke-black) 18% 26%, transparent 26%),
-    linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+    radial-gradient(
+      circle at 50% 50%,
+      var(--poke-white) 0 18%,
+      var(--poke-black) 18% 26%,
+      transparent 26%
+    ),
+    linear-gradient(
+      180deg,
+      var(--poke-red) 0 46%,
+      var(--poke-black) 46% 54%,
+      var(--poke-white) 54% 100%
+    );
 }
 
 /* rótulo pequeno em caixa escura (contador, etapa, etc.) */
@@ -175,30 +185,6 @@ h4 {
   color: var(--hud-face);
   background: var(--hud-ink);
   border: 2px solid var(--hud-edge);
-}
-
-/* Elementos de efeito criados via GSAP (floatText / burstParticles / confetti) */
-.float-fx,
-.particle-fx,
-.confetti-fx {
-  position: absolute;
-  pointer-events: none;
-  z-index: var(--z-effects);
-  font-family: var(--font-display);
-  font-size: clamp(14px, 2vw, 22px);
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
-  white-space: nowrap;
-}
-.particle-fx {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  box-shadow: 0 0 6px currentColor;
-}
-.confetti-fx {
-  top: -20px;
-  z-index: var(--z-overlays);
-  border-radius: 2px;
 }
 
 /* Acessibilidade: reduz movimento agressivo globalmente */

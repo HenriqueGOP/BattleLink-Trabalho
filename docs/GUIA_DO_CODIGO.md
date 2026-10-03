@@ -1,4 +1,4 @@
-# Guia do código — fase 3
+# Guia do código — fase 4
 
 O cliente solicita; o servidor decide. Este mapa descreve a implementação ativa em `pokemon-battle/3`.
 
@@ -18,7 +18,10 @@ O cliente solicita; o servidor decide. Este mapa descreve a implementação ativ
 | Conexão React | BattleProvider.tsx, services/socketService.ts | Decoder, snapshot, envio idempotente e ressincronização |
 | Modelo visual | client/src/lib/battleView.ts, catalog.ts | IDs → textos, PP, HP e recursos locais |
 | Recursos | client/src/lib/assets.ts, preloadBattle.ts | Whitelist, fallback, cancelamento e prazo de preload |
-| Eventos visuais | client/src/lib/eventEngine.ts, hooks/useBattleEvents.ts | Adaptação temporária para a fila visual existente |
+| Eventos visuais | client/src/lib/eventEngine.ts, hooks/useBattleEvents.ts | Mensagens, assinatura do estado apresentado e ciclo de vida |
+| Fila | client/src/lib/presentation/BattleEventQueue.ts | Eventos, checkpoints, watermark, lacunas, skip e aba oculta |
+| Animação | client/src/lib/presentation/AnimationDirector.ts, impact.ts | Conclusão real, cancelamento, barras de HP, pool e flashes |
+| Medição | BattleProfiler.tsx, PresentationLab.tsx | Instrumentação e cenário disponíveis somente no modo profile |
 | Telas | client/src/pages | Lobby, seleção, golpes e batalha |
 | Áudio | client/src/lib/audio | Preferências persistidas, cries locais, música/SFX procedurais |
 
@@ -40,10 +43,10 @@ Eventos públicos possuem sequência e rodada. O cliente ignora duplicatas e sna
 
 ## Testes
 
-`npm test` preserva o runner anterior e acrescenta typecheck dos testes e validação dos recursos. Há grupos de domínio, eventos, regressões da auditoria, protocolo, segurança, ciclo do socket, integração HTTP/TCP/WebSocket, arquivos locais e motor. A suíte não depende de internet.
+`npm test` preserva o runner anterior e acrescenta typecheck dos testes e validação dos recursos. Há grupos de domínio, eventos, regressões da auditoria, protocolo, segurança, ciclo do socket, integração HTTP/TCP/WebSocket, arquivos locais, apresentação e motor. A suíte não depende de internet. `presentation.test.ts` usa o motor real para os snapshots e um DOM controlado para verificar conclusão, cancelamento, transforms e reutilização do pool.
 
 Os arquivos `pokeapi.ts`, `json-cache.ts`, `showdown-moves.ts`, fixtures e `data/moves.json` permanecem para cobertura histórica do importador/cache. Não são importados pelo caminho ativo de partidas. As justificativas para migração de fixtures antigas estão no relatório da fase 3.
 
 ## Limites atuais
 
-A apresentação ainda confirma HP/ativo assim que chega o snapshot e usa durações estimadas na fila antiga. A fase 4 substituirá isso por AnimationDirector e commits visuais ao fim dos eventos. Menus, acessibilidade completa e novas arenas são fases seguintes; não confundir contrato preparado com acabamento visual concluído.
+A apresentação confirma HP/nocaute nos limites dos eventos e o ativo no ponto de substituição da troca. Os efeitos finitos têm um único dono. O Profiler não registrou commits React por frame nos impactos observados; isso não comprova FPS em um celular. Menus, acessibilidade completa e novas arenas são fases seguintes. Evidências e reprodução: [fase 4](FASE_4_APRESENTACAO.md).

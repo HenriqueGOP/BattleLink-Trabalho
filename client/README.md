@@ -13,7 +13,9 @@ Na raiz: `npm start --prefix server` após build. Em outro terminal: `npm run de
 - `BattleProvider`: snapshot autoritativo, preparação, tentativas idempotentes e cancelamento ao sair.
 - `SocketService`: ciclo de conexão e decoder compartilhado com o terminal.
 - `battleView`: converte IDs em modelo visual e recursos locais, preservando reservas ocultas.
-- `eventEngine`: adapta eventos canônicos usando watermark e detecta perda da janela de eventos.
+- `eventEngine`: mensagens e categorias visuais dos eventos canônicos.
+- `BattleEventQueue`: snapshots apresentados, watermark, checkpoints, lacunas e cancelamento.
+- `AnimationDirector`: único executor de efeitos finitos; aguarda WAAPI/GSAP antes de confirmar cada evento.
 - `assets` / `preloadBattle`: whitelist local, até seis downloads simultâneos, prazo de três segundos e fallback.
 - `AudioManager`: áudio desligado sem preferência salva; preserva escolhas anteriores. Cries locais via Howler; demais sons procedurais.
 
@@ -21,6 +23,8 @@ O motor e a calculadora de referência são proibidos no bundle por verificaçã
 
 ## Escopo visual
 
-GSAP, CSS Modules, tokens e fontes locais foram preservados. A fila atual ainda usa duração estimada e HP acompanha o snapshot imediatamente. O diretor sequencial/cancelável e a separação temporal da apresentação serão implementados na fase 4. Menus e novas arenas pertencem às fases 5 e 6.
+GSAP, CSS Modules, tokens e fontes locais foram preservados. HP e nocaute seguem os eventos apresentados; a troca confirma o substituto entre saída e entrada. A barra principal e a fantasma animam por transform, sem estado React por frame. Pular e ocultar a aba aplicam a fila inteira; sair cancela efeitos e libera o pool de até 24 partículas. Preferência por movimento reduzido desativa os efeitos finitos. Menus e novas arenas pertencem às fases 5 e 6.
 
-Validação unificada: `npm test`, `npm run build`, `npm run lint` na raiz. Relatório: [fase 3](../docs/FASE_3_INTEGRACAO.md).
+Para medir commits React, gere o cliente com `npm run build -- --mode profile` e abra `/visual-check` no preview. Esse modo usa React DOM profiling e um cenário de nove snapshots produzidos pelo motor real. O laboratório força movimento completo apenas em sua cena, para validar efeitos mesmo quando o sistema pede movimento reduzido. O build normal exclui a rota e a fixture. Regenere o cenário com `node scripts/generate-presentation-fixture.cjs`, na raiz, após compilar o servidor.
+
+Validação unificada: `npm test`, `npm run build`, `npm run lint` na raiz. Relatórios: [fase 3](../docs/FASE_3_INTEGRACAO.md) e [fase 4](../docs/FASE_4_APRESENTACAO.md).

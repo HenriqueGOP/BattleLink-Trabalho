@@ -1,6 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { burstParticles, enterSprite } from '../../../../lib/anim/gsap'
+import { useState } from 'react'
 import { resolveSprite } from '../shared'
 import styles from './BattleSprite.module.css'
 import type { Player } from '../../../../types/player'
@@ -15,34 +13,14 @@ export interface BattleSpriteProps {
 /** Sprite local em campo: entrada, sombra e brilho shiny. */
 export function BattleSprite({ player, opponent, spriteRef }: BattleSpriteProps) {
   const { src, mirrored } = resolveSprite(player, opponent)
-  const previousSrc = useRef<string | null>(null)
   // Falhas do recurso local usam um placeholder sem esticar texto sobre a arena.
   // Guardar o src permite recuperar naturalmente quando o Pokémon troca.
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
   const broken = src !== null && failedSrc === src
 
-  // Nocaute é ESTADO, não evento: enquanto o Pokémon ativo segue com HP 0, ele
-  // permanece em campo desmaiado (opacity/tilt fixos) até a troca. Isso evita
-  // que o visual dependa do timing da fila de eventos (sumir ou "ressuscitar").
-  const fainted = Boolean(player && player.pokemon && player.hp <= 0)
-
-  useEffect(() => {
-    const element = spriteRef.current
-    if (!element) return
-    const isRemount = previousSrc.current === null && src !== null
-    if (previousSrc.current === src && !isRemount) return
-    previousSrc.current = src
-    // A troca de estado é imediata no servidor. Animar a saída com um callback
-    // assíncrono deixava um callback antigo esconder o novo Pokémon; a entrada
-    // é atômica e sempre restaura opacity/transform do holder.
-    gsap.killTweensOf(element)
-    gsap.set(element, { clearProps: 'x,y,rotate,scale,opacity,filter' })
-    enterSprite(element, opponent ? 'right' : 'left')
-    const dust = element.parentElement
-    if (dust && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      burstParticles(dust, 8, 'rgba(200, 205, 230, 0.8)')
-    }
-  }, [src, opponent, spriteRef])
+  // A flag apresentada muda após o evento faint; HP zero não antecipa a queda.
+  // A pose persiste até a troca, inclusive após cancelamento ou ressincronização.
+  const fainted = Boolean(player?.pokemonData?.fainted)
 
   const imgClasses = [styles.sprite, mirrored ? styles.mirrored : ''].filter(Boolean).join(' ')
 

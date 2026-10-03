@@ -1,6 +1,4 @@
-import { useEffect, useRef } from 'react'
 import { Button } from '../../../../components/Button'
-import { confetti } from '../../../../lib/anim/gsap'
 import styles from './EndOverlay.module.css'
 import type { GameState } from '../../../../types/battle'
 import type { DamageTotals } from '../../../../hooks/useBattleEvents'
@@ -15,7 +13,6 @@ export interface EndOverlayProps {
 
 /** Cobertura de fim de partida: vitoria, derrota, empate ou saida do oponente. */
 export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOverlayProps) {
-  const overlayRef = useRef<HTMLDivElement>(null)
   const winner = state.winner
   const result =
     winner === myId
@@ -52,17 +49,8 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
                 : 'A arena é sua, treinador!'
               : 'Nenhum lado prevaleceu.'
 
-  useEffect(() => {
-    if (result === 'victory' && overlayRef.current) confetti(overlayRef.current, 120)
-  }, [result])
-
   return (
-    <div
-      ref={overlayRef}
-      className={`${styles.overlay} ${styles[result]}`}
-      role="alertdialog"
-      aria-label={title}
-    >
+    <div className={`${styles.overlay} ${styles[result]}`} role="alertdialog" aria-label={title}>
       <div className={styles.card}>
         <span className={styles.ball} aria-hidden="true" />
         <h2 className={styles.title}>{title}</h2>

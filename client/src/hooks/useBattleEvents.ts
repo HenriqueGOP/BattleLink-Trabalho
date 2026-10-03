@@ -1,114 +1,108 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { buildLogEntries, diffState } from '../lib/eventEngine'
-import type { BattleEvent, LogEntry } from '../types/events'
+import { useEffect, useLayoutEffect, useMemo, useSyncExternalStore } from 'react'
+import { buildLogEntries, animateEvent } from '../lib/eventEngine'
+import { presentSnapshot } from '../lib/battleView'
+import { BattleEventQueue } from '../lib/presentation/BattleEventQueue'
+import { AnimationDirector } from '../lib/presentation/AnimationDirector'
+import { audio, type SfxName } from '../lib/audio'
+import { pokemonAssets } from '../lib/assets'
+import type { CanonicalEvent, RoomSnapshot } from '../types/protocol'
 import type { GameState } from '../types/battle'
+export type { DamageTotals } from '../lib/presentation/BattleEventQueue'
 
-export interface DamageTotals {
-  dealt: number
-  received: number
+const sounds: Partial<Record<CanonicalEvent['type'], SfxName>> = {
+  damage: 'damage',
+  heal: 'heal',
+  miss: 'miss',
+  immune: 'immune',
+  faint: 'faint',
+  switch: 'switch',
+  status: 'status',
+  boost: 'statUp',
+  round_start: 'turn',
+  battle_start: 'start',
+}
+function sound(event: CanonicalEvent, wire: RoomSnapshot) {
+  const name =
+    event.type === 'boost' && event.after < event.before ? 'statDown' : sounds[event.type]
+  if (name) audio.play(name)
+  if (event.type === 'switch') audio.playCry(pokemonAssets(event.pokemon.speciesId).cry)
+  if (event.type === 'battle_end')
+    audio.play(
+      event.result.winner === null
+        ? 'draw'
+        : event.result.winner === wire.viewer
+          ? 'victory'
+          : 'defeat'
+    )
 }
 
-export interface BattleEventsApi {
-  /** Evento atual sendo animado (null quando a fila termina). */
-  current: BattleEvent | null
-  /** Pula para o próximo evento imediatamente. */
-  skip: () => void
-  /** Dano total causado/recebido acumulado na partida (dos diffs). */
-  totals: DamageTotals
-  /** Log completo já classificado para o painel. */
-  logEntries: LogEntry[]
-}
-
-/**
- * Consome o diff de snapshots → fila sequencial de eventos para animação e som.
- * A UI reflete o snapshot imediatamente; a fila só conduz o teatro visual.
- */
+/** React publica somente nos limites dos eventos; nenhum estado é atualizado por frame. */
 export function useBattleEvents(
   state: GameState | null,
   myIndex: number,
-  roomId: string | null
-): BattleEventsApi {
-  const [current, setCurrent] = useState<BattleEvent | null>(null)
-  const [totals, setTotals] = useState<DamageTotals>({ dealt: 0, received: 0 })
-  const queueRef = useRef<BattleEvent[]>([])
-  const prevRef = useRef<GameState | null>(null)
-  const idRef = useRef(0)
-  const timerRef = useRef<number | null>(null)
-  const currentRef = useRef<BattleEvent | null>(null)
-  const totalsRef = useRef<DamageTotals>({ dealt: 0, received: 0 })
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current != null) {
-      window.clearTimeout(timerRef.current)
-      timerRef.current = null
+  getStage: () => HTMLElement | null,
+  getPlayer: (side: 'me' | 'opponent') => HTMLElement | null,
+  forceMotion = false
+) {
+  const controllers = useMemo(() => {
+    const director = new AnimationDirector({
+      stage: getStage,
+      sprite: getPlayer,
+      sound,
+      reducedMotion: forceMotion ? () => false : undefined,
+    })
+    const queue = new BattleEventQueue(director)
+    return { director, queue }
+  }, [getStage, getPlayer, forceMotion])
+  const { queue, director } = controllers
+  const presentation = useSyncExternalStore(queue.subscribe, queue.getSnapshot, queue.getSnapshot)
+  useLayoutEffect(() => {
+    queue.activate()
+    return () => {
+      queue.dispose()
+      director.dispose()
     }
-  }, [])
-
-  const advanceRef = useRef<() => void>(() => undefined)
-  const advance = useCallback(() => {
-    stopTimer()
-    const next = queueRef.current.shift() ?? null
-    currentRef.current = next
-    setCurrent(next)
-    if (next) {
-      timerRef.current = window.setTimeout(() => advanceRef.current(), next.duration)
+  }, [queue, director])
+  useLayoutEffect(() => {
+    queue.ingest(state?.wire ?? null)
+  }, [queue, state])
+  useEffect(() => {
+    const visibility = () => queue.setHidden(document.hidden)
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reduce = () => {
+      if (preference.matches) queue.skip()
     }
-  }, [stopTimer])
-  useEffect(() => {
-    advanceRef.current = advance
-  }, [advance])
-
-  // nova partida → zera fila, histórico e acumuladores
-  useEffect(() => {
-    const handle = window.setTimeout(() => {
-      prevRef.current = null
-      queueRef.current = []
-      currentRef.current = null
-      setCurrent(null)
-      totalsRef.current = { dealt: 0, received: 0 }
-      setTotals({ dealt: 0, received: 0 })
-      stopTimer()
-    }, 0)
-    return () => window.clearTimeout(handle)
-  }, [roomId, stopTimer])
-
-  useEffect(() => {
-    if (!state || myIndex < 0) return
-    const prev = prevRef.current
-    prevRef.current = state
-    const events = diffState(prev, state, myIndex, () => (idRef.current += 1))
-    if (events.length === 0) return
-
-    let dealt = totalsRef.current.dealt
-    let received = totalsRef.current.received
-    for (const event of events) {
-      const amount = event.amount ?? 0
-      if (amount <= 0) continue
-      if (event.type === 'damage') {
-        if (event.actor === 'me' && event.target === 'opponent') dealt += amount
-        if (event.actor === 'opponent' && event.target === 'me') received += amount
-      } else if (event.type === 'residual' || event.type === 'confusion_hit') {
-        if (event.target === 'me') received += amount
-      }
+    visibility()
+    document.addEventListener('visibilitychange', visibility)
+    preference.addEventListener('change', reduce)
+    return () => {
+      document.removeEventListener('visibilitychange', visibility)
+      preference.removeEventListener('change', reduce)
     }
-    totalsRef.current = { dealt, received }
-    setTotals({ dealt, received })
-
-    queueRef.current.push(...events)
-    if (!currentRef.current) advance()
-  }, [state, myIndex, advance])
-
-  // unmount → cancela timers (fila sequencial cancelável)
-  useEffect(() => stopTimer, [stopTimer])
-
-  const logEntries = useMemo<LogEntry[]>(() => {
-    if (!state || myIndex < 0) return []
-    return buildLogEntries(state, myIndex)
-  }, [state, myIndex])
-
-  const skip = useCallback(() => {
-    if (queueRef.current.length > 0 || currentRef.current) advance()
-  }, [advance])
-
-  return { current, skip, totals, logEntries }
+  }, [queue])
+  const presented = useMemo(
+    () => (presentation.wire ? presentSnapshot(presentation.wire) : state),
+    [presentation.wire, state]
+  )
+  const current = useMemo(
+    () =>
+      presentation.activeEvent && presented
+        ? animateEvent(presentation.activeEvent, presented, myIndex)
+        : null,
+    [presentation, presented, myIndex]
+  )
+  const logEntries = useMemo(
+    () => (presented && myIndex >= 0 ? buildLogEntries(presented, myIndex) : []),
+    [presented, myIndex]
+  )
+  return {
+    presented,
+    current,
+    busy: presentation.busy,
+    hidden: presentation.hidden,
+    skip: queue.skip,
+    setHidden: (hidden: boolean) => queue.setHidden(hidden),
+    totals: presentation.totals,
+    logEntries,
+  }
 }

@@ -8,20 +8,22 @@ export interface StatusAuraProps {
   side: 'me' | 'opponent'
 }
 
-let seed = 0
-
 /**
  * Aura contínua de status ancorada AO WRAPPER do Pokémon (position:absolute
  * relativa ao holder do sprite). Aparece quando o status é aplicado e some
  * sozinha quando o snapshot deixa de ter o status (render condicional).
  * Nenhum efeito usa coordenadas de tela — tudo % relativa ao Pokémon.
  */
-export const StatusAura = memo(function StatusAura({ status, confused = false, side }: StatusAuraProps) {
+export const StatusAura = memo(function StatusAura({
+  status,
+  confused = false,
+  side,
+}: StatusAuraProps) {
   const particles = useMemo(() => {
     if (!status) return []
     const count = status === 'burn' ? 4 : status === 'poison' || status === 'bad_poison' ? 4 : 0
     return Array.from({ length: count }, (_, index) => {
-      seed += 1
+      const seed = index + (side === 'me' ? 11 : 31)
       return {
         id: seed,
         left: 12 + ((seed * 37) % 70),
@@ -38,7 +40,7 @@ export const StatusAura = memo(function StatusAura({ status, confused = false, s
       {(status === 'poison' || status === 'bad_poison') && (
         <>
           <span className={styles.poisonAura} />
-          {particles.map(p => (
+          {particles.map((p) => (
             <i
               key={p.id}
               className={styles.poisonBubble}
@@ -50,11 +52,18 @@ export const StatusAura = memo(function StatusAura({ status, confused = false, s
       {status === 'burn' && (
         <>
           <span className={styles.burnAura} />
-          {particles.map(p => (
+          {particles.map((p) => (
             <i
               key={p.id}
               className={styles.ember}
-              style={{ left: `${p.left}%`, bottom: '22%', animationDelay: `${p.delay}s`, '--drift': `${p.drift}px` } as React.CSSProperties}
+              style={
+                {
+                  left: `${p.left}%`,
+                  bottom: '22%',
+                  animationDelay: `${p.delay}s`,
+                  '--drift': `${p.drift}px`,
+                } as React.CSSProperties
+              }
             />
           ))}
         </>

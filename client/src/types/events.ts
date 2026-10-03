@@ -1,4 +1,4 @@
-/** Eventos derivados do diff entre snapshots — alimentam animação (GSAP), som e log. */
+/** Categorias visuais do evento canônico; o AnimationDirector controla sua conclusão. */
 
 export type Side = 'me' | 'opponent' | 'system'
 
@@ -47,21 +47,10 @@ export interface BattleEvent {
   status?: string
   stat?: string
   pokemon?: string
-  /** Duração sugerida da animação (ms) antes do próximo evento da fila. */
-  duration: number
 }
 
 export type LogCategory =
-  | 'damage'
-  | 'heal'
-  | 'status'
-  | 'stat'
-  | 'switch'
-  | 'faint'
-  | 'miss'
-  | 'field'
-  | 'result'
-  | 'info'
+  'damage' | 'heal' | 'status' | 'stat' | 'switch' | 'faint' | 'miss' | 'field' | 'result' | 'info'
 
 /** Entrada do log já classificada para o painel de combate. */
 export interface LogEntry {

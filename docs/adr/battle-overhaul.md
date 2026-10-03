@@ -138,6 +138,22 @@ A sincronização de estado apresentado com conclusão das animações continua 
 entrega da fase 4. As seis novas arenas e a revisão completa de acessibilidade continuam
 nas fases correspondentes. Detalhes e evidências: [relatório da fase 3](../FASE_3_INTEGRACAO.md).
 
+### Registro da fase 4
+
+A fila agora mantém snapshots apresentados e checkpoints, aguarda conclusão real do
+diretor e cancela efeitos em skip, aba oculta e desmontagem. HP/nocaute são confirmados
+ao concluir os eventos; a troca confirma o ativo entre saída e entrada. A versão normal
+exclui o laboratório e a fixture usados na medição de commits React.
+
+No cliente, partículas derivam variação da sequência pública; nenhuma seed privada é
+enviada para apresentação. O resultado das regras e o sorteio continuam independentes
+dos efeitos visuais. O pool tem até 24 nós, com liberação idempotente após cancelamento.
+
+Testes completos, build, lint e inspeção de duas abas/cenário visual passaram. O Profiler
+não mostrou commits por frame nos impactos observados. FPS em celular real, revisão
+completa dos menus e novas arenas continuam nas etapas seguintes. Detalhes e limites:
+[relatório da fase 4](../FASE_4_APRESENTACAO.md).
+
 ### Critérios gerais
 
 - Sanidade de dano 31–37; todos os 16 rolls; atributos, estágios, críticos, STAB,

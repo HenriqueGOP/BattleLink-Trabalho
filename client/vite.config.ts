@@ -3,7 +3,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  resolve:
+    mode === 'profile' ? { alias: { 'react-dom/client': 'react-dom/profiling' } } : undefined,
   plugins: [
     react(),
     tailwindcss(),
@@ -32,4 +34,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

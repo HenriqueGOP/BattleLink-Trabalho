@@ -26,13 +26,20 @@
   white-space: nowrap;
 }
 
-.brand b { color: var(--poke-red); }
+.brand b {
+  color: var(--poke-red);
+}
 
 .ball {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+  background: linear-gradient(
+    180deg,
+    var(--poke-red) 0 46%,
+    var(--poke-black) 46% 54%,
+    var(--poke-white) 54% 100%
+  );
   border: 2px solid var(--poke-black);
 }
 
@@ -82,12 +89,22 @@
   height: 46px;
   border-radius: 50%;
   border: 4px solid var(--poke-black);
-  background: linear-gradient(180deg, var(--poke-red) 0 46%, var(--poke-black) 46% 54%, var(--poke-white) 54% 100%);
+  background: linear-gradient(
+    180deg,
+    var(--poke-red) 0 46%,
+    var(--poke-black) 46% 54%,
+    var(--poke-white) 54% 100%
+  );
   animation: wobble 1.4s ease-in-out infinite;
 }
 @keyframes wobble {
-  0%, 100% { transform: rotate(-14deg); }
-  50% { transform: rotate(14deg); }
+  0%,
+  100% {
+    transform: rotate(-14deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
 }
 
 /* ---------- layout principal ---------- */
@@ -124,8 +141,14 @@
   animation: drawerIn 0.22s ease both;
 }
 @keyframes drawerIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .drawer:has(> :only-child) {
@@ -133,14 +156,9 @@
 }
 
 @media (max-width: 900px) {
-  .drawer { grid-template-columns: 1fr; }
-}
-
-/* FX LAB: screen shake por trauma (variáveis alimentadas por lib/anim/fx.ts) */
-.stage {
-  translate: var(--fx-shake-x, 0px) var(--fx-shake-y, 0px);
-  rotate: var(--fx-shake-r, 0deg);
-  will-change: translate, rotate;
+  .drawer {
+    grid-template-columns: 1fr;
+  }
 }
 
 .stage {
@@ -166,14 +184,30 @@
   z-index: var(--z-sprites);
   pointer-events: none;
 }
-.spots > * { pointer-events: auto; }
+.spots > * {
+  pointer-events: auto;
+}
 
 /* HUDs integrados aos cantos, fora do caminho dos sprites */
-.spots > :first-child { position: absolute; top: 10px; left: 10px; width: min(272px, 56%); }
+.spots > :first-child {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: min(272px, 56%);
+}
 /* sprites e HUDs agora ficam em cantos opostos, então basta uma folga pequena */
-.spots > :nth-child(2) { margin-top: clamp(6px, 1.5vw, 14px); }
-.spots > :nth-child(3) { margin-bottom: clamp(6px, 1.5vw, 14px); }
-.spots > :last-child { position: absolute; bottom: 10px; right: 10px; width: min(272px, 56%); }
+.spots > :nth-child(2) {
+  margin-top: clamp(6px, 1.5vw, 14px);
+}
+.spots > :nth-child(3) {
+  margin-bottom: clamp(6px, 1.5vw, 14px);
+}
+.spots > :last-child {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: min(272px, 56%);
+}
 
 /* dock do indicador de turno: fixo no rodapé do palco, linha única, não cobre sprites */
 .turnDock {
@@ -193,21 +227,39 @@
 }
 
 @media (max-width: 960px) {
-  .layout { grid-template-columns: 1fr; }
-  .stage { min-height: clamp(240px, 46vw, 340px); }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .stage {
+    min-height: clamp(240px, 46vw, 340px);
+  }
   .spots > :first-child,
-  .spots > :last-child { width: min(240px, 58%); }
-  .room { display: none; }
+  .spots > :last-child {
+    width: min(240px, 58%);
+  }
+  .room {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
-  .brand span { display: none; }
+  .brand span {
+    display: none;
+  }
   .spots > :first-child,
-  .spots > :last-child { width: 66%; }
-  .spots > :nth-child(2) { margin-top: 6px; }
-  .spots > :nth-child(3) { margin-bottom: 6px; }
+  .spots > :last-child {
+    width: 66%;
+  }
+  .spots > :nth-child(2) {
+    margin-top: 6px;
+  }
+  .spots > :nth-child(3) {
+    margin-bottom: 6px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .waitingBall { animation: none; }
+  .waitingBall {
+    animation: none;
+  }
 }

@@ -49,6 +49,8 @@ export interface ActivePokemonData {
   cries: PokemonCries
   sprites: PokemonSprites
   level: number
+  /** Nocaute confirmado na apresentação, após a queda correspondente. */
+  fainted: boolean
 }
 
 /** Jogador no snapshot (server PlayerState). */

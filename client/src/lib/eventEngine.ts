@@ -1,25 +1,18 @@
 import type { GameState } from '../types/battle'
 import type { CanonicalEvent } from '../types/protocol'
-import type { BattleEvent, BattleEventType, LogEntry, Side } from '../types/events'
+import type { BattleEvent, LogEntry, Side } from '../types/events'
 import { eventMessage } from '../../../server/src/contracts/events'
 import { statusNames } from './battleView'
 
-const duration: Partial<Record<BattleEventType, number>> = {
-  damage: 650,
-  heal: 500,
-  faint: 900,
-  switch_in: 700,
-  battle_start: 900,
-  victory: 1500,
-  defeat: 1500,
-  draw: 1500,
-  info: 180,
-}
 const sideOf = (id: string | null, myIndex: number): Side =>
   id ? (id.startsWith(myIndex === 0 ? 'p1' : 'p2') ? 'me' : 'opponent') : 'system'
 
-/** Adaptação temporária ao diretor existente. Sem inferência de regras pelo texto. */
-function animate(event: CanonicalEvent, state: GameState, myIndex: number): BattleEvent | null {
+/** Mensagens e categorias de apresentação; a execução visual usa o evento canônico. */
+export function animateEvent(
+  event: CanonicalEvent,
+  state: GameState,
+  myIndex: number
+): BattleEvent | null {
   if (event.type === 'state_sync') return null
   const output: BattleEvent = {
     id: event.sequence,
@@ -27,7 +20,6 @@ function animate(event: CanonicalEvent, state: GameState, myIndex: number): Batt
     actor: 'system',
     target: 'system',
     message: eventMessage(event, state.wire),
-    duration: 180,
   }
   if ('actor' in event) output.actor = sideOf(event.actor, myIndex)
   if ('target' in event) output.target = sideOf(event.target, myIndex)
@@ -101,7 +93,6 @@ function animate(event: CanonicalEvent, state: GameState, myIndex: number): Batt
             : 'defeat'
       break
   }
-  output.duration = duration[output.type] ?? 450
   return output
 }
 export function diffState(
@@ -119,17 +110,8 @@ export function diffState(
     return []
   const events = next.wire.events
     .filter((event) => event.sequence > previous.wire.sequence)
-    .map((event) => animate(event, next, myIndex))
+    .map((event) => animateEvent(event, next, myIndex))
     .filter((event): event is BattleEvent => !!event)
-  if (previous.phase === 'preparing' && next.phase === 'battle')
-    events.unshift({
-      id: 0,
-      type: 'battle_start',
-      actor: 'system',
-      target: 'system',
-      message: 'Batalha iniciada!',
-      duration: 900,
-    })
   return events
 }
 export function buildLogEntries(state: GameState, myIndex: number): LogEntry[] {
@@ -140,7 +122,7 @@ export function buildLogEntries(state: GameState, myIndex: number): LogEntry[] {
     side: 'system',
   }))
   const canonical = state.wire.events
-    .map((event) => animate(event, state, myIndex))
+    .map((event) => animateEvent(event, state, myIndex))
     .filter((event): event is BattleEvent => !!event)
   return [
     ...setup,

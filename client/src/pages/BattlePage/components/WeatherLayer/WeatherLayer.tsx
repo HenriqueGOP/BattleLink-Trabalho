@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { prefersReducedMotion } from '../../../../lib/anim/gsap'
+import { visualRandom } from '../../../../lib/presentation/impact'
 import type { Terrain, Weather } from '../../../../types/battle'
 import styles from './WeatherLayer.module.css'
 
@@ -29,14 +29,17 @@ export function WeatherLayer({ weather, terrain }: WeatherLayerProps) {
     const context = canvas.getContext('2d')
     if (!context) return
 
-    if (prefersReducedMotion() || !weather || weather === 'sun') {
+    if (!weather || weather === 'sun') {
       context.clearRect(0, 0, canvas.width, canvas.height)
       return
     }
 
     let particles: Particle[] = []
-    let running = true
+    let running = false
+    let raf: number | null = null
     let frame = 0
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const random = visualRandom([...weather].reduce((sum, value) => sum + value.charCodeAt(0), 0))
 
     const resize = () => {
       const parent = canvas.parentElement
@@ -49,31 +52,31 @@ export function WeatherLayer({ weather, terrain }: WeatherLayerProps) {
       switch (weather) {
         case 'rain':
           return {
-            x: Math.random() * (canvas.width + 120) - 60,
-            y: initial ? Math.random() * canvas.height : -20,
+            x: random() * (canvas.width + 120) - 60,
+            y: initial ? random() * canvas.height : -20,
             vx: 3.5,
-            vy: 12 + Math.random() * 6,
-            size: 1 + Math.random(),
-            alpha: 0.35 + Math.random() * 0.3,
+            vy: 12 + random() * 6,
+            size: 1 + random(),
+            alpha: 0.35 + random() * 0.3,
           }
         case 'sandstorm':
           return {
-            x: initial ? Math.random() * canvas.width : -30,
-            y: Math.random() * canvas.height,
-            vx: 5 + Math.random() * 4,
-            vy: (Math.random() - 0.5) * 2,
-            size: 1.5 + Math.random() * 2,
-            alpha: 0.2 + Math.random() * 0.25,
+            x: initial ? random() * canvas.width : -30,
+            y: random() * canvas.height,
+            vx: 5 + random() * 4,
+            vy: (random() - 0.5) * 2,
+            size: 1.5 + random() * 2,
+            alpha: 0.2 + random() * 0.25,
           }
         case 'snow':
         default:
           return {
-            x: Math.random() * canvas.width,
-            y: initial ? Math.random() * canvas.height : -12,
+            x: random() * canvas.width,
+            y: initial ? random() * canvas.height : -12,
             vx: Math.sin(frame / 40) * 0.6,
-            vy: 1 + Math.random() * 1.6,
-            size: 1.5 + Math.random() * 2.5,
-            alpha: 0.4 + Math.random() * 0.4,
+            vy: 1 + random() * 1.6,
+            size: 1.5 + random() * 2.5,
+            alpha: 0.4 + random() * 0.4,
           }
       }
     }
@@ -82,6 +85,7 @@ export function WeatherLayer({ weather, terrain }: WeatherLayerProps) {
     particles = Array.from({ length: targetCount }, () => spawn(true))
 
     const draw = () => {
+      raf = null
       if (!running) return
       frame += 1
       context.clearRect(0, 0, canvas.width, canvas.height)
@@ -115,30 +119,36 @@ export function WeatherLayer({ weather, terrain }: WeatherLayerProps) {
         }
       }
       context.globalAlpha = 1
-      requestAnimationFrame(draw)
+      raf = requestAnimationFrame(draw)
     }
-
-    const raf = requestAnimationFrame(draw)
 
     const onVisibility = () => {
-      running = !document.hidden
-      if (running) requestAnimationFrame(draw)
+      running = !document.hidden && !preference.matches
+      if (raf !== null) cancelAnimationFrame(raf)
+      raf = running ? requestAnimationFrame(draw) : null
+      if (preference.matches) context.clearRect(0, 0, canvas.width, canvas.height)
     }
+    onVisibility()
     document.addEventListener('visibilitychange', onVisibility)
+    preference.addEventListener('change', onVisibility)
 
     const observer = new ResizeObserver(resize)
     if (canvas.parentElement) observer.observe(canvas.parentElement)
 
     return () => {
       running = false
-      cancelAnimationFrame(raf)
+      if (raf !== null) cancelAnimationFrame(raf)
       document.removeEventListener('visibilitychange', onVisibility)
+      preference.removeEventListener('change', onVisibility)
       observer.disconnect()
     }
   }, [weather])
 
   return (
-    <div className={`${styles.scene} ${weather ? styles[`weather-${weather}`] : ''} ${terrain ? styles[`terrain-${terrain}`] : ''}`} aria-hidden="true">
+    <div
+      className={`${styles.scene} ${weather ? styles[`weather-${weather}`] : ''} ${terrain ? styles[`terrain-${terrain}`] : ''}`}
+      aria-hidden="true"
+    >
       <div className={styles.sky}>
         <span className={styles.sun} />
         <span className={`${styles.cloud} ${styles.cloudOne}`} />
@@ -159,7 +169,10 @@ export function WeatherLayer({ weather, terrain }: WeatherLayerProps) {
         {terrain === 'psychic' && (
           <>
             <span className={styles.ring} style={{ left: '30%', top: '30%' }} />
-            <span className={styles.ring} style={{ left: '62%', top: '55%', animationDelay: '1.4s' }} />
+            <span
+              className={styles.ring}
+              style={{ left: '62%', top: '55%', animationDelay: '1.4s' }}
+            />
           </>
         )}
       </div>

@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
 import { TypeBadge } from '../../../../components/TypeBadge'
 import { moveEffects } from '../../../../lib/moves'
 import styles from './CommandBar.module.css'
@@ -29,31 +28,6 @@ export interface CommandBarProps {
  * dupla à esquerda (~55%) + grade de comandos à direita (~45%).
  */
 
-/** Revela o texto caractere a caractere (assinatura GBA). Respeita reduced-motion. */
-function useTypewriter(text: string): string {
-  const [shown, setShown] = useState(text)
-  const timerRef = useRef<number | null>(null)
-  useEffect(
-    () => () => {
-      if (timerRef.current != null) window.clearTimeout(timerRef.current)
-    },
-    []
-  )
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      timerRef.current = window.setTimeout(() => setShown(text), 0)
-      return
-    }
-    let index = 0
-    const timer = window.setInterval(() => {
-      index += 1
-      setShown(text.slice(0, index))
-      if (index >= text.length) window.clearInterval(timer)
-    }, 18)
-    return () => window.clearInterval(timer)
-  }, [text])
-  return shown
-}
 export function CommandBar({
   message,
   myTurn,
@@ -67,7 +41,7 @@ export function CommandBar({
     (myTurn
       ? `O que ${myPokemon ?? 'seu Pokémon'} vai fazer?`
       : 'Aguarde a resolução das escolhas…')
-  const text = useTypewriter(target)
+  const text = target
 
   return (
     <section className={styles.bar} aria-label="Comandos de batalha">

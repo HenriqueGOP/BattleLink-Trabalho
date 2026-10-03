@@ -5,6 +5,7 @@ import { BattlePage } from './pages/BattlePage'
 import { HomePage } from './pages/HomePage'
 import { SelectionPage } from './pages/SelectionPage'
 import { TeamSetupPage } from './pages/TeamSetupPage'
+import { PresentationLab } from './pages/BattlePage/PresentationLab'
 
 /** Roteamento + provedores globais. Zero lógica de jogo aqui. */
 export default function App() {
@@ -16,6 +17,9 @@ export default function App() {
           <Route path="/selecao" element={<SelectionPage />} />
           <Route path="/equipe" element={<TeamSetupPage />} />
           <Route path="/batalha" element={<BattlePage />} />
+          {import.meta.env.MODE === 'profile' && (
+            <Route path="/visual-check" element={<PresentationLab />} />
+          )}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BattleProvider>

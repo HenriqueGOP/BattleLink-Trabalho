@@ -1,4 +1,4 @@
-# Arquitetura e demonstração — fase 3
+# Arquitetura e demonstração — fase 4
 
 ```mermaid
 flowchart LR
@@ -13,6 +13,10 @@ flowchart LR
   C[Catálogo local versionado] --> R
   C --> UI
   L[Recursos locais e whitelist] --> UI
+  UI --> Q[BattleEventQueue: eventos e checkpoints]
+  Q --> D[AnimationDirector: GSAP e WAAPI]
+  D -->|Conclusão ou troca no ponto de substituição| Q
+  Q --> V[Estado apresentado: HUD, sprites, log e resultado]
 ```
 
 ## Fronteiras
@@ -22,11 +26,11 @@ flowchart LR
 - **Regras:** `BattleSession` coleta escolhas privadas e resolve a rodada completa com o simulador Gen 9. Apenas o adapter conhece seus objetos mutáveis. Snapshots/eventos retornados são imutáveis.
 - **Dados:** catálogo gerado da versão fixada de `@pkmn/sim`; espécies e golpes são JSON separados, learnsets usam índices compactos no disco. Cliente e servidor usam a mesma versão.
 - **Recursos:** sprites/cries locais são resolvidos por mapas; mensagens nunca fornecem caminhos. Whitelist impede interpretar URL/HTML recebido. O bundler rejeita simulador/calculadora no navegador.
-- **Apresentação:** `BattleProvider` mantém snapshot autoritativo e entrega um modelo visual separado por `presentSnapshot`. O adaptador de eventos usa sequência estável; a sincronização de HP com conclusão de animações pertence à fase 4.
+- **Apresentação:** `BattleProvider` mantém o snapshot autoritativo usado para validar controles. `BattleEventQueue` recebe eventos novos, preserva checkpoints de cada snapshot e confirma fatos visuais após a conclusão do `AnimationDirector`. HP, ativo, status, log e resultado usam esse estado apresentado. Uma lacuna, skip ou aba oculta aplica o snapshot mais recente e cancela trabalho obsoleto. A troca confirma o novo ativo depois da saída e antes da entrada.
 
 A ordem de chegada das escolhas não decide quem ataca primeiro: prioridade, velocidade e desempate do RNG fazem isso. O primeiro jogador recebe confirmação privada; a transmissão pública só ocorre após a resolução. Desconexão produz resultado final antes de remover e destruir a sala. Timer de preparação, sockets e motor são liberados no encerramento.
 
-Combate, sorteio de equipes e apresentação têm fluxos de RNG separados. Sorteio por lado tem fluxo próprio, de modo que a ordem de cliques dos dois jogadores não muda sua seleção. Arena usa somente o fluxo visual. Não há alterações de RNG global.
+Combate, sorteio de equipes e apresentação têm fluxos de RNG separados. Sorteio por lado tem fluxo próprio, de modo que a ordem de cliques dos dois jogadores não muda sua seleção. Arena usa somente o fluxo visual do servidor. Partículas do cliente derivam sua variação da sequência pública, sem receber a seed privada ou consumir o RNG de combate. Não há alterações de RNG global.
 
 ## Roteiro de apresentação
 
@@ -39,4 +43,4 @@ Combate, sorteio de equipes e apresentação têm fluxos de RNG separados. Sorte
 7. Reenvie a mesma ação: não executa novamente. Solicitação antiga ou troca da equipe adversária falha.
 8. Termine a batalha ou feche uma conexão: o resultado final chega antes da liberação da sala.
 
-Detalhes de contrato: [protocolo](protocolo.md). Evidências e limites de etapa: [fase 3](FASE_3_INTEGRACAO.md).
+Detalhes de contrato: [protocolo](protocolo.md). Evidências e limites: [fase 3](FASE_3_INTEGRACAO.md) e [fase 4](FASE_4_APRESENTACAO.md).

@@ -7,12 +7,11 @@ import { useBattle } from '../../hooks/useBattle'
 import { useBattleContext } from '../../context/BattleProvider'
 import { useBattleEvents } from '../../hooks/useBattleEvents'
 import { BattleControls } from './components/BattleControls'
-import { BattleEffects } from './components/BattleEffects'
+import { BattleProfiler } from './components/BattleProfiler'
 import { BattleBackground } from './components/BattleBackground'
 import { BattleLog } from './components/BattleLog'
 import { CommandBar } from './components/CommandBar'
 import { BattleSpot } from './components/BattleSpot'
-import { DamageNumbers } from './components/DamageNumbers'
 import { HudCard } from './components/HudCard'
 import { MoveMenu } from './components/MoveMenu'
 import { TurnIndicator } from './components/TurnIndicator'
@@ -28,9 +27,16 @@ import type { PokemonMove } from '../../types/pokemon'
  * (nenhum timeout no cliente).
  */
 export function BattlePage() {
-  const { state, playerId, roomId, status, opponentLeft, leave, attack, switchTo } =
-    useBattleContext()
-  const { myIndex, myPlayer, opponent, myTurn, blocked, canChoose, canSetupMoves } = useBattle()
+  const {
+    state: authoritative,
+    playerId,
+    status,
+    opponentLeft,
+    leave,
+    attack,
+    switchTo,
+  } = useBattleContext()
+  const { myIndex, myTurn: canAct, blocked, canChoose, canSetupMoves } = useBattle()
   const audioApi = useAudio()
   const navigate = useNavigate()
 
@@ -42,32 +48,39 @@ export function BattlePage() {
   const stageRef = useRef<HTMLDivElement>(null)
   const mySpriteRef = useRef<HTMLDivElement>(null)
   const oppSpriteRef = useRef<HTMLDivElement>(null)
+  const getStage = useCallback(() => stageRef.current, [])
 
   const getPlayer = useCallback(
     (side: 'me' | 'opponent') => (side === 'me' ? mySpriteRef.current : oppSpriteRef.current),
     []
   )
-  const getPlayerState = useCallback(
-    (side: 'me' | 'opponent') => (side === 'me' ? myPlayer : opponent),
-    [myPlayer, opponent]
-  )
-
-  const { current, totals, logEntries } = useBattleEvents(state, myIndex, roomId)
+  const {
+    presented: state,
+    current,
+    totals,
+    logEntries,
+    busy,
+    hidden,
+    skip,
+  } = useBattleEvents(authoritative, myIndex, getStage, getPlayer)
+  const myPlayer = state && myIndex >= 0 ? state.players[myIndex] : null
+  const opponent = state && myIndex >= 0 ? state.players[1 - myIndex] : null
+  const myTurn = canAct && !busy
 
   // Pokémon caiu: o jogo obriga a escolher um substituto, então a equipe abre
   // sozinha. Painel derivado (sem efeito): quando o bloqueio sai, volta ao que
   // o jogador tinha aberto.
-  const activePanel = blocked ? 'party' : panel
+  const activePanel = blocked && !busy ? 'party' : panel
 
   if (!state || !playerId) return <Navigate to="/" replace />
   if (canChoose) return <Navigate to="/selecao" replace />
   if (canSetupMoves) return <Navigate to="/equipe" replace />
 
-  const finished = state.phase === 'finished'
-  const lastLogMessage = logEntries.at(-1)?.text ?? ''
+  const finished = state.phase === 'finished' && !busy
+  const lastLogMessage = current?.message ?? logEntries.at(-1)?.text ?? ''
   // cena pronta = ambos com Pokémon ativo e HP real; antes disso, espera sincronizada
   const sceneReady = Boolean(
-    state.phase !== 'preparing' &&
+    authoritative?.phase !== 'preparing' &&
     myPlayer?.pokemon &&
     opponent?.pokemon &&
     (opponent.maxHp ?? 0) > 0
@@ -92,6 +105,9 @@ export function BattlePage() {
         <span className={styles.room}>{status}</span>
         <div className={styles.tools}>
           <AudioSettings />
+          <Button variant="ghost" size="sm" onClick={skip} disabled={!busy}>
+            Pular animações
+          </Button>
           <Button variant="ghost" size="sm" onClick={leaveAndHome}>
             Sair
           </Button>
@@ -113,30 +129,35 @@ export function BattlePage() {
       ) : (
         <>
           <div className={styles.layout}>
-            <section
-              className={styles.stage}
-              ref={stageRef}
-              aria-label="Campo de batalha"
-              data-fx-stage
-            >
-              {/* profundidade: cenário → clima → spots(círculos+sprites) → efeitos → HUD */}
-              <BattleBackground background={state.field.background} />
-              <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
-              <div className={styles.spots}>
-                <HudCard player={opponent} opponent />
-                <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} />
-                <BattleSpot
-                  player={myPlayer}
-                  opponent={false}
-                  spriteRef={mySpriteRef}
-                  urgent={blocked}
-                />
-                <HudCard player={myPlayer} opponent={false} />
-              </div>
-              <div className={styles.turnDock}>
-                <TurnIndicator myTurn={myTurn} finished={finished} turnEvent={current} />
-              </div>
-            </section>
+            <BattleProfiler>
+              <section
+                className={styles.stage}
+                ref={stageRef}
+                aria-label="Campo de batalha"
+                data-fx-stage
+                data-paused={hidden ? 'true' : undefined}
+                data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
+                data-event-sequence={current?.id ?? state.wire.sequence}
+              >
+                {/* profundidade: cenário → clima → spots(círculos+sprites) → efeitos → HUD */}
+                <BattleBackground background={state.field.background} />
+                <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
+                <div className={styles.spots}>
+                  <HudCard player={opponent} opponent />
+                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} />
+                  <BattleSpot
+                    player={myPlayer}
+                    opponent={false}
+                    spriteRef={mySpriteRef}
+                    urgent={blocked}
+                  />
+                  <HudCard player={myPlayer} opponent={false} />
+                </div>
+                <div className={styles.turnDock}>
+                  <TurnIndicator myTurn={myTurn} finished={finished} />
+                </div>
+              </section>
+            </BattleProfiler>
           </div>
 
           <CommandBar
@@ -144,7 +165,7 @@ export function BattlePage() {
             myTurn={myTurn}
             myPokemon={myPlayer?.pokemon}
             panelMode={activePanel === 'moves'}
-            preview={activePanel === 'moves' ? previewMove : null}
+            preview={!busy && activePanel === 'moves' ? previewMove : null}
           >
             {activePanel === 'moves' ? (
               <>
@@ -152,7 +173,7 @@ export function BattlePage() {
                   player={myPlayer}
                   myTurn={myTurn}
                   blocked={blocked}
-                  request={state.wire.battle?.request ?? null}
+                  request={authoritative?.wire.battle?.request ?? null}
                   onAttack={attack}
                   onPreview={setPreviewMove}
                   bare
@@ -197,20 +218,12 @@ export function BattlePage() {
                 player={myPlayer}
                 myTurn={myTurn}
                 blocked={blocked}
-                request={state.wire.battle?.request ?? null}
+                request={authoritative?.wire.battle?.request ?? null}
                 onSwitch={switchTo}
               />
             )}
             <BattleLog entries={logEntries} />
           </div>
-
-          <BattleEffects
-            event={current}
-            stageRef={stageRef}
-            getPlayer={getPlayer}
-            getPlayerState={getPlayerState}
-          />
-          <DamageNumbers event={current} getTarget={getPlayer} />
         </>
       )}
       {finished && (

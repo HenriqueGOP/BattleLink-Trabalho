@@ -52,7 +52,10 @@ export const HudCard = memo(function HudCard({ player, opponent }: HudCardProps)
   const status = data?.status
 
   return (
-    <article className={opponent ? `${styles.card} ${styles.opponent}` : styles.card}>
+    <article
+      className={opponent ? `${styles.card} ${styles.opponent}` : styles.card}
+      data-hud-side={opponent ? 'opponent' : 'me'}
+    >
       <header className={styles.trainerRow}>
         <span className={styles.role}>{opponent ? 'OPONENTE' : 'VOCÊ'}</span>
         <span className={styles.trainer}>{player?.name ?? '-'}</span>

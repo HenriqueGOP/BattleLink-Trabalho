@@ -42,12 +42,23 @@
 }
 
 .fill {
+  position: absolute;
+  inset: 0;
   display: block;
   height: 100%;
   border-radius: 999px;
-  /* drena da direita para a esquerda */
-  transition: width var(--dur-slow) var(--ease-out), background var(--dur) linear;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transform-origin: left center;
+  box-shadow:
+    inset 0 -2px 0 rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.ghost {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #f7c87a;
+  transform-origin: left center;
 }
 
 .green {
@@ -58,14 +69,6 @@
 }
 .red {
   background: linear-gradient(180deg, var(--hpbar-red-1) 0 45%, var(--hpbar-red-2) 45% 100%);
-}
-
-/* HP crítico pisca — o "bip" visual da série */
-.critical {
-  animation: lowHp 0.9s steps(2, end) infinite;
-}
-@keyframes lowHp {
-  50% { filter: brightness(1.45); }
 }
 
 .number {
@@ -82,9 +85,4 @@
   font-style: normal;
   margin: 0 1px;
   color: var(--hud-ink-soft);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fill { transition: none; }
-  .critical { animation: none; }
 }
