@@ -35,6 +35,8 @@ A ficha de golpe alterava a altura do painel sob o cursor. O botão entrava e sa
 
 Os testes antigos não foram removidos nem enfraquecidos. O grupo `presentation.test.ts` foi acrescentado ao runner atual.
 
+Esta fase usa efeitos pontuais, auras e animações de interface existentes, alguns ainda definidos em CSS. A fase 7 substitui os efeitos artísticos específicos de combate por spritesheets originais ou licenciados; sincronização, cancelamento e fila continuam sob o AnimationDirector desta fase.
+
 ## Evidências e reprodução
 
 O modo `profile` substitui React DOM pela versão com Profiler e grava commits em um output oculto, sem atualizar estado React. `/visual-check` usa nove snapshots validados, gerados pelo motor real com seed fixa e ações conhecidas, incluindo preparação e entrada. A cena força movimento completo somente nesse laboratório: a preferência do sistema disponível no navegador de inspeção estava em movimento reduzido. O jogo normal continua respeitando essa preferência.
@@ -45,4 +47,4 @@ Gere o servidor, execute `node scripts/generate-presentation-fixture.cjs` na rai
 - [Impacto e HP anterior](evidence/phase4/impacto.png): evento de dano ativo, número único, pool de dez partículas no impacto comum e HP ainda não confirmado.
 - [Troca e resultado concluídos](evidence/phase4/resultado.png): substituto apresentado e fila concluída.
 
-As medições são locais e limitadas à cena instrumentada; timers/frames podem sofrer throttling do navegador. Elas comprovam o padrão de commits observado, sem substituir medição de FPS, uso de memória prolongado ou desempenho em aparelho físico. Contraste, foco uniforme, fluxo a 360 px, revisão dos menus e seis novas arenas continuam nas fases 5 e 6.
+As medições são locais e limitadas à cena instrumentada; timers/frames podem sofrer throttling do navegador. Elas comprovam o padrão de commits observado, sem substituir medição de FPS, uso de memória prolongado ou desempenho em aparelho físico. Contraste, foco uniforme e revisão dos menus continuam na fase 5; arenas e validação integrada, na fase 6; efeitos de combate em arte de spritesheets, na fase 7.

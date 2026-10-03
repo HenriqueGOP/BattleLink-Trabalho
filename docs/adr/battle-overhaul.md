@@ -22,6 +22,7 @@ dependem de validação.
 | Manter GSAP, CSS e WAAPI, com um único AnimationDirector | Adicionar Motion; renderizar toda a batalha em canvas | GSAP já está instalado. Timelines e promises de conclusão permitem execução sequencial, cancelamento e skip; partículas usam pool limitado. | A animação imperativa precisa de cleanup consistente e testes de cancelamento. [GSAP](https://gsap.com/docs/v3/GSAP/Timeline/), [WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished). |
 | Manter CSS Modules e consolidar tokens existentes | Trocar a solução de estilos; adicionar biblioteca de componentes | Fontes locais, paletas, HP, auras e menus compartilharão tokens e componentes. Rotas, textos, test IDs e handlers são preservados durante o polimento. | Componentes precisam ser migrados por tela, com contraste, teclado, foco e screenshots verificados. |
 | Usar arenas e recursos locais | CDN com whitelist | O padrão é zero requisições externas em runtime. Registros locais resolvem IDs; nenhuma string do socket vira URL, caminho ou HTML. As seis arenas começam em CSS/SVG, preparadas para WebP. | Exige empacotamento, orçamento de tamanho, origem/licença dos recursos e fallbacks locais. |
+| Adicionar efeitos de combate como arte em spritesheets locais na fase 7 | Desenhar cada efeito com keyframes CSS; carregar animações de CDNs; criar um sprite corporal exclusivo por espécie | O `AnimationDirector` já sincroniza efeitos com eventos canônicos e controla cancelamento, skip e movimento reduzido. Spritesheets originais/licenciados permitem efeitos expressivos de ataque, status, esquiva, troca e resultado, mantendo as imagens dos Pokémon já empacotadas. | Requer produzir e revisar arte, metadados de frames, registro de licença/créditos, preload seletivo e limites de download/memória. CSS ficará para disposição e posicionamento, não para desenhar os efeitos de combate. |
 
 ## Regras e limites aprovados
 
@@ -80,11 +81,16 @@ desativa movimento intenso e flashes; flashes são limitados globalmente.
    sorteio no servidor, remoção de TERA/terreno e preparação da batalha.
 4. **4:** AnimationDirector, componentes, HP e juice; evidência do React Profiler.
 5. **5:** tokens, componentes e telas, sem mudança de fluxos; screenshots antes/depois.
-6. **6:** seis arenas, preload/fallback e validação final entre dois clientes.
+6. **6:** seis arenas, preload/fallback e validação integrada entre dois clientes, teclado e largura de 360 px.
+7. **7:** spritesheets locais originais ou licenciados para ataques, esquiva, troca, nocaute/resultado, status, buff/debuff, cura e efeitos relacionados; integrar com o AnimationDirector, movimento reduzido e fallbacks. Especificação e critérios: [fase 7](../FASE_7_ANIMACOES.md).
 
 Cada etapa termina com build, lint e testes, commit isolado ou alterações organizadas,
 resumo de até 15 linhas e pausa antes da seguinte. Nenhum teste existente será removido
 ou enfraquecido sem justificativa. Não afirmar que as fases futuras estão implementadas.
+
+A fase 7 é uma etapa nova solicitada após a entrega da fase 4. O diretor existente é
+seu ponto de integração; a arte dos efeitos deixa de ser desenhada em CSS. Até sua
+implementação, o projeto continua usando os efeitos atuais da fase 4.
 
 ## Critérios de validação
 
@@ -151,7 +157,7 @@ dos efeitos visuais. O pool tem até 24 nós, com liberação idempotente após 
 
 Testes completos, build, lint e inspeção de duas abas/cenário visual passaram. O Profiler
 não mostrou commits por frame nos impactos observados. FPS em celular real, revisão
-completa dos menus e novas arenas continuam nas etapas seguintes. Detalhes e limites:
+completa dos menus, novas arenas e animações em spritesheets continuam nas etapas seguintes. Detalhes e limites:
 [relatório da fase 4](../FASE_4_APRESENTACAO.md).
 
 ### Critérios gerais
@@ -169,3 +175,8 @@ completa dos menus e novas arenas continuam nas etapas seguintes. Detalhes e lim
   [VERIFICAR nas fases correspondentes] Percurso completo em navegadores distintos,
   apresentação e 60 FPS em celular intermediário real. Emulação não substitui medição
   em aparelho.
+- Na fase 7, efeitos artísticos de combate migram para atlas originais ou licenciados:
+  ataques, esquiva, troca, status, buff/debuff, cura e nocaute/resultado. O renderer deve
+  seguir eventos canônicos e aceitar skip/cancelamento/movimento reduzido. [VERIFICAR]
+  fontes/licenças/prompts, cobertura das animações, preload, memória, tamanho e FPS em
+  aparelho real. Especificação: [fase 7](../FASE_7_ANIMACOES.md).

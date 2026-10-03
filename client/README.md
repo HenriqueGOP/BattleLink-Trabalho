@@ -23,7 +23,7 @@ O motor e a calculadora de referência são proibidos no bundle por verificaçã
 
 ## Escopo visual
 
-GSAP, CSS Modules, tokens e fontes locais foram preservados. HP e nocaute seguem os eventos apresentados; a troca confirma o substituto entre saída e entrada. A barra principal e a fantasma animam por transform, sem estado React por frame. Pular e ocultar a aba aplicam a fila inteira; sair cancela efeitos e libera o pool de até 24 partículas. Preferência por movimento reduzido desativa os efeitos finitos. Menus e novas arenas pertencem às fases 5 e 6.
+GSAP, CSS Modules, tokens e fontes locais foram preservados. HP e nocaute seguem os eventos apresentados; a troca confirma o substituto entre saída e entrada. A barra principal e a fantasma animam por transform, sem estado React por frame. Pular e ocultar a aba aplicam a fila inteira; sair cancela efeitos e libera o pool de até 24 partículas. Preferência por movimento reduzido desativa os efeitos finitos. Menus e arenas pertencem às fases 5 e 6; efeitos de combate em spritesheets locais estão planejados para a fase 7.
 
 Para medir commits React, gere o cliente com `npm run build -- --mode profile` e abra `/visual-check` no preview. Esse modo usa React DOM profiling e um cenário de nove snapshots produzidos pelo motor real. O laboratório força movimento completo apenas em sua cena, para validar efeitos mesmo quando o sistema pede movimento reduzido. O build normal exclui a rota e a fixture. Regenere o cenário com `node scripts/generate-presentation-fixture.cjs`, na raiz, após compilar o servidor.
 

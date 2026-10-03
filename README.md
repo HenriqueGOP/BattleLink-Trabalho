@@ -4,7 +4,7 @@ Projeto academico de Sistemas Operacionais sobre comunicacao entre processos, so
 
 Jogo de batalha Pokémon singles: dois jogadores, seis Pokémon por equipe e escolhas simultâneas privadas. As regras Gen 9 são executadas por `@pkmn/sim@0.10.11` exclusivamente no servidor. O catálogo, sprites, fontes e cries são locais; partidas não consultam PokéAPI ou CDNs. Nível 50, IVs 31, EVs 0 e natureza neutra; somente Adaptability tem efeito quando a espécie permite. Sem itens, Terastalização, clima/terreno de combate, hazards ou formas alternativas.
 
-**Reformulação concluída até a fase 3:** motor, protocolo `pokemon-battle/3`, terminal e React integrados. A nova direção de animação, revisão visual dos menus e seis arenas originais seguem nas fases 4–6. Consulte [o relatório da fase 3](docs/FASE_3_INTEGRACAO.md) e [o ADR](docs/adr/battle-overhaul.md).
+**Reformulação concluída até a fase 4:** motor, protocolo `pokemon-battle/3`, terminal, React e apresentação sincronizada. A revisão visual dos menus é a fase 5; as arenas e a integração final, fase 6; efeitos de combate em spritesheets, fase 7. Consulte os [relatórios da fase 3](docs/FASE_3_INTEGRACAO.md) e da [fase 4](docs/FASE_4_APRESENTACAO.md), a [especificação da fase 7](docs/FASE_7_ANIMACOES.md) e o [ADR](docs/adr/battle-overhaul.md).
 
 ## Requisitos
 
