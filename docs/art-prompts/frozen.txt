@@ -1,0 +1,22 @@
+Especificação da arte de congelamento — 2026-10-03
+
+Origem: OpenAI imagegen, arte original do projeto. Esta especificação documenta
+o objetivo visual; não é uma transcrição literal do prompt enviado.
+
+Spritesheet horizontal de oito frames de uma aura de gelo cartunesca para batalha
+pixel art. Fundo e centro transparentes. Anel azul claro, cristais periféricos e
+brilhos pequenos, sem esconder o personagem no centro. Mesma escala, centro e
+linha de base em todos os frames, com pulsação suave. Sem Pokémon, texto,
+sombras de chão, painéis ou cenário.
+
+Original: PNG 2172 × 724, SHA-256
+b5b2639eba0cc0cccbf782d934f20efaa8c8fcee3895c2a3b3dcc743fc66e3a8.
+
+Empacotamento: scripts/package-frozen-vfx.cjs recebe o caminho do PNG original.
+Requer sharp disponível pelo ambiente ou SHARP_MODULE. Usa oito recortes iguais,
+limite vertical comum baseado no alpha e margem de 12 pixels; produz células
+256 × 256 e atlas WebP 2048 × 256, qualidade 85 e alpha 100. O manifesto registra
+dimensões, geometria, origem, tamanho e hashes. Arquivo final: 263230 bytes.
+
+Renderer: clip frozen, oito frames, uma linha. Movimento reduzido usa frame
+estático; a aura utiliza a âncora do corpo e os limites visíveis do sprite.

@@ -1,0 +1,24 @@
+.surface[data-move-type] { position: relative; isolation: isolate; border-left: 4px solid var(--move-type, var(--type-normal)); background: color-mix(in srgb, var(--move-type, var(--type-normal)) 11%, var(--hud-face)); color: var(--hud-ink); }
+.surface::after { content: ''; position: absolute; inset: 0; background: var(--move-ornament) center/100% 100% no-repeat; opacity: .32; pointer-events: none; z-index: -1; }
+.surface[data-move-type='fire'] { --move-ornament: url('/interface/type-fire.webp'); }
+.surface[data-move-type='water'] { --move-ornament: url('/interface/type-water.webp'); }
+.surface[data-move-type='ice'] { --move-ornament: url('/interface/type-ice.webp'); }
+.surface[data-move-type='grass'] { --move-ornament: url('/interface/type-grass.webp'); }
+.surface[data-move-type='electric'] { --move-ornament: url('/interface/type-electric.webp'); }
+.surface[data-move-type='dark'] { --move-ornament: url('/interface/type-dark.webp'); }
+.surface[data-move-type='ghost'] { --move-ornament: url('/interface/type-ghost.webp'); }
+.surface[data-move-type='steel'] { --move-ornament: url('/interface/type-steel.webp'); }
+.surface[data-move-type='dragon'] { --move-ornament: url('/interface/type-dragon.webp'); }
+.surface[data-move-type='fairy'] { --move-ornament: url('/interface/type-fairy.webp'); }
+.surface[data-move-type='bug'] { --move-ornament: url('/interface/type-bug.webp'); }
+.surface[data-move-type='fighting'] { --move-ornament: url('/interface/type-fighting.webp'); }
+.surface[data-move-type='normal'] { --move-ornament: url('/interface/type-normal.webp'); }
+.surface[data-move-type='rock'] { --move-ornament: url('/interface/type-rock.webp'); }
+.surface[data-move-type='psychic'] { --move-ornament: url('/interface/type-psychic.webp'); }
+.surface[data-move-type='ground'] { --move-ornament: url('/interface/type-ground.webp'); }
+.surface[data-move-type='poison'] { --move-ornament: url('/interface/type-poison.webp'); }
+.surface[data-move-type='flying'] { --move-ornament: url('/interface/type-flying.webp'); }
+.surface:is(:hover,:focus-within)::after { animation: shimmer 2.2s ease-in-out infinite; }
+@keyframes shimmer { 0%,100% { transform: translateY(1px); opacity: .36; } 50% { transform: translateY(-2px); opacity: .64; } }
+:global(html[data-motion-preference='reduced']) .surface::after { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .surface::after { animation: none !important; } }

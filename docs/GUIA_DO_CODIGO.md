@@ -1,6 +1,6 @@
 # Guia do código — fases 5–7 e Frontend Refresh
 
-O cliente solicita; o servidor decide. Este mapa descreve a implementação ativa em `pokemon-battle/3`, incluindo as fases 5–7 e a reformulação **Battle Link** de 2026-10-03. O histórico de evidências das fases anteriores permanece nos respectivos relatórios.
+O cliente solicita; o servidor decide. Este mapa descreve a implementação ativa em `pokemon-battle/4`, incluindo salas privadas, formatos, revanche e PvE. O histórico de evidências das fases anteriores permanece nos respectivos relatórios. [Novos modos e treinadores](MODOS_E_TREINADORES.md).
 
 ## Executar e acompanhar a entrega
 
@@ -15,6 +15,9 @@ Abra dois terminais: execute `npm run dev` dentro de `server/` e dentro de `clie
 | Contrato | server/src/contracts/protocol.ts, decode.ts | Tipos compartilhados e validação de mensagens do servidor |
 | Entrada | server/src/protocol.ts | Validação de mensagens do cliente |
 | Fila | server/src/game/manager.ts | Pareamento, índice e destruição de salas |
+| Formatos e treinadores | server/src/contracts/formats.ts, trainers.ts | Descritores públicos, tamanhos e tipos centrais |
+| Bot e equipes PvE | server/src/game/bot.ts, trainers.ts | Loadouts compatíveis e decisões legais com dados públicos |
+| Artes PvE | client/public/trainers, components/TrainerArt | Retratos, ilustrações, atlas locais e fallback |
 | Sala | server/src/game/room.ts, mutex.ts | Equipes, confirmação, preparação, snapshots por perspectiva |
 | Motor | server/src/game/engine | Regras, RNG, matemática, adapter, capacidades e eventos |
 | Catálogo | server/src/contracts/catalog.ts, server/src/data | Dados locais e sugestões de golpes compatíveis |

@@ -1,4 +1,7 @@
-import { useId, useRef } from 'react'
+import { trainerById } from '../../../../../../server/src/contracts/trainers'
+import { TrainerSprite } from '../../../../components/TrainerArt/TrainerArt'
+import { MenuScenery, MenuEmblem } from '../../../../components/MenuArt/MenuArt'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Button } from '../../../../components/Button'
 import { useModalDialog } from '../../../../hooks/useModalDialog'
 import styles from './EndOverlay.module.css'
@@ -11,14 +14,25 @@ export interface EndOverlayProps {
   totals: DamageTotals
   opponentLeft: boolean
   onLeave: () => void
+  onRematch: (keepTeam: boolean) => void
 }
 
 /** Cobertura de fim de partida: vitoria, derrota, empate ou saida do oponente. */
-export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOverlayProps) {
+export function EndOverlay({ state, myId, totals, opponentLeft, onLeave, onRematch }: EndOverlayProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
   const detailId = useId()
   useModalDialog(dialogRef, true)
+  const trainer = state.wire.trainerId ? trainerById(state.wire.trainerId) : undefined
+  const mine = state.wire.viewer === 'p1' ? 0 : 1
+  const rematch = state.wire.rematch
+  const [clock, setClock] = useState(Date.now)
+  useEffect(() => {
+    if (!rematch.available || !rematch.expiresAt) return
+    const timer = setInterval(() => setClock(Date.now()), 1000)
+    return () => clearInterval(timer)
+  }, [rematch.available, rematch.expiresAt])
+  const seconds = rematch.expiresAt ? Math.max(0, Math.ceil((rematch.expiresAt - clock) / 1000)) : 0
   const winner = state.winner
   const result =
     winner === myId
@@ -69,7 +83,9 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
       }}
     >
       <div className={styles.card}>
-        <span className={styles.ball} aria-hidden="true" />
+        <MenuScenery menu="result" panel />
+        <MenuEmblem menu="result" />
+        {trainer && <><TrainerSprite id={trainer.id} pose={result === 'victory' ? 'defeated' : result === 'defeat' ? 'celebrate' : 'idle'} /><p>{trainer.farewell}</p></>}
         <h2 id={titleId} className={styles.title}>
           {title}
         </h2>
@@ -86,6 +102,8 @@ export function EndOverlay({ state, myId, totals, opponentLeft, onLeave }: EndOv
             <dd>{totals.received}</dd>
           </div>
         </dl>
+        {!opponentLeft && rematch.available && seconds > 0 && !rematch.votes[mine] && <div className={styles.rematch}><p>Revanche disponível · {seconds} s. Como deseja jogar?</p><Button onClick={() => onRematch(true)}>Revanche com minha equipe</Button><Button variant="ghost" onClick={() => onRematch(false)}>Revanche montando outra equipe</Button></div>}
+        {rematch.available && rematch.votes[mine] && <p role="status">Revanche aceita. Aguardando o adversário…</p>}
         <Button size="lg" onClick={onLeave}>
           Voltar ao lobby
         </Button>

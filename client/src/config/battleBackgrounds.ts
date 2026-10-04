@@ -1,4 +1,19 @@
 import type { ArenaId } from '../../../server/src/contracts/protocol'
+import type { CSSProperties } from 'react'
+
+const menuPalettes: Record<ArenaId, readonly [string, string, string, string]> = {
+  forest: ['#0b2423', '#123631', '#77dec0', '#092721'],
+  stadium: ['#081e34', '#10314d', '#92ddff', '#08243a'],
+  cave: ['#171629', '#2c263f', '#d5baff', '#211c33'],
+  beach: ['#092532', '#103b4b', '#9ce9e2', '#082c36'],
+  space: ['#101a30', '#1d2b49', '#bfcfff', '#151f37'],
+  'night-city': ['#19192d', '#33263f', '#f4badd', '#231b32'],
+}
+export function arenaMenuStyle(id: string): CSSProperties {
+  const config = resolveBackground(id)
+  const [base, panel, accent, face] = menuPalettes[config.id]
+  return { '--bg-deep': base, '--bg-base': base, '--bg-panel': panel, '--mint': accent, '--focus-ring': accent, '--hud-face': face, '--menu-face': face, '--line': `color-mix(in srgb, ${accent} 35%, ${base})`, '--arena-backdrop': config.background ? `url("${config.background}")` : 'none' } as CSSProperties
+}
 
 /** Paths are authored locally. Socket values select an ID, never a URL. */
 export interface BattleBackgroundConfig {

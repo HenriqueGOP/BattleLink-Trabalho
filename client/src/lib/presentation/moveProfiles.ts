@@ -1,4 +1,5 @@
 import { moveById } from '../catalog'
+import { SCENE_LAYOUT } from './sceneLayout'
 
 /** Famílias artísticas; nenhuma regra de dano ou acerto pertence à apresentação. */
 export type MoveFamily =
@@ -84,6 +85,6 @@ export function actionVector(
   const y = target.top + target.height / 2 - actor.top - actor.height / 2
   const distance = Math.hypot(x, y)
   if (distance < 1) return { x: 0, y: 0 }
-  const travel = Math.min(distance * 0.62, 230)
-  return { x: (x / distance) * travel, y: (y / distance) * travel }
+  const travel = Math.min(distance * 0.45, SCENE_LAYOUT.maxTravel)
+  return { x: (x / distance) * travel, y: Math.max(-SCENE_LAYOUT.maxVerticalTravel, Math.min(SCENE_LAYOUT.maxVerticalTravel, (y / distance) * travel)) }
 }

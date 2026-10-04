@@ -2,11 +2,11 @@
 
 Projeto academico de Sistemas Operacionais sobre comunicacao entre processos, sockets TCP, concorrencia e sincronizacao de estado.
 
-Jogo de batalha Pokémon singles: dois jogadores, seis Pokémon por equipe e escolhas simultâneas privadas. As regras Gen 9 são executadas por `@pkmn/sim@0.10.11` exclusivamente no servidor. O catálogo, sprites, fontes e cries são locais; partidas não consultam PokéAPI ou CDNs. Nível 50, IVs 31, EVs 0 e natureza neutra; somente Adaptability tem efeito quando a espécie permite. Sem itens, Terastalização, clima/terreno de combate, hazards ou formas alternativas.
+Jogo de batalha Pokémon singles: PvP por fila ou convite e desafios PvE contra 11 treinadores originais. Formatos Clássico (seis), Duelo rápido (três) e Monotipo (seis), com escolhas simultâneas privadas e revanche. As regras Gen 9 são executadas por `@pkmn/sim@0.10.11` exclusivamente no servidor. O catálogo, sprites, fontes e cries são locais; partidas não consultam PokéAPI ou CDNs. Nível 50, IVs 31, EVs 0 e natureza neutra; somente Adaptability tem efeito quando a espécie permite. Sem itens, Terastalização, clima/terreno de combate, hazards ou formas alternativas.
 
-**Reformulação implementada até a fase 7:** motor, protocolo `pokemon-battle/3`, terminal, React, apresentação sincronizada, menus acessíveis, seis arenas originais e 24 efeitos de combate em spritesheets locais. A medição de 60 FPS em celular real continua pendente. Consulte os relatórios de [menus](docs/FASE_5_MENUS.md), [arenas](docs/FASE_6_ARENAS.md), [animações](docs/FASE_7_ANIMACOES.md), [validação conjunta](docs/FASES_5_6_7_VALIDACAO.md) e o [ADR](docs/adr/battle-overhaul.md).
+**Protocolo atual: `pokemon-battle/4`.** [Modos, treinadores e validação](docs/MODOS_E_TREINADORES.md). Servidor e clientes devem ser atualizados juntos. Salas ficam em memória; reiniciar o servidor encerra as sessões. A medição de 60 FPS em celular real continua pendente. O histórico da reformulação permanece nos relatórios de [menus](docs/FASE_5_MENUS.md), [arenas](docs/FASE_6_ARENAS.md), [animações](docs/FASE_7_ANIMACOES.md), [validação conjunta](docs/FASES_5_6_7_VALIDACAO.md) e no [ADR](docs/adr/battle-overhaul.md).
 
-**Atualização visual de 03/10/2026:** pesquisa de jogos oficiais e fangames, interface Battle Link, seis arenas ilustradas e 3.368 GIFs locais para 868 espécies. A camada que encobria as arenas e as falhas de recuperação/preferência de animação foram corrigidas. [Relatório, referências e capturas](docs/FRONTEND_REFRESH.md).
+**Atualização visual de 03/10/2026:** 12 menus com duas imagens exclusivas cada, marca Battle Link, ornamentos dos 18 tipos, 11 splashes e 11 atlas com seis estados de treinador. A entrada PvE termina antes de os Pokémon aparecerem. Seleção e golpes compartilham remoção/reordenação; as seis arenas, 3.368 GIFs locais e regras do servidor são preservados. [Inventário, direção dos personagens e capturas](docs/FRONTEND_VISUAL.md).
 
 ## Requisitos
 
@@ -52,7 +52,7 @@ Nos dois clientes, monte a equipe e lute. O cliente mostra equipes, HP, solicita
 
 | Comando | Efeito |
 | --- | --- |
-| `choose <id>` | adiciona um Pokemon a equipe (sao necessarios 6) |
+| `choose <id>` | adiciona um Pokémon à equipe (três ou seis conforme o formato) |
 | `moves <pokemon> <g1,g2,g3,g4>` | define ate 4 golpes equipados |
 | `ready` | confirma a equipe e trava os golpes; o combate começa após os dois confirmarem |
 | `attack <id>` | envia a escolha privada de um golpe disponível |
@@ -61,6 +61,11 @@ Nos dois clientes, monte a equipe e lute. O cliente mostra equipes, HP, solicita
 | `retry` | reenvia a ação pendente com o mesmo identificador |
 | `reset` | refaz a equipe (so antes da batalha comecar) |
 | `state` | reimprime o estado atual |
+| `cancel` / `lobby` | cancela a fila / sai da sala sem fechar a conexão |
+| `queue quick` / `queue monotype water` | entra na fila do formato escolhido |
+| `create quick` / `invite <código>` | cria sala privada / entra no convite |
+| `pve vespera hard quick` | desafia um treinador; formatos classic, quick ou monotype |
+| `again keep` / `again edit` | aceita revanche mantendo ou remontando a equipe |
 | `help` / `quit` | ajuda / sair |
 
 Use IDs canônicos: `charizard`, `icebeam`, `willowisp`. Os golpes escolhidos precisam pertencer ao learnset da espécie e estar disponíveis no formato. O servidor imprime conexões, locks e desconexões.
@@ -133,7 +138,7 @@ npm run preview
 
 Copie os exemplos antes de rodar: `Copy-Item server/.env.example server/.env` e `Copy-Item client/.env.example client/.env`.
 
-O servidor carrega `server/.env` automaticamente, preservando variáveis já exportadas pelo shell. Clientes e servidor devem usar o protocolo `pokemon-battle/3`. No terminal, confirme a equipe com `ready`.
+O servidor carrega `server/.env` automaticamente, preservando variáveis já exportadas pelo shell. Clientes e servidor devem usar o protocolo `pokemon-battle/4`. No terminal, confirme a equipe com `ready`.
 
 Para acesso pela rede, configure uma chave de 32 a 256 caracteres e uma lista explícita de origens. Origens externas usam HTTPS e a ponte deve ser publicada por um proxy TLS (`wss://`). O TCP permanece local. A chave não é gravada no navegador nem enviada em URLs, snapshots ou logs.
 
@@ -152,6 +157,9 @@ Os limites por IP devem ser ajustados quando vários jogadores acessarem pelo me
 - `client/public/arenas`: seis fundos originais WebP de 166–345 KB, com SVGs locais de fallback;
 - `data/moves.json` e o importador antigo permanecem apenas para regressões históricas; não atendem partidas;
 - `docs`: protocolo, arquitetura e [guia explicado do codigo](docs/GUIA_DO_CODIGO.md).
+
+As correções de seleção, golpes, sprites e arenas, com screenshots e resultados
+das verificações, estão em [Seleção e apresentação](docs/SELECTION_BATTLE_FIXES.md).
 
 ## Troubleshooting
 

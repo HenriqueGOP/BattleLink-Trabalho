@@ -46,6 +46,9 @@
 }
 
 .panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   position: fixed;
   right: var(--space-4);
   bottom: calc(var(--space-4) + 44px + var(--space-3));

@@ -141,6 +141,53 @@ function orderAndProtectTests(): void {
   assert.equal(damages(round(capped, "protect", "tackle")).length, 0, "Penalidade consecutiva limitada a 729"); capped.destroy();
 }
 
+function speedModifiersAndTrickRoomTests(): void {
+  const rng = new FixedRng();
+  const fast = { evs: { spe: 252 } };
+  const stages = battle(set(['agility','splash']),set(['scaryface','splash'],fast),{rng});
+  assert.equal(uses(round(stages,'agility','splash'))[0].actor,'p2s0');
+  assert.equal(stages.getView('p1').ownTeam[0].boosts.spe,2);
+  assert.equal(uses(round(stages,'splash','scaryface'))[0].actor,'p1s0');
+  assert.equal(stages.getView('p1').ownTeam[0].boosts.spe,0);
+  assert.equal(uses(round(stages,'splash','splash'))[0].actor,'p2s0'); stages.destroy();
+  const wind=battle(set(['tailwind','splash']),set(['splash'],fast),{rng});
+  round(wind,'tailwind','splash');
+  assert.ok(wind.getView('p1').sideConditions.p1.includes('tailwind'));
+  for (let i=0;i<3;i++) assert.equal(uses(round(wind,'splash','splash'))[0].actor,'p1s0');
+  assert.ok(!wind.getView('p1').sideConditions.p1.includes('tailwind'));
+  assert.equal(uses(round(wind,'splash','splash'))[0].actor,'p2s0'); wind.destroy();
+  const room=battle(set(['trickroom','splash']),set(['quickattack','splash'],fast),{rng});
+  assert.equal(getMove('trickroom')?.support.supported,true);
+  assert.equal(uses(round(room,'trickroom','splash'))[0].actor,'p2s0','Trick Room move priority is -7');
+  assert.ok(room.getView('p1').fieldConditions.includes('trickroom'));
+  assert.equal(uses(round(room,'splash','splash'))[0].actor,'p1s0','Lower effective speed wins within priority');
+  assert.equal(uses(round(room,'splash','quickattack'))[0].actor,'p2s0','Trick Room does not invert priority');
+  round(room,'trickroom','splash');
+  assert.ok(!room.getView('p1').fieldConditions.includes('trickroom'),'Second use ends the field effect');
+  assert.equal(uses(round(room,'splash','splash'))[0].actor,'p2s0');
+  round(room,'trickroom','splash');
+  assert.ok(room.getView('p1').fieldConditions.includes('trickroom'),'Reapplication after cancellation starts a new duration');
+  assert.equal(uses(round(room,'splash','splash'))[0].actor,'p1s0'); room.destroy();
+  const expiry=battle(set(['trickroom','splash']),set(['splash'],fast),{rng});
+  round(expiry,'trickroom','splash');
+  for (let i=0;i<4;i++) assert.equal(uses(round(expiry,'splash','splash'))[0].actor,'p1s0');
+  assert.ok(!expiry.getView('p1').fieldConditions.includes('trickroom'));
+  assert.equal(uses(round(expiry,'splash','splash'))[0].actor,'p2s0'); expiry.destroy();
+  const slower=battle(set(['scaryface','splash'],fast),set(['splash']),{rng});
+  const changed=round(slower,'scaryface','splash');
+  assert.ok(changed.findIndex(event=>event.type==='boost'&&event.stat==='spe')<changed.findIndex(event=>event.type==='move'&&event.actor==='p2s0'),'Speed boost event precedes the remaining action');
+  slower.destroy();
+  const tiedWinners = new Set<string>();
+  for (let seedPart = 0; seedPart < 32; seedPart++) {
+    const tieRng = createRng([seedPart,2,3,4]);
+    const tie = battle(set(['splash']),set(['splash']),{rng:tieRng});
+    tiedWinners.add(uses(round(tie,'splash','splash'))[0].actor);
+    tie.destroy();
+  }
+  assert.equal(tiedWinners.size,2,'Equal-speed order is decided by injected RNG, not a fixed side');
+  console.log('Turn order passed: speed stages, Tailwind expiry, Trick Room priority/activation/restart/expiry, and mid-round speed events.');
+}
+
 function statusTests(): void {
   const rng = new FixedRng(); rng.word = 0;
   for (const [moveId, status] of [["willowisp", "brn"], ["toxic", "tox"], ["poisonpowder", "psn"], ["thunderwave", "par"]] as const) {
@@ -471,7 +518,7 @@ function moveSmokeTests(): number {
 }
 
 export function runBattleTests(): void {
-  catalogTests(); requestsAndReplayTests(); orderAndProtectTests(); statusTests();
+  catalogTests(); requestsAndReplayTests(); orderAndProtectTests(); speedModifiersAndTrickRoomTests(); statusTests();
   specialMovesTests(); switchAndBlockingTests(); extendedMechanicsTests();
   const called = calledMovesAndCompleteReplayTests();
   const smoke = moveSmokeTests();

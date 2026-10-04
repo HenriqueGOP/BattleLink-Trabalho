@@ -1,0 +1,26 @@
+.editor { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--bg-panel); min-width: 0; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.header strong { color: var(--mint); }
+.header span { color: var(--text-dim); font-size: 13px; }
+.slots { display: grid; grid-template-columns: repeat(var(--team-slots, 6), minmax(0, 1fr)); gap: 10px; list-style: none; padding: 0; margin: 0; }
+.slot { min-width: 0; min-height: 162px; border: 1px dashed var(--line-strong); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px; color: var(--text-dim); }
+.slot[data-filled] { border-style: solid; color: var(--hud-ink); background: var(--hud-face); }
+.position { display: flex; width: 100%; justify-content: space-between; align-items: center; font: 600 12px var(--font-display); }
+.position b { font: 700 10px var(--font-body); color: var(--success-ink); }
+.name { font-size: 13px; overflow-wrap: anywhere; text-align: center; }
+.controls { display: flex; gap: 4px; width: 100%; margin-top: auto; }
+.controls button, .remove { min-height: 44px; min-width: 44px; padding: 6px; border: 1px solid var(--hud-edge-soft); border-radius: 8px; background: var(--hud-face-2); color: var(--hud-ink); font-size: 11px; font-weight: 700; flex: 1; }
+.controls button:disabled { opacity: .5; }
+.controls button:hover:not(:disabled) { background: var(--portrait-face); border-color: var(--hud-edge); }
+.controls button { font-size: 18px; padding: 4px; border-radius: 4px; }
+.controls .remove { flex: 1; color: var(--danger-ink); background: var(--menu-face); }
+.remove:hover:not(:disabled) { border-color: var(--danger-ink); }
+.slot button:focus-visible { outline: 3px solid var(--focus-on-light); outline-offset: 2px; }
+.empty { margin: auto; font-size: 13px; }
+@media (max-width: 1100px) { .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 460px) {
+  .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .editor { padding: 12px; }
+  .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .controls .remove { grid-column: 1 / -1; }
+}

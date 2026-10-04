@@ -1,7 +1,12 @@
+import { validateFormat } from "./formats";
+import { DIFFICULTIES, trainerById } from "./trainers";
 import { ARENA_IDS } from "./protocol";
 import type { ServerMessage } from "./protocol";
 import { speciesById, moveById } from "./catalog";
 
+const validFormat = (value: unknown) => { try { validateFormat(value); return true; } catch { return false; } };
+const matchId = (value: unknown) => typeof value === "string" && /^match-[A-Za-z0-9-]{1,58}$/.test(value);
+const lobby = (value: unknown): boolean => value === null || (object(value) && text(value.roomId) && typeof value.code === "string" && /^[A-HJ-NP-Z2-9]{8}$/.test(value.code) && text(value.hostId) && validFormat(value.format) && list(value.players, 2, player => object(player) && text(player.id) && text(player.name, 24)) && value.players.length > 0);
 type RecordValue = Record<string, unknown>;
 const object = (value: unknown): value is RecordValue =>
   !!value && typeof value === "object" && !Array.isArray(value);
@@ -185,6 +190,12 @@ function event(value: unknown): boolean {
   }
 }
 function snapshot(value: unknown): boolean {
+  if (!object(value) || !matchId(value.matchId) || !validFormat(value.format) || !["automatic", "private", "pve"].includes(String(value.mode)) ||
+      !(value.inviteCode === null || typeof value.inviteCode === "string" && /^[A-HJ-NP-Z2-9]{8}$/.test(value.inviteCode)) ||
+      !(value.trainerId === null || typeof value.trainerId === "string" && !!trainerById(value.trainerId)) ||
+      !(value.difficulty === null || DIFFICULTIES.includes(value.difficulty as never)) ||
+      !object(value.rematch) || !(value.rematch.expiresAt === null || number(value.rematch.expiresAt)) ||
+      !Array.isArray(value.rematch.votes) || value.rematch.votes.length !== 2 || !value.rematch.votes.every(vote => typeof vote === "boolean") || typeof value.rematch.available !== "boolean") return false;
   if (
     !object(value) ||
     !text(value.roomId) ||
@@ -289,6 +300,9 @@ export function decodeServerMessage(value: unknown): ServerMessage {
   let valid = false;
   if (object(value))
     switch (value.type) {
+      case "lobby":
+        valid = lobby(value.lobby) && text(value.message, 512);
+        break;
       case "welcome":
         valid =
           text(value.playerId) &&
@@ -303,10 +317,12 @@ export function decodeServerMessage(value: unknown): ServerMessage {
         valid =
           text(value.code, 64) &&
           text(value.message, 512) &&
-          (value.actionId === undefined || text(value.actionId, 64));
+          (value.actionId === undefined || text(value.actionId, 64)) &&
+          (value.editId === undefined || (typeof value.editId === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(value.editId)));
         break;
       case "action_ack":
         valid =
+          matchId(value.matchId) &&
           number(value.requestId) &&
           text(value.actionId, 64) &&
           typeof value.resolved === "boolean" &&
@@ -320,9 +336,10 @@ export function decodeServerMessage(value: unknown): ServerMessage {
           value.roomId === value.state.roomId;
         break;
       case "state":
-        valid = snapshot(value.state);
+        valid = snapshot(value.state) && (value.editId === undefined || (typeof value.editId === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(value.editId)));
         break;
     }
+  if (object(value) && value.commandId !== undefined && !(typeof value.commandId === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(value.commandId))) valid = false;
   if (!valid) throw new Error("Mensagem do servidor inválida ou incompatível.");
   return value as ServerMessage;
 }

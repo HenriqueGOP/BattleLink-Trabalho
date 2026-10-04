@@ -213,3 +213,12 @@ inventário local e React Profiler. FPS em aparelho real permanece **[VERIFICAR]
 O modo de uso informado pelo usuário está no [guia de abertura](../COMO_JOGAR.md):
 `npm run dev` dentro de server e client em terminais separados, `localhost:5173` em
 janela normal e em janela anônima.
+
+## Correções de seleção e apresentação — 2026-10-03
+
+O protocolo v3 recebeu remoção e permutação da equipe por espécie, com confirmação
+correlacionada e edição visual otimista serializada. O simulador permanece a
+autoridade da ordem de ações. Limites visíveis dos recursos locais normalizam PNGs
+e GIFs; corpo, cabeça e pés compartilham âncoras entre atores e efeitos. Congelamento
+usa atlas transparente dedicado. Implementação, testes, imagens e limites da
+validação estão em [SELECTION_BATTLE_FIXES](../SELECTION_BATTLE_FIXES.md).

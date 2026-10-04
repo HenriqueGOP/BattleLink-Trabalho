@@ -67,7 +67,7 @@ async function assetTests() {
     assert.equal(entry.path, VFX_ATLASES[entry.id]);
     assert.match(
       entry.path,
-      /^\/battle-vfx\/(attacks|statuses|transitions)\.webp$/,
+      /^\/battle-vfx\/(attacks|statuses|transitions|frozen)\.webp$/,
     );
     const buffer = await readFile(resolve(root, `.${entry.path}`));
     const actual = webpSize(buffer);
@@ -75,7 +75,7 @@ async function assetTests() {
     assert.equal(actual.height, entry.height);
     assert.equal(actual.alpha, true, "Spritesheet possui canal alfa real");
     assert.equal(entry.columns, 8);
-    assert.equal(entry.rows, 8);
+    assert.equal(entry.rows, entry.id === 'frozen' ? 1 : 8);
     assert.equal(entry.framesPerClip, 8);
     assert.equal(buffer.length, entry.bytes);
     assert.equal(
@@ -86,14 +86,14 @@ async function assetTests() {
     totalBytes += buffer.length;
   }
   assert.ok(totalBytes <= 4 * 1024 * 1024, "Conjunto VFX deve caber em 4 MiB");
-  assert.equal(Object.keys(SPRITE_CLIPS).length, 24);
+  assert.equal(Object.keys(SPRITE_CLIPS).length, 25);
   for (const atlas of Object.keys(VFX_ATLASES)) {
     const clips = Object.values(SPRITE_CLIPS).filter(
       (value) => value.atlas === atlas,
     );
     assert.deepEqual(
       clips.map((value) => value.row).sort(),
-      [0, 1, 2, 3, 4, 5, 6, 7],
+      atlas === 'frozen' ? [0] : [0, 1, 2, 3, 4, 5, 6, 7],
     );
     for (const clip of clips as SpriteClip[]) {
       assert.equal(clip.frames, 8);
@@ -104,10 +104,10 @@ async function assetTests() {
         assert.equal(rect.width, 156.75);
         assert.equal(
           rect.height,
-          156.75 * (1 - (clip.cropTop ?? 0) - (clip.cropBottom ?? 0)),
+          (1254 / (clip.rows ?? 8)) * (1 - (clip.cropTop ?? 0) - (clip.cropBottom ?? 0)),
         );
         assert.equal(rect.x, index * 156.75);
-        assert.equal(rect.y, (clip.row + (clip.cropTop ?? 0)) * 156.75);
+        assert.equal(rect.y, (clip.row + (clip.cropTop ?? 0)) * (1254 / (clip.rows ?? 8)));
         assert.ok((clip.cropTop ?? 0) >= 0 && (clip.cropBottom ?? 0) >= 0);
         assert.ok(
           (clip.cropTop ?? 0) + (clip.cropBottom ?? 0) <= 0.25,
@@ -147,7 +147,7 @@ async function assetTests() {
   assert.equal(statusClip("bad_poison"), "poison");
   assert.equal(statusClip("paralysis"), "electric");
   assert.equal(statusClip("sleep"), "sleep");
-  assert.equal(statusClip("freeze"), "ice");
+  assert.equal(statusClip("freeze"), "frozen");
   assert.equal(statusClip(null), null);
   assert.equal(statusClip(undefined), null);
   return totalBytes;
@@ -187,6 +187,7 @@ class ControlledParent {
   clientLeft = 0;
   clientTop = 0;
   closest(selector: string) {
+    if (selector === '[data-scene-side]') return null;
     assert.equal(selector, "[data-fx-stage]");
     return this.stage;
   }
@@ -437,7 +438,7 @@ async function rendererTests() {
 
     const allParent = new ControlledParent(),
       allController = new AbortController();
-    const all = (Object.keys(SPRITE_CLIPS) as SpriteClipId[]).map((id) =>
+    const all = (Object.keys(SPRITE_CLIPS) as SpriteClipId[]).filter(id => id !== 'frozen').map((id) =>
       playSprite(asElement(allParent), id, {
         signal: allController.signal,
         loop: true,
@@ -470,6 +471,21 @@ async function rendererTests() {
     allController.abort();
     await Promise.all(all);
     assert.equal(allParent.children.size, 0);
+    assertIdle();
+
+    const iceParent = new ControlledParent(), iceController = new AbortController();
+    const icePlay = playSprite(asElement(iceParent), 'frozen', {signal: iceController.signal, loop: true});
+    const iceImage = ControlledImage.created.find(image => image.src === VFX_ATLASES.frozen)!;
+    iceImage.naturalWidth = 2048;
+    iceImage.naturalHeight = 256;
+    iceImage.load();
+    await flush();
+    assert.equal(iceParent.children.size, 1, 'Dedicated ice aura renders separately within the 24-instance budget');
+    tick(5100);
+    assert.equal([...iceParent.children][0].draws.length, 1);
+    assert.equal(spriteStats().cached, 4);
+    iceController.abort();
+    await icePlay;
     assertIdle();
 
     const staticParent = new ControlledParent(),
@@ -681,8 +697,8 @@ async function rendererTests() {
     assertIdle();
     assert.equal(
       ControlledImage.created.length,
-      3,
-      "Cache só admite os três caminhos locais fixos",
+      4,
+      "Cache só admite os quatro caminhos locais fixos",
     );
     assert.equal(
       timeouts.size,
@@ -880,7 +896,7 @@ async function run() {
   );
   assert.match(child.stdout, /cold-load failures: .* passed/);
   console.log(
-    `Sprite animation: 24 clips, three transparent WebP hashes (${bytes} bytes), real 8×8 geometry, shared clock/cache, limits, cancellation, loops, reduced motion, travel, pause clock, cold-load deadline and fallback passed.`,
+    `Sprite animation: 25 clips, four transparent WebP hashes (${bytes} bytes), real 8×8 geometry, shared clock/cache, limits, cancellation, loops, reduced motion, travel, pause clock, cold-load deadline and fallback passed.`,
   );
 }
 void run().catch((error) => {

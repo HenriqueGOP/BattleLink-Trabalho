@@ -1,0 +1,192 @@
+[
+  {
+    "name": "home-background",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide landscape anime painted forest clearing, sunbeams through green leaves, inviting footpath, soft distant arena architecture. Rich navy shadows and warm emerald foliage. Broad quiet center for three game mode cards. No creatures, no text. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "home-modes",
+    "prompt": "Original transparent pixel art icon atlas for a fantasy battle game. Three equal square cells horizontally: red and white spherical capsule with speed streaks; two blue and red silhouettes joined by a silver link; golden cup with round crest. Clean polished game illustration. No text, no logo, no watermark. Actual transparent background.",
+    "transparent_background": true
+  },
+  {
+    "name": "quick-splash",
+    "prompt": "Original wide anime game illustration for online matchmaking. A luminous futuristic duel arena at twilight, two empty launch podiums linked by swirling electric blue aura ribbons and crimson diagonal light, dynamic forward camera, cinematic contrast and polished painted detail. Strong artwork on right two thirds; left third quiet dark navy for live HTML copy. No text, no people, no interface, no watermark.",
+    "transparent_background": false
+  },
+  {
+    "name": "quick-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Original transparent pixel-art queue matchmaking emblem: cyan illuminated capture-ball scanner on angular navy silver console, two small matching linked lights. Compact square icon for trainer card header. No words or letters. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "friends-splash",
+    "prompt": "Original wide anime painting for a friends battle game menu: two paths meet on a mossy bridge beneath a vast sunlit forest, a pair of glowing blue and red lanterns hangs together, flowers and light ribbons imply friendship and friendly rivalry. Right-weighted detailed composition with quiet dark left third. No people no animals no text no interface.",
+    "transparent_background": false
+  },
+  {
+    "name": "friends-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent pixel-art private battle invitation emblem: two red-white capture balls linked by a cyan chain inside chamfered silver navy badge, bright readable shape, original design, no text. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "waiting-splash",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide cinematic anime scene of two empty trainer podiums on opposite sides of a small private forest arena, one soft cyan connection beam spanning them, peaceful preparation mood. No people no Pokemon no words. Leave quiet central space. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "waiting-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent pixel-art invitation code seal, small navy silver holographic ticket with eight empty glowing cyan squares, a red-white capture ball on top, no letters no numbers. Original compact game asset. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "pve-background",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide dark anime enchanted ruins in a forest, violet moonlight and cyan moss, faint carved circles on stone columns, adventurous welcoming mysterious mood. No people no creatures no text, dark quiet left half, fine detail along bottom and right. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "pve-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent pixel-art PvE challenger emblem: warm golden capture-ball medallion with laurel and small silver star, framed by dark navy chamfered metal. Compact original game icon without text. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "selection-background",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide navy blue illustrated futuristic Pokemon research terminal backdrop, angled layered metallic panels, subtle cyan illuminated circuits, translucent etched capture ball silhouette on far right only, no screen no text no UI values. Dark quiet center for dense live catalog. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "selection-emblem",
+    "prompt": "Transparent pixel art illustration of a compact red and dark blue field research scanner, open hinged device with bright blue empty holographic screen, silver trims, original friendly fantasy game accessory. No lettering or trademarks.",
+    "transparent_background": true
+  },
+  {
+    "name": "setup-background",
+    "prompt": "Wide original anime illustration of a dark blue tactical preparation room, finely painted metallic console rails, cyan illuminated corners, empty navy central space for live game interface. Sophisticated layered perspective, subtle red accents, no writing, no characters.",
+    "transparent_background": false
+  },
+  {
+    "name": "setup-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent original pixel-art four-slot move strategy emblem: four pale glowing cyan gems orbiting a red-white capture ball on a navy silver angular badge. Clean detail at 64px, no text. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "combat-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent original pixel-art attack command badge: burst of crimson impact sparks behind red-white capture ball, chamfered silver frame dark navy inset. Compact square no lettering. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "combat-panel",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide dark navy blank command panel texture, finely illustrated angular metallic silver and cyan edge rails and restrained pixel corner pattern, completely quiet empty center. Decorative raster UI asset no text no buttons no numbers. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "party-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent original pixel-art battle party swap emblem: two small red-white capture balls with teal curved arrows between, silver navy angular console badge. Compact square no lettering. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "party-panel",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide dark teal and navy illustrated team substitution panel, subtle six recessed empty ball sockets around outer edge only, cyan silver beveled metalwork, fully quiet dark center for live party roster. No text no numbers. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "result-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent original pixel-art battle result medallion: red-white capture ball in silver ring with two cyan ribbon tails and small balanced star accent, neutral commemorative design appropriate after win or loss. No trophy no letters. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "result-panel",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide original illustrated dark navy post-battle record panel: angular silver and cyan frame edges, very subtle diagonal blue light streaks in margins, quiet empty dark center for HTML results. No words no characters. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "name": "audio-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Transparent original pixel-art sound control emblem: dark navy headphones with silver bands, cyan ear lights and small red-white capture ball center. Compact clear square game asset, no text. Polished consistent anime environment / crisp pixel UI game direction, no watermark. True transparent background outside illustration.",
+    "transparent_background": true
+  },
+  {
+    "name": "audio-panel",
+    "prompt": "Use case: stylized-concept. Asset type: original raster asset for Battle Link game frontend. Wide dark navy audio control artwork: small restrained cyan and pale blue waveform arc fading across top edge, angular metallic blue console details along sides, empty center. No text no controls no numbers. Polished consistent anime environment / crisp pixel UI game direction, no watermark. Landscape 16:9 composition.",
+    "transparent_background": false
+  },
+  {
+    "id": "ready-panel",
+    "prompt": "Use case: stylized-concept. Asset type: original wide illustration behind the team confirmation waiting screen of Battle Link. An empty futuristic training hangar with six illuminated capsule docking stations, blue cyan circuit lines and a warm red departure gate at the far side. Anime game scenery, detailed pixel art, wide composition with dark calm center for live text, atmospheric lighting, no text, no logos, no humans, no Pokémon, no interface."
+  },
+  {
+    "id": "ready-emblem",
+    "prompt": "Use case: stylized-concept. Asset type: original pixel art emblem for Battle Link team confirmation waiting screen. Two red-white capture capsules orbit a small luminous cyan hourglass and silver launch ring, polished sharp pixel art, square isolated centered emblem, true transparent alpha background, no text, no labels, no interface, no shadow."
+  },
+  {
+    "id": "type-fire",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Fire move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of warm red and orange, small glowing embers and curling flames around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Fire without covering the center."
+  },
+  {
+    "id": "type-water",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Water move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of blue turquoise, curling translucent water ribbons and droplets around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Water without covering the center."
+  },
+  {
+    "id": "type-ice",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Ice move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of pale blue, faceted frost crystals and drifting icy specks around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Ice without covering the center."
+  },
+  {
+    "id": "type-grass",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Grass move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of leaf green and mint, curved leaves and vines around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Grass without covering the center."
+  },
+  {
+    "id": "type-electric",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Electric move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of yellow gold with blue accents, branching lightning arcs around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Electric without covering the center."
+  },
+  {
+    "id": "type-dark",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Dark move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of indigo charcoal purple, curved shadow wisps around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Dark without covering the center."
+  },
+  {
+    "id": "type-ghost",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Ghost move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of violet lavender, ghostly flame wisps around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Ghost without covering the center."
+  },
+  {
+    "id": "type-steel",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Steel move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of silver bluegray, riveted metallic shards around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Steel without covering the center."
+  },
+  {
+    "id": "type-dragon",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Dragon move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of crimson copper, dragon scales and curved flame fins around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Dragon without covering the center."
+  },
+  {
+    "id": "type-fairy",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Fairy move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of pink ivory gold, small glowing butterflies and star petals around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Fairy without covering the center."
+  },
+  {
+    "id": "type-bug",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Bug move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of lime jade, wing motifs and small leaf fragments around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Bug without covering the center."
+  },
+  {
+    "id": "type-fighting",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Fighting move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of red rust and gold, impact streaks and small rocky fragments around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Fighting without covering the center."
+  },
+  {
+    "id": "type-normal",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Normal move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of ivory slate, subtle gleaming stars and orbital rings around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Normal without covering the center."
+  },
+  {
+    "id": "type-rock",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Rock move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of ochre brown, angular stones and dust arcs around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Rock without covering the center."
+  },
+  {
+    "id": "type-psychic",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Psychic move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of magenta rose, ethereal eye motifs and concentric light curves around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Psychic without covering the center."
+  },
+  {
+    "id": "type-ground",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Ground move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of terracotta gold, flowing sand and small stones around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Ground without covering the center."
+  },
+  {
+    "id": "type-poison",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Poison move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of purple and bright chartreuse, glossy bubbles and fluid tendrils around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Poison without covering the center."
+  },
+  {
+    "id": "type-flying",
+    "prompt": "Use case: stylized-concept. Asset type: original raster decorative ornament for the Flying move buttons in a monster battle game. Wide 2:1 canvas, true transparent alpha background. Paint only an elegant thin border of white skyblue, sweeping feathers and airflow ribbons around the perimeter. Keep the central 75% entirely EMPTY and transparent for live HTML text, with sparse small details in corners. Bright refined anime pixel art, crisp contours and soft luminous cel-shaded color. No button face, no text, no numbers, no labels, no UI, no characters, no opaque background, no shadow. Artwork should clearly express Flying without covering the center."
+  }
+]

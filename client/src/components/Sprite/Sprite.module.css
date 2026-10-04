@@ -1,26 +1,3 @@
-.sprite {
-  flex: none;
-  object-fit: contain;
-  image-rendering: pixelated;
-}
-
-/* pokébola desenhada em CSS, no lugar do sprite que não carregou */
-.fallback {
-  display: block;
-  border-radius: 50%;
-  border: 2px solid var(--poke-black);
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      var(--poke-white) 0 15%,
-      var(--poke-black) 15% 22%,
-      transparent 22%
-    ),
-    linear-gradient(
-      180deg,
-      var(--poke-red) 0 46%,
-      var(--poke-black) 46% 54%,
-      var(--poke-white) 54% 100%
-    );
-  opacity: 0.75;
-}
+.sprite { flex: none; display: inline-block; position: relative; overflow: hidden; image-rendering: pixelated; }
+.image { position: absolute; object-fit: fill; max-width: none; }
+.fallback { background: url('/interface/quick-emblem.webp') center/contain no-repeat; opacity: .75; }

@@ -40,5 +40,19 @@
     "originalSha256": "a5e1f8a0f76ccc95628d42ca488a30aea9dcf28cc5798069713f4e0b2c044bd3",
     "source": "OpenAI imagegen built-in; original project artwork; 2026-10-02",
     "encoding": "WebP quality82 alpha100; no art retouch, resize or frame rearrangement"
+  },
+  {
+    "id": "frozen",
+    "path": "/battle-vfx/frozen.webp",
+    "width": 2048,
+    "height": 256,
+    "columns": 8,
+    "rows": 1,
+    "framesPerClip": 8,
+    "bytes": 263230,
+    "sha256": "b16771007ea329c172f9c02709cc469d558be28ce9c07e49bed1437837e53e4e",
+    "originalSha256": "b5b2639eba0cc0cccbf782d934f20efaa8c8fcee3895c2a3b3dcc743fc66e3a8",
+    "source": "OpenAI imagegen built-in; original project artwork; 2026-10-03",
+    "encoding": "Eight equal frames; shared alpha crop; 256px cells; WebP85 alpha100"
   }
 ]

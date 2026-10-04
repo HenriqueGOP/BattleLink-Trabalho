@@ -7,6 +7,7 @@ export const VFX_ATLASES = {
   attacks: '/battle-vfx/attacks.webp',
   statuses: '/battle-vfx/statuses.webp',
   transitions: '/battle-vfx/transitions.webp',
+  frozen: '/battle-vfx/frozen.webp',
 } as const
 
 export interface SpriteClip {
@@ -17,6 +18,8 @@ export interface SpriteClip {
   readonly size: number
   readonly cropTop?: number
   readonly cropBottom?: number
+  readonly columns?: number
+  readonly rows?: number
 }
 const clip = (atlas: SpriteClip['atlas'], row: number, size = 150, fps = 18): SpriteClip => ({
   atlas,
@@ -26,6 +29,7 @@ const clip = (atlas: SpriteClip['atlas'], row: number, size = 150, fps = 18): Sp
   frames: 8,
 })
 export const SPRITE_CLIPS = {
+  frozen: { ...clip('frozen', 0, 220, 8), columns: 8, rows: 1 },
   impact: clip('attacks', 0),
   slash: clip('attacks', 1),
   fire: clip('attacks', 2),
@@ -102,6 +106,6 @@ export function statusClip(status: StatusName | null | undefined): SpriteClipId 
     : status === 'paralysis'
       ? 'electric'
       : status === 'freeze'
-        ? 'ice'
+        ? 'frozen'
         : (status ?? null)
 }

@@ -75,7 +75,8 @@ export function resolveBattleSprite(id: string, opponent: boolean, shiny: boolea
   const animated = animatedPokemonAssets(id)
   const animatedFront = shiny ? animated.shinyFront : animated.front
   const animatedBack = shiny ? animated.shinyBack : animated.back
-  const chosen = opponent ? (animatedFront ?? animatedBack) : (animatedBack ?? animatedFront)
+  // Correct perspective wins over animation: mirroring a front view is not a back view.
+  const chosen = opponent ? (animatedFront ?? (!front ? animatedBack : undefined)) : (animatedBack ?? (!back ? animatedFront : undefined))
   return {
     src: chosen?.path ?? staticSrc,
     staticSrc,

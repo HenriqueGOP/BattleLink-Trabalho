@@ -1,3 +1,5 @@
+import { validateFormat } from "./contracts/formats";
+import { TRAINERS } from "./contracts/trainers";
 import { createConnection } from "node:net";
 import { randomUUID } from "node:crypto";
 import { createInterface } from "node:readline";
@@ -21,11 +23,13 @@ const input = createInterface({
 let state: RoomSnapshot | null = null;
 let awaitingWelcome = true;
 let inputClosed = false;
+let initialQueue = true;
 let pending: Extract<ClientMessage, { type: "action" }> | null = null;
 const HELP =
-  "choose <id> | random [1..6] | moves <id> <golpe1,golpe2> | ready | attack <id> | switch <id> | retry | reset | state | help | quit";
+  "choose <id> | remove <id> | order <id1,id2,...> | random [1..6] | moves <id> <golpe1,golpe2> | ready | attack <id> | switch <id> | retry | reset | state | help | queue [classic/quick/monotype] [type] | create [format] [type] | invite <code> | pve <trainer> [easy/normal/hard] [format] | again [keep/edit] | lobby | cancel | quit";
 function send(message: ClientMessage): void {
-  socket.write(`${JSON.stringify(message)}\n`);
+  const bound = ["choose_pokemon", "remove_pokemon", "reorder_team", "random_team", "set_moves", "reset_team", "accept_team", "battle_ready", "action", "resync"].includes(message.type);
+  socket.write(`${JSON.stringify(bound ? { ...message, matchId: "matchId" in message && message.matchId ? message.matchId : state?.matchId } : message)}\n`);
 }
 function render(snapshot: RoomSnapshot): void {
   state = snapshot;
@@ -98,7 +102,11 @@ function receive(message: ServerMessage): void {
     console.log(HELP);
   } else if (message.type === "state" || message.type === "match_found")
     render(message.state);
-  else if (message.type === "action_ack") {
+  else if (message.type === "lobby") {
+    state = null; pending = null;
+    console.log(message.message, message.lobby ? `Convite: ${message.lobby.code}` : "");
+    if (initialQueue) { initialQueue = false; send({ type: "queue_join", format: { id: "classic" }, commandId: randomUUID() }); }
+  } else if (message.type === "action_ack") {
     /* O snapshot confirma a solicitação e libera o próximo comando. */
   } else {
     if (message.type === "error" && pending?.actionId === message.actionId)
@@ -146,12 +154,24 @@ socket.on("close", () => input.close());
 input.on("line", (line) => {
   if (inputClosed) return;
   const [command, ...args] = line.trim().split(/\s+/);
-  if (command === "choose" && args[0])
+  if (["queue", "create"].includes(command)) {
+    try { const format = validateFormat({ id: args[0] ?? "classic", ...(args[0] === "monotype" ? { type: args[1] } : {}) }); send({ type: "room_leave" }); send({ type: command === "queue" ? "queue_join" : "private_create", format, commandId: randomUUID() }); } catch (error) { console.log(String(error)); }
+  } else if (command === "invite" && args[0]) { send({ type: "room_leave" }); send({ type: "private_join", code: args[0].toUpperCase(), commandId: randomUUID() }); }
+  else if (command === "pve" && args[0]) {
+    const trainer = TRAINERS.find(trainer => trainer.id === args[0]);
+    if (!trainer) console.log(TRAINERS.map(trainer => `${trainer.id}: ${trainer.name}`).join(" · "));
+    else { send({ type: "room_leave" }); send({ type: "pve_start", trainerId: trainer.id, difficulty: args[1] === "hard" ? "hard" : args[1] === "easy" ? "easy" : "normal", format: args[2] === "monotype" ? { id: "monotype", type: trainer.type } : { id: args[2] === "quick" ? "quick" : "classic" }, commandId: randomUUID() }); }
+  } else if (command === "again" && state) send({ type: "rematch", matchId: state.matchId, accept: true, keepTeam: args[0] !== "edit" });
+  else if (command === "lobby") send({ type: "room_leave" });
+  else if (command === "cancel") send({ type: "queue_cancel" });
+  else if (command === "choose" && args[0])
     send({ type: "choose_pokemon", pokemon: args[0] });
+  else if (command === "remove" && args[0]) send({ type: "remove_pokemon", pokemon: args[0], editId: randomUUID() });
+  else if (command === "order" && args[0]) send({ type: "reorder_team", pokemon: args[0].split(","), editId: randomUUID() });
   else if (command === "random")
     send({
       type: "random_team",
-      count: args[0] ? Number(args[0]) : 6 - (state?.team.length ?? 0),
+      count: args[0] ? Number(args[0]) : (state?.format.id === "quick" ? 3 : 6) - (state?.team.length ?? 0),
     });
   else if (command === "moves" && args[0] && args[1])
     send({ type: "set_moves", pokemon: args[0], moves: args[1].split(",") });

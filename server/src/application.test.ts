@@ -15,6 +15,8 @@ type OfType<T extends ServerMessage["type"]> = Extract<
   ServerMessage,
   { type: T }
 >;
+// Each new admission uses a fresh command; retries within an admission reuse it.
+let queueCommand = 0;
 class Inbox {
   readonly history: ServerMessage[] = [];
   private messages: ServerMessage[] = [];
@@ -69,8 +71,11 @@ async function tcpPeer(port: number) {
   return {
     inbox,
     id: welcome.playerId,
-    send: (message: ClientMessage) =>
-      socket.write(`${JSON.stringify(message)}\n`),
+    send: (message: ClientMessage) => {
+      const snapshot = [...inbox.history].reverse().find(m => m.type === "state" || m.type === "match_found") as Extract<ServerMessage, {type: "state" | "match_found"}> | undefined;
+      socket.write(`${JSON.stringify("matchId" in message && message.matchId ? message : { ...message, matchId: snapshot?.state.matchId })}\n`);
+      if (message.type === "join") socket.write(`${JSON.stringify({ type: "queue_join", format: { id: "classic" }, commandId: `queue-${++queueCommand}` })}\n`);
+    },
     close: () => socket.destroy(),
   };
 }
@@ -89,7 +94,11 @@ async function webPeer(port: number) {
     inbox,
     id: welcome.playerId,
     socket,
-    send: (message: ClientMessage) => socket.send(JSON.stringify(message)),
+    send: (message: ClientMessage) => {
+      const snapshot = [...inbox.history].reverse().find(m => m.type === "state" || m.type === "match_found") as Extract<ServerMessage, {type: "state" | "match_found"}> | undefined;
+      socket.send(JSON.stringify("matchId" in message && message.matchId ? message : { ...message, matchId: snapshot?.state.matchId }));
+      if (message.type === "join") socket.send(JSON.stringify({ type: "queue_join", format: { id: "classic" }, commandId: `queue-${++queueCommand}` }));
+    },
     close: () => socket.terminate(),
   };
 }
@@ -183,6 +192,24 @@ async function run(): Promise<void> {
     }
     await alice.inbox.next("state", (m) => m.state.team.length === 6);
     await bob.inbox.next("state", (m) => m.state.team.length === 6);
+    // Additive setup edits retain FIFO ordering and acknowledge only their owner.
+    alice.send({ type: 'reorder_team', pokemon: [...TEAM].reverse(), editId: 'reverse' });
+    alice.send({ type: 'reorder_team', pokemon: [...TEAM], editId: 'restore' });
+    assert.deepEqual((await alice.inbox.next('state', m => m.editId === 'reverse')).state.team.map(p => p.speciesId), [...TEAM].reverse());
+    assert.deepEqual((await alice.inbox.next('state', m => m.editId === 'restore')).state.team.map(p => p.speciesId), [...TEAM]);
+    const opponentEdit = await bob.inbox.next('state', m => m.state.log.some(entry => entry.includes('reorganizou')));
+    assert.equal(opponentEdit.editId, undefined, 'Private edit correlation does not reach opponent');
+    assert.equal(JSON.stringify(opponentEdit.state).includes('reverse'), false);
+    alice.send({ type: 'remove_pokemon', pokemon: TEAM[5], editId: 'remove-last' });
+    assert.equal((await alice.inbox.next('state', m => m.editId === 'remove-last')).state.team.length, 5);
+    alice.send({ type: 'choose_pokemon', pokemon: TEAM[5], editId: 'restore-last' });
+    assert.equal((await alice.inbox.next('state', m => m.editId === 'restore-last')).state.team.length, 6);
+    alice.send({ type: 'reorder_team', pokemon: TEAM.slice(1), editId: 'reject-permutation' });
+    assert.equal((await alice.inbox.next('error', m => m.editId === 'reject-permutation')).code, 'INVALID_MESSAGE');
+      alice.send({ type: 'reorder_team', pokemon: [TEAM[0], TEAM[0]], editId: 'reject-payload' });
+      assert.equal((await alice.inbox.next('error', m => m.editId === 'reject-payload')).code, 'INVALID_MESSAGE');
+    alice.send({ type: 'resync' });
+    assert.deepEqual((await alice.inbox.next('state', m => m.state.team.length === 6 && m.state.team[5].speciesId === TEAM[5])).state.team.map(p => p.speciesId), [...TEAM]);
     alice.send({
       type: "set_moves",
       pokemon: "smeargle",

@@ -1,7 +1,8 @@
 # Motor de batalha: fases 2A e 2B
 
 Importe a API pública de `index.ts`. Apenas os adapters conhecem os objetos mutáveis
-de `@pkmn/sim`. Este módulo ainda não está ligado à Room nem ao protocolo de sockets.
+de `@pkmn/sim`. `Room` usa este módulo como autoridade para PvP e PvE; o bot envia
+as mesmas escolhas legais dos jogadores. O protocolo atual é `pokemon-battle/4`.
 
 ## API disponível
 

@@ -31,7 +31,8 @@ export const StatusAura = memo(function StatusAura({
         signal: controller.signal,
         loop: true,
         static: reduced,
-        position: 'above' as const,
+        position: status === 'freeze' ? 'center' as const : 'above' as const,
+        size: status === 'freeze' ? 220 : undefined,
       }
       if (clip) void playSprite(holder.current, clip, options)
       if (confused)
@@ -45,5 +46,5 @@ export const StatusAura = memo(function StatusAura({
     }
   }, [status, confused, side, paused, reduced])
   if (!status && !confused) return null
-  return <span ref={holder} className={styles.auraLayer} aria-hidden="true" />
+  return <span ref={holder} className={styles.auraLayer} data-status={status} aria-hidden="true" />
 })

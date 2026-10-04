@@ -4,3 +4,5 @@
   pointer-events: none;
   z-index: 4;
 }
+.auraLayer[data-status='freeze'] { z-index: 0; }
+.auraLayer[data-status='freeze'] canvas { width: calc(var(--sprite-visible-width, 100%) + 28px) !important; height: calc(var(--sprite-visible-height, 100%) + 28px) !important; }

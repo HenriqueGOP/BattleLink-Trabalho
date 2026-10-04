@@ -1,0 +1,306 @@
+{
+  "origin": "built-in imagegen",
+  "assets": {
+    "audio-emblem": {
+      "path": "/interface/audio-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 15870,
+      "alpha": true
+    },
+    "audio-panel": {
+      "path": "/interface/audio-panel.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 63080,
+      "alpha": false
+    },
+    "combat-emblem": {
+      "path": "/interface/combat-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 22620,
+      "alpha": true
+    },
+    "combat-panel": {
+      "path": "/interface/combat-panel.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 41136,
+      "alpha": false
+    },
+    "friends-emblem": {
+      "path": "/interface/friends-emblem.webp",
+      "width": 256,
+      "height": 238,
+      "bytes": 18604,
+      "alpha": true
+    },
+    "friends-splash": {
+      "path": "/interface/friends-splash.webp",
+      "width": 1600,
+      "height": 667,
+      "bytes": 232422,
+      "alpha": false
+    },
+    "home-background": {
+      "path": "/interface/home-background.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 308460,
+      "alpha": false
+    },
+    "home-modes": {
+      "path": "/interface/home-modes.webp",
+      "width": 900,
+      "height": 300,
+      "bytes": 91848,
+      "alpha": true
+    },
+    "logo": {
+      "path": "/interface/logo.webp",
+      "width": 1200,
+      "height": 400,
+      "bytes": 60930,
+      "alpha": true
+    },
+    "party-emblem": {
+      "path": "/interface/party-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 17154,
+      "alpha": true
+    },
+    "party-panel": {
+      "path": "/interface/party-panel.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 145694,
+      "alpha": false
+    },
+    "pve-background": {
+      "path": "/interface/pve-background.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 238402,
+      "alpha": false
+    },
+    "pve-emblem": {
+      "path": "/interface/pve-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 25942,
+      "alpha": true
+    },
+    "quick-emblem": {
+      "path": "/interface/quick-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 19496,
+      "alpha": true
+    },
+    "quick-splash": {
+      "path": "/interface/quick-splash.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 185308,
+      "alpha": false
+    },
+    "ready-emblem": {
+      "path": "/interface/ready-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 19442,
+      "alpha": true
+    },
+    "ready-panel": {
+      "path": "/interface/ready-panel.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 178250,
+      "alpha": false
+    },
+    "result-emblem": {
+      "path": "/interface/result-emblem.webp",
+      "width": 256,
+      "height": 234,
+      "bytes": 17376,
+      "alpha": true
+    },
+    "result-panel": {
+      "path": "/interface/result-panel.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 53350,
+      "alpha": false
+    },
+    "selection-background": {
+      "path": "/interface/selection-background.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 117190,
+      "alpha": false
+    },
+    "selection-emblem": {
+      "path": "/interface/selection-emblem.webp",
+      "width": 256,
+      "height": 182,
+      "bytes": 12866,
+      "alpha": true
+    },
+    "setup-background": {
+      "path": "/interface/setup-background.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 159544,
+      "alpha": false
+    },
+    "setup-emblem": {
+      "path": "/interface/setup-emblem.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 19512,
+      "alpha": true
+    },
+    "type-bug": {
+      "path": "/interface/type-bug.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 54306,
+      "alpha": true
+    },
+    "type-dark": {
+      "path": "/interface/type-dark.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 37958,
+      "alpha": true
+    },
+    "type-dragon": {
+      "path": "/interface/type-dragon.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 47524,
+      "alpha": true
+    },
+    "type-electric": {
+      "path": "/interface/type-electric.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 48256,
+      "alpha": true
+    },
+    "type-fairy": {
+      "path": "/interface/type-fairy.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 49734,
+      "alpha": true
+    },
+    "type-fighting": {
+      "path": "/interface/type-fighting.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 51318,
+      "alpha": true
+    },
+    "type-fire": {
+      "path": "/interface/type-fire.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 42918,
+      "alpha": true
+    },
+    "type-flying": {
+      "path": "/interface/type-flying.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 55422,
+      "alpha": true
+    },
+    "type-ghost": {
+      "path": "/interface/type-ghost.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 45916,
+      "alpha": true
+    },
+    "type-grass": {
+      "path": "/interface/type-grass.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 52168,
+      "alpha": true
+    },
+    "type-ground": {
+      "path": "/interface/type-ground.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 40882,
+      "alpha": true
+    },
+    "type-ice": {
+      "path": "/interface/type-ice.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 47770,
+      "alpha": true
+    },
+    "type-normal": {
+      "path": "/interface/type-normal.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 51246,
+      "alpha": true
+    },
+    "type-poison": {
+      "path": "/interface/type-poison.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 49278,
+      "alpha": true
+    },
+    "type-psychic": {
+      "path": "/interface/type-psychic.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 58658,
+      "alpha": true
+    },
+    "type-rock": {
+      "path": "/interface/type-rock.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 38326,
+      "alpha": true
+    },
+    "type-steel": {
+      "path": "/interface/type-steel.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 29512,
+      "alpha": true
+    },
+    "type-water": {
+      "path": "/interface/type-water.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 58344,
+      "alpha": true
+    },
+    "waiting-emblem": {
+      "path": "/interface/waiting-emblem.webp",
+      "width": 256,
+      "height": 171,
+      "bytes": 16430,
+      "alpha": true
+    },
+    "waiting-splash": {
+      "path": "/interface/waiting-splash.webp",
+      "width": 1599,
+      "height": 900,
+      "bytes": 272312,
+      "alpha": false
+    }
+  }
+}

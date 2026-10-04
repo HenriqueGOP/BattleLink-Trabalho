@@ -3,6 +3,7 @@ import { useAudio } from '../../hooks/useAudio'
 import { useModalDialog } from '../../hooks/useModalDialog'
 import { audio } from '../../lib/audio'
 import styles from './AudioSettings.module.css'
+import { MenuScenery, MenuEmblem } from '../MenuArt/MenuArt'
 
 /** Engrenagem sempre acessível: volumes music/sfx + mutes + som de teste. */
 export function AudioSettings() {
@@ -51,7 +52,9 @@ export function AudioSettings() {
           }}
         >
           <div className={styles.panel}>
+            <MenuScenery menu="audio" panel />
             <header className={styles.header}>
+              <MenuEmblem menu="audio" />
               <h3 id={titleId} className={styles.title}>
                 <span className="sr-only">Configurações de </span>Áudio
               </h3>

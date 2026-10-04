@@ -27,12 +27,12 @@
   --on-accent: #ffffff;
 
   /* Superfícies informativas claras, compartilhadas por HUD e menus. */
-  --hud-face: #f8fbfe;
-  --hud-face-2: #eaf1f7;
-  --hud-ink: #122b42;
-  --hud-ink-soft: #4e6578;
-  --hud-edge: #294b65;
-  --hud-edge-soft: #c8d7e3;
+  --hud-face: #071e34;
+  --hud-face-2: #102d47;
+  --hud-ink: #f3f8ff;
+  --hud-ink-soft: #b6d4ed;
+  --hud-edge: #37c2ef;
+  --hud-edge-soft: #356585;
   --hud-shadow: rgba(2, 13, 25, 0.24);
 
   /* Barra de HP: trilho escuro + preenchimento em 3 faixas (verde/amarelo/vermelho) */
@@ -49,22 +49,24 @@
   --msg-face: var(--hud-face);
   --msg-edge: var(--hud-edge);
   --msg-edge-inner: var(--hud-edge-soft);
-  --menu-face: #ffffff;
-  --menu-edge: #377b9f;
-  --menu-inner: #d3e6f1;
-  --input-face: #ffffff;
-  --input-placeholder: #576d80;
-  --input-border: #758c9f;
-  --portrait-face: #e7f0f6;
+  --menu-face: #081f35;
+  --menu-edge: #34d6f3;
+  --menu-inner: #275b7b;
+  --input-face: #09243c;
+  --input-placeholder: #a6c6df;
+  --input-border: #3e92bc;
+  --portrait-face: #10334f;
   --success: #176f55;
-  --mint: #7ce3c0;
-  --mint-soft: #e3f6ef;
+  --success-ink: #85f3ce;
+  --mint: #32e0ff;
+  --mint-soft: #123f4c;
   --danger: #a62f3c;
+  --danger-ink: #ffadbb;
   --command-party: #176f55;
   --command-bag: #674185;
   --command-run: #23648b;
   --focus-ring: #91edcf;
-  --focus-on-light: #176894;
+  --focus-on-light: #87f2ff;
   --panel-face: var(--hud-face);
   --panel-ink: var(--hud-ink);
   --panel-muted: var(--hud-ink-soft);
@@ -142,9 +144,9 @@
   --space-7: 48px;
   --space-8: 64px;
 
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 3px;
+  --radius: 6px;
+  --radius-lg: 10px;
 
   --shadow-1: 0 2px 6px rgba(0, 8, 20, 0.12);
   --shadow-2: 0 5px 16px rgba(0, 8, 20, 0.2);

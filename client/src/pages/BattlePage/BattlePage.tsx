@@ -1,9 +1,12 @@
-﻿import { useCallback, useRef, useState } from 'react'
+import { TrainerSprite } from '../../components/TrainerArt/TrainerArt'
+import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
+import { useCallback, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AudioSettings } from '../../components/AudioSettings'
 import { MotionSettings } from '../../components/MotionSettings/MotionSettings'
 import { Button } from '../../components/Button'
-import { resolveBackground } from '../../config/battleBackgrounds'
+import { arenaMenuStyle, resolveBackground } from '../../config/battleBackgrounds'
+import { Brand, MenuScenery, MenuEmblem } from '../../components/MenuArt/MenuArt'
 import { useAudio } from '../../hooks/useAudio'
 import { useBattle } from '../../hooks/useBattle'
 import { useBattleContext } from '../../context/BattleProvider'
@@ -34,7 +37,7 @@ export function BattlePage() {
     playerId,
     status,
     opponentLeft,
-    leave,
+    leave, rematch,
     attack,
     switchTo,
   } = useBattleContext()
@@ -96,14 +99,9 @@ export function BattlePage() {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} data-arena={state.field.background} style={arenaMenuStyle(state.field.background)}>
       <header className={styles.topbar}>
-        <div className={styles.brand}>
-          <i className={styles.ball} aria-hidden="true" />
-          <span>
-            BATTLE <b>LINK</b>
-          </span>
-        </div>
+        <Brand />
         <span className={styles.room}>{status}</span>
         <div className={styles.tools}>
           <AudioSettings />
@@ -117,9 +115,11 @@ export function BattlePage() {
         </div>
       </header>
 
+      <MatchBanner />
       {!sceneReady ? (
         <section className={styles.waiting} aria-live="polite">
-          <span className={styles.waitingBall} aria-hidden="true" />
+          <MenuScenery menu="ready" panel />
+          <MenuEmblem menu="ready" />
           <h2>
             {state.phase === 'preparing'
               ? 'Preparando a batalha…'
@@ -150,8 +150,10 @@ export function BattlePage() {
                 data-fx-stage
                 data-paused={hidden ? 'true' : undefined}
                 data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
+                data-trainer-phase={state.wire.trainerId && busy && current?.type === 'battle_start' ? 'pending' : undefined}
                 data-event-sequence={current?.id ?? state.wire.sequence}
               >
+            {state.wire.trainerId && <div className={styles.trainerIntro} data-trainer-intro aria-hidden="true"><TrainerSprite id={state.wire.trainerId} /></div>}
                 {/* O cenário, os atores e os efeitos compartilham o mesmo campo. */}
                 <BattleBackground background={state.field.background} />
                 {(state.field.weather || state.field.terrain) && (
@@ -237,6 +239,7 @@ export function BattlePage() {
           totals={totals}
           opponentLeft={opponentLeft}
           onLeave={leaveAndHome}
+          onRematch={rematch}
         />
       )}
     </main>

@@ -18,8 +18,8 @@
   border-radius: 50%;
 }
 .mine {
-  color: var(--success);
-  border-color: var(--success);
+  color: var(--success-ink);
+  border-color: var(--success-ink);
 }
 .mine i {
   background: var(--success);

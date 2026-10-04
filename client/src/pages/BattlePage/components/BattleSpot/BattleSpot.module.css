@@ -1,26 +1,22 @@
 .spot {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 0;
-  width: 240px;
+  width: calc(clamp(130px, 17vw, 195px) * var(--sprite-depth, 1));
+  height: calc(clamp(130px, 17vw, 195px) * var(--sprite-depth, 1));
+  transform: translate(-50%, -100%);
 }
 .actor {
   position: relative;
   display: flex;
   justify-content: center;
   z-index: 2;
-}
-.circle {
-  display: none;
+  width: 100%;
+  height: 100%;
 }
 .spot.opponent,
 .spot.self {
   margin: 0;
-}
-@media (max-width: 560px) {
-  .spot {
-    width: 150px;
-  }
 }

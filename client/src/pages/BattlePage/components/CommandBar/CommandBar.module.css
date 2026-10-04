@@ -25,6 +25,7 @@
   color: var(--hud-ink);
   overflow-wrap: anywhere;
 }
+.message:focus-visible { outline: 3px solid var(--focus-on-light); outline-offset: 3px; }
 .cursor {
   display: none;
 }
@@ -133,8 +134,11 @@
     gap: 10px;
   }
   .message {
-    min-height: 84px;
-    max-height: 220px;
+    /* Hover/focus must not move the move buttons before pointer-up. */
+    height: 176px;
+    min-height: 176px;
+    max-height: 176px;
+    align-items: flex-start;
     padding: 16px;
   }
   .messageText {

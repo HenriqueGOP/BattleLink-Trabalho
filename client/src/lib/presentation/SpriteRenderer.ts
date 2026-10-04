@@ -1,4 +1,5 @@
 import { SPRITE_CLIPS, VFX_ATLASES, type SpriteClip, type SpriteClipId } from './spriteRegistry'
+import { sceneAnchor } from './sceneLayout'
 
 const images = new Map<string, Promise<HTMLImageElement | null>>()
 const failed = new Map<string, number>()
@@ -89,8 +90,8 @@ export function preloadSpriteAtlas(path: string, signal: AbortSignal): Promise<v
 }
 /** Dimensões reais do atlas; a geração pode entregar tamanho diferente do prompt. */
 export function frameRect(width: number, height: number, clip: SpriteClip, index: number) {
-  const w = width / 8,
-    h = height / 8
+  const w = width / (clip.columns ?? 8),
+    h = height / (clip.rows ?? 8)
   const top = clip.cropTop ?? 0
   const bottom = clip.cropBottom ?? 0
   return {
@@ -112,6 +113,7 @@ export interface SpriteOptions {
   paused?: () => boolean
   presentation?: 'orb' | 'beam' | 'wave' | 'area' | 'powder' | 'contact'
   rotate?: number
+  anchor?: 'body' | 'head' | 'feet'
 }
 
 /** Um canvas por clip, relógio compartilhado, zero estado React por frame. */
@@ -175,12 +177,18 @@ export function playSprite(
       ;(stage ?? parent).appendChild(canvas)
       const center = (rect: DOMRect | undefined) =>
         rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : null
-      const startPoint = center(origin),
-        endPoint = center(destination)
+      const actor = parent.closest?.<HTMLElement>('[data-scene-side]')?.querySelector<HTMLElement>('[data-battle-anchor]') ?? parent
+      const startPoint = sceneAnchor(actor, options.anchor ?? 'body') ?? center(origin),
+        endPoint = sceneAnchor(options.travelTo ?? null, 'body') ?? center(destination)
       const dx = startPoint && endPoint ? endPoint.x - startPoint.x : 0
       const dy = startPoint && endPoint ? endPoint.y - startPoint.y : 0
       const angle = options.rotate ?? (Math.atan2(dy, dx) * 180) / Math.PI
       const presentation = options.presentation ?? 'orb'
+      if (!stage && origin && startPoint) {
+        const point = options.position === 'above' ? sceneAnchor(actor, 'head') ?? startPoint : startPoint
+        canvas.style.left = `${point.x - origin.left}px`
+        canvas.style.top = `${point.y - origin.top - (options.position === 'above' ? size * .32 : 0)}px`
+      }
       if (stage && stageRect && startPoint) {
         let anchor = startPoint
         if (presentation === 'area')
@@ -209,11 +217,8 @@ export function playSprite(
         }
       }
       const travel =
-        origin && destination
-          ? {
-              x: destination.left + destination.width / 2 - origin.left - origin.width / 2,
-              y: destination.top + destination.height / 2 - origin.top - origin.height / 2,
-            }
+        startPoint && endPoint
+          ? { x: dx, y: dy }
           : null
       const draw = (index: number) => {
         const rect = frameRect(source.naturalWidth, source.naturalHeight, clip, index)

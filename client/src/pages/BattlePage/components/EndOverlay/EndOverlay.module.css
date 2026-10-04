@@ -4,6 +4,7 @@
   z-index: var(--z-overlays);
   display: grid;
   place-items: center;
+  align-items: safe center;
   margin: 0;
   border: 0;
   width: 100%;
@@ -28,6 +29,9 @@
   }
 }
 .card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,16 +94,16 @@
   overflow-wrap: anywhere;
 }
 .victory .card {
-  border-top-color: var(--success);
+  border-top-color: var(--success-ink);
 }
 .victory .title {
-  color: var(--success);
+  color: var(--success-ink);
 }
 .defeat .card {
-  border-top-color: var(--danger);
+  border-top-color: var(--danger-ink);
 }
 .defeat .title {
-  color: var(--danger);
+  color: var(--danger-ink);
 }
 .draw .title,
 .interrupted .title {
@@ -149,3 +153,5 @@
     animation: none;
   }
 }
+.rematch { display: grid; gap: 12px; margin: 20px 0; }
+.card > [data-trainer-sprite] { margin: -14px auto 0; }

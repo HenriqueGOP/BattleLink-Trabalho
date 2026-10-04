@@ -6,6 +6,8 @@ import { playSprite, type SpriteOptions } from './SpriteRenderer'
 import { attackClip, emissionClip, isChargingMove, type SpriteClipId } from './spriteRegistry'
 import { actionVector, moveProfile, type MoveProfile } from './moveProfiles'
 import { reducedMotion } from './motionPreference'
+import { sceneAnchor, spriteAnchorLayout, spriteLayout } from './sceneLayout'
+import { TRAINER_POSES, type TrainerPose } from '../trainerAssets'
 
 interface Scene {
   stage: () => HTMLElement | null
@@ -79,22 +81,17 @@ class EffectScope {
           .to(element, {
             x: -vector.x * 0.08,
             y: 3,
-            scaleY: 0.96,
             duration: profile.anticipation / 1000,
           })
           .to(element, {
             x: vector.x,
             y: vector.y,
-            scaleX: 1.035,
-            scaleY: 1.015,
             duration: profile.travel / 1000,
             ease: 'power2.out',
           })
           .to(element, {
             x: 0,
             y: 0,
-            scaleX: 1,
-            scaleY: 1,
             duration: profile.recovery / 1000,
             ease: 'power2.inOut',
           })
@@ -120,7 +117,7 @@ const majorClips: Record<string, SpriteClipId> = {
   tox: 'poison',
   par: 'electric',
   slp: 'sleep',
-  frz: 'ice',
+  frz: 'frozen',
 }
 /** Efeitos artísticos vêm dos atlas; WAAPI/GSAP controlam somente movimento e HP. */
 export class AnimationDirector implements EventRunner {
@@ -129,6 +126,30 @@ export class AnimationDirector implements EventRunner {
   private scene: Scene
   constructor(scene: Scene) {
     this.scene = scene
+  }
+  private async trainerFrames(scope: EffectScope, element: HTMLElement, pose: TrainerPose, duration: number) {
+    element.dataset.pose = pose
+    element.dataset.controlled = 'true'
+    element.style.setProperty('--trainer-x', `${-160 * TRAINER_POSES.indexOf(pose)}px`)
+    for (let frame = 0; frame < 2 && !scope.cancelled; frame++) {
+      element.style.setProperty('--trainer-y', `${-200 * frame}px`)
+      await scope.wait(duration / 2)
+    }
+  }
+  private trainerElements(scope: EffectScope) {
+    const stage = this.scene.stage()
+    const intro = stage?.querySelector<HTMLElement>('[data-trainer-intro]')
+    const trainer = intro?.querySelector<HTMLElement>('[data-trainer-sprite]')
+    if (!stage || !intro || !trainer) return null
+    scope.own(() => {
+      intro.style.opacity = '0'
+      stage.dataset.trainerPhase = 'complete'
+      trainer.dataset.pose = 'idle'
+      delete trainer.dataset.controlled
+      trainer.style.setProperty('--trainer-x', '0px')
+      trainer.style.setProperty('--trainer-y', '0px')
+    })
+    return { stage, intro, trainer }
   }
   private side(id: CombatantId, wire: RoomSnapshot) {
     return id.startsWith(wire.viewer) ? ('me' as const) : ('opponent' as const)
@@ -152,6 +173,10 @@ export class AnimationDirector implements EventRunner {
     if (creature && original && still && original !== still) {
       const orientation = anchor.querySelector<HTMLElement>('[data-motion-orientation]')
       const priorOrientation = orientation?.style.transform ?? ''
+      const priorStyle = creature.getAttribute('style') ?? ''
+      const anchors = Array.from(anchor.querySelectorAll?.<HTMLElement>('[data-sprite-anchor]') ?? []).map(element => ({ element, style: element.getAttribute('style') ?? '' }))
+      Object.assign(creature.style, spriteLayout(still))
+      for (const { element } of anchors) Object.assign(element.style, spriteAnchorLayout(still, element.dataset.spriteAnchor as 'head' | 'body' | 'feet'))
       if (orientation)
         orientation.style.transform =
           orientation.getAttribute('data-static-mirrored') === 'true' ? 'scaleX(-1)' : 'scaleX(1)'
@@ -159,6 +184,8 @@ export class AnimationDirector implements EventRunner {
       scope.own(() => {
         if (creature.isConnected && creature.getAttribute('src') === still) {
           creature.src = original
+          creature.setAttribute('style', priorStyle)
+          for (const { element, style } of anchors) if (element.isConnected) element.setAttribute('style', style)
           if (orientation?.isConnected) orientation.style.transform = priorOrientation
         }
       })
@@ -257,6 +284,10 @@ export class AnimationDirector implements EventRunner {
       }
       const target = 'target' in event ? this.element(event.target, wire) : null
       if (reduced) {
+        if (event.type === 'battle_start') {
+          const stage = this.scene.stage()
+          if (stage) stage.dataset.trainerPhase = 'complete'
+        }
         // Feedback legível e curto conserva os fatos sem tremores ou deslocamentos.
         const clip =
           event.type === 'status'
@@ -304,9 +335,10 @@ export class AnimationDirector implements EventRunner {
             profile.family === 'beam' ||
             profile.family === 'wave' ||
             profile.family === 'powder'
+          const actorPoint = sceneAnchor(actor), targetPoint = sceneAnchor(target)
           const vector = actionVector(
-            actor?.getBoundingClientRect?.() ?? null,
-            target?.getBoundingClientRect?.() ?? null,
+            actorPoint ? { left: actorPoint.x, top: actorPoint.y, width: 0, height: 0 } : null,
+            targetPoint ? { left: targetPoint.x, top: targetPoint.y, width: 0, height: 0 } : null,
             event.actor.startsWith(wire.viewer) ? 1 : -1
           )
           await Promise.all([
@@ -325,10 +357,10 @@ export class AnimationDirector implements EventRunner {
               : scope.animate(
                   actorBody,
                   [
-                    { transform: 'translateY(0) scale(1)' },
-                    { transform: 'translateY(3px) scale(.96, 1.02)', offset: 0.2 },
-                    { transform: 'translateY(-5px) scale(1.03)', offset: 0.55 },
-                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(0) ' },
+                    { transform: 'translateY(3px) ', offset: 0.2 },
+                    { transform: 'translateY(-5px) ', offset: 0.55 },
+                    { transform: 'translateY(0) ' },
                   ],
                   {
                     duration: profile.anticipation + profile.travel + profile.recovery,
@@ -358,7 +390,7 @@ export class AnimationDirector implements EventRunner {
                   [
                     { transform: 'translateX(0)' },
                     {
-                      transform: `translate(${crit ? -11 : -6}px, 3px) rotate(-3deg) scaleY(.97)`,
+                      transform: `translate(${crit ? -11 : -6}px, 3px) rotate(-3deg) `,
                       offset: 0.2,
                     },
                     { transform: `translate(${crit ? 8 : 4}px, -2px) rotate(2deg)`, offset: 0.5 },
@@ -414,8 +446,8 @@ export class AnimationDirector implements EventRunner {
                       },
                     ]
                   : [
-                      { opacity: 1, transform: 'scale(1)' },
-                      { opacity: 0, transform: 'scale(.25)' },
+                      { opacity: 1, transform: 'translate(0, 0)' },
+                      { opacity: 0, transform: 'translate(0, 0)' },
                     ],
                 { duration: IMPACT.exit, easing: 'ease-in' }
               ),
@@ -431,9 +463,9 @@ export class AnimationDirector implements EventRunner {
             scope.animate(
               this.body(incoming),
               [
-                { opacity: 0, transform: 'translateY(-10px) scale(.3)' },
-                { opacity: 1, transform: 'translateY(4px) scale(1.05, .95)', offset: 0.75 },
-                { opacity: 1, transform: 'translateY(0) scale(1)' },
+                { opacity: 0, transform: 'translateY(-10px) ' },
+                { opacity: 1, transform: 'translateY(4px) ', offset: 0.75 },
+                { opacity: 1, transform: 'translateY(0) ' },
               ],
               { duration: IMPACT.enter, easing: 'ease-out' }
             ),
@@ -450,14 +482,23 @@ export class AnimationDirector implements EventRunner {
                 { opacity: 1, transform: 'translateY(0) rotate(0)' },
                 {
                   opacity: 0.6,
-                  transform: 'translateY(10px) rotate(-5deg) scaleY(.93)',
+                  transform: 'translateY(10px) rotate(-5deg) ',
                   offset: 0.35,
                 },
-                { opacity: 0, transform: 'translateY(52px) rotate(-7deg) scaleY(.85)' },
+                { opacity: 0, transform: 'translateY(52px) rotate(-7deg) ' },
               ],
               { duration: IMPACT.faint, easing: 'ease-in' }
             ),
           ])
+          if (wire.trainerId && event.target.startsWith(wire.viewer) && !scope.cancelled) {
+            const elements = this.trainerElements(scope)
+            if (elements) {
+              elements.intro.style.opacity = '1'
+              await this.trainerFrames(scope, elements.trainer, 'celebrate', 440)
+              await scope.animate(elements.intro, [{ opacity: 1 }, { opacity: 0 }], { duration: 180 })
+              elements.intro.style.opacity = '0'
+            }
+          }
           break
         case 'miss':
           this.hold(scope, target)
@@ -509,14 +550,14 @@ export class AnimationDirector implements EventRunner {
               targetBody,
               event.after > event.before
                 ? [
-                    { transform: 'translateY(0) scale(1)' },
-                    { transform: 'translateY(-7px) scale(1.035)', offset: 0.45 },
-                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(0) ' },
+                    { transform: 'translateY(-7px) ', offset: 0.45 },
+                    { transform: 'translateY(0) ' },
                   ]
                 : [
-                    { transform: 'translateY(0) scale(1)' },
-                    { transform: 'translateY(4px) scale(.96)', offset: 0.45 },
-                    { transform: 'translateY(0) scale(1)' },
+                    { transform: 'translateY(0) ' },
+                    { transform: 'translateY(4px) ', offset: 0.45 },
+                    { transform: 'translateY(0) ' },
                   ],
               { duration: 460, easing: 'ease-in-out' }
             ),
@@ -530,8 +571,8 @@ export class AnimationDirector implements EventRunner {
               targetBody,
               event.status === 'slp'
                 ? [
-                    { transform: 'scale(1) rotate(0deg)' },
-                    { transform: 'scaleY(.96) rotate(-3deg)' },
+                    { transform: ' rotate(0deg)' },
+                    { transform: ' rotate(-3deg)' },
                   ]
                 : event.status === 'par'
                   ? [
@@ -541,9 +582,9 @@ export class AnimationDirector implements EventRunner {
                       { transform: 'translateX(0)' },
                     ]
                   : [
-                      { transform: 'translateY(0) scale(1)' },
-                      { transform: 'translateY(3px) scale(.97)', offset: 0.4 },
-                      { transform: 'translateY(0) scale(1)' },
+                      { transform: 'translateY(0) ' },
+                      { transform: 'translateY(3px) ', offset: 0.4 },
+                      { transform: 'translateY(0) ' },
                     ],
               { duration: 420, easing: 'ease-in-out' }
             ),
@@ -562,16 +603,16 @@ export class AnimationDirector implements EventRunner {
             scope.animate(
               this.body(actor),
               [
-                { transform: 'translateX(0) scale(1)' },
+                { transform: 'translateX(0) ' },
                 {
-                  transform: `translateX(${event.reason === 'par' ? -3 : 0}px) scaleY(.96)`,
+                  transform: `translateX(${event.reason === 'par' ? -3 : 0}px) `,
                   offset: 0.35,
                 },
                 {
-                  transform: `translateX(${event.reason === 'par' ? 3 : 0}px) scaleY(.98)`,
+                  transform: `translateX(${event.reason === 'par' ? 3 : 0}px) `,
                   offset: 0.65,
                 },
-                { transform: 'translateX(0) scale(1)' },
+                { transform: 'translateX(0) ' },
               ],
               { duration: 440 }
             ),
@@ -588,9 +629,9 @@ export class AnimationDirector implements EventRunner {
               scope.animate(
                 targetBody,
                 [
-                  { transform: 'translateY(0) scale(1)' },
-                  { transform: 'translateY(-4px) scale(1.04)', offset: 0.5 },
-                  { transform: 'translateY(0) scale(1)' },
+                  { transform: 'translateY(0) ' },
+                  { transform: 'translateY(-4px) ', offset: 0.5 },
+                  { transform: 'translateY(0) ' },
                 ],
                 { duration: 620, easing: 'ease-in-out' }
               ),
@@ -612,7 +653,25 @@ export class AnimationDirector implements EventRunner {
             if (clip) await this.fx(scope, target, clip)
           }
           break
-        case 'battle_start':
+        case 'battle_start': {
+          const elements = this.trainerElements(scope)
+          if (elements) {
+            const { stage, intro, trainer } = elements
+            stage.dataset.trainerPhase = 'idle'
+            intro.style.opacity = '1'
+            await scope.animate(intro, [{ opacity: 0, transform: 'translateX(18px)' }, { opacity: 1, transform: 'translateX(0)' }], { duration: 200 })
+            for (const [pose, duration] of [['idle', 360], ['prepare', 320], ['throw', 280], ['follow', 260]] as const) {
+              if (scope.cancelled) break
+              stage.dataset.trainerPhase = pose
+              await this.trainerFrames(scope, trainer, pose, duration)
+            }
+            if (scope.cancelled) break
+            stage.dataset.trainerPhase = 'exit'
+            await scope.animate(intro, [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(65px)' }], { duration: 240 })
+            intro.style.opacity = '0'
+            stage.dataset.trainerPhase = 'complete'
+          }
+          if (scope.cancelled) break
           await Promise.all(
             ['me', 'opponent'].map((side) => {
               const sprite = this.scene.sprite(side as 'me' | 'opponent')
@@ -622,8 +681,8 @@ export class AnimationDirector implements EventRunner {
                 scope.animate(
                   this.body(sprite),
                   [
-                    { opacity: 0, transform: 'translateY(14px) scale(.8)' },
-                    { opacity: 1, transform: 'translateY(0) scale(1)' },
+                    { opacity: 0, transform: 'translateY(14px) ' },
+                    { opacity: 1, transform: 'translateY(0) ' },
                   ],
                   { duration: IMPACT.enter }
                 ),
@@ -631,6 +690,7 @@ export class AnimationDirector implements EventRunner {
             })
           )
           break
+        }
         case 'battle_end':
           await Promise.all(
             ['me', 'opponent'].map((side) => {
@@ -649,9 +709,9 @@ export class AnimationDirector implements EventRunner {
                   ? scope.animate(
                       this.body(sprite),
                       [
-                        { transform: 'translateY(0) scale(1)' },
-                        { transform: 'translateY(-12px) scale(1.04)', offset: 0.4 },
-                        { transform: 'translateY(0) scale(1)' },
+                        { transform: 'translateY(0) ' },
+                        { transform: 'translateY(-12px) ', offset: 0.4 },
+                        { transform: 'translateY(0) ' },
                       ],
                       { duration: 520, easing: 'ease-in-out' }
                     )

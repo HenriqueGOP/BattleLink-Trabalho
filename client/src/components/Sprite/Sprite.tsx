@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styles from './Sprite.module.css'
 import { safeAsset } from '../../lib/assets'
+import { spriteMetrics } from '../../lib/presentation/sceneLayout'
 
 export interface SpriteProps {
   src: string | null | undefined
@@ -17,8 +18,7 @@ export interface SpriteProps {
  *
  * A PokeAPI não tem sprite para todas as formas e devolve 404 em várias delas.
  * Sem fallback, o navegador desenha o ícone de imagem quebrada com o texto
- * alternativo esparramado por cima do layout. Aqui a falha vira uma pokébola
- * desenhada em CSS, que ocupa exatamente o mesmo espaço.
+ * alternativo esparramado por cima do layout. A falha usa um emblema raster local.
  */
 export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: SpriteProps) {
   // guarda QUAL src falhou: dispensa efeito para limpar a flag quando src muda
@@ -39,10 +39,15 @@ export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: Sp
     )
   }
 
+  const source = safeAsset(src)!
+  const metrics = spriteMetrics(source)
+  const [left, top, right, bottom] = metrics.bounds
+  const scale = size * .85 / Math.max(right - left, bottom - top, 1)
   return (
+    <span className={classes} style={style}>
     <img
-      className={classes}
-      style={style}
+      className={styles.image}
+      style={{ width: metrics.width * scale, height: metrics.height * scale, left: (size - (right - left) * scale) / 2 - left * scale, top: (size - (bottom - top) * scale) / 2 - top * scale }}
       src={safeAsset(src) ?? undefined}
       /* alt vazio: o nome sempre aparece ao lado, e um alt longo virava texto
          solto no layout quando a imagem falhava */
@@ -53,5 +58,6 @@ export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: Sp
       decoding="async"
       onError={() => setFailedSrc(src ?? null)}
     />
+    </span>
   )
 }

@@ -1,10 +1,16 @@
+import { formatSize } from '../../../../server/src/contracts/formats'
 import { useEffect, useMemo, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+import type { CSSProperties } from 'react'
+import { TeamEditor } from '../../components/TeamEditor/TeamEditor'
+import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
+import moveIdentity from '../../components/MoveIdentity/MoveIdentity.module.css'
 import { Button } from '../../components/Button'
 import { TypeBadge } from '../../components/TypeBadge'
 import { Sprite } from '../../components/Sprite'
 import { AudioSettings } from '../../components/AudioSettings'
 import { GameIcon } from '../../components/GameIcon/GameIcon'
+import { Brand, MenuScenery, MenuEmblem } from '../../components/MenuArt/MenuArt'
 import { useBattleContext } from '../../context/BattleProvider'
 import { useBattle } from '../../hooks/useBattle'
 import { useAudio } from '../../hooks/useAudio'
@@ -37,16 +43,18 @@ function MoveStats({ move }: { move: PokemonMove }) {
 
 /** Prepara a equipe sem mudar IDs ou regras do catálogo. */
 export function TeamSetupPage() {
-  const { state, playerId, setMoves, acceptTeam, resetTeam, leave } = useBattleContext()
+  const { state, playerId, setMoves, acceptTeam, leave, setupPending, moveDrafts: chosenByPokemon, draftMoves } = useBattleContext()
+  const navigate = useNavigate()
   const { myPlayer } = useBattle()
   const audioPrefs = useAudio()
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [chosenByPokemon, setChosenByPokemon] = useState<Record<string, string[]>>({})
+  const [selectedId, setSelectedId] = useState(() => myPlayer?.team[0]?.pokemon ?? '')
   const [moveQuery, setMoveQuery] = useState('')
   const [onlyAvailable, setOnlyAvailable] = useState(false)
 
+  const TEAM_SIZE = state ? formatSize(state.wire.format) : 6
   const team = myPlayer?.team ?? []
-  const selected = team[selectedIndex]
+  const selected = team.find(member => member.pokemon === selectedId) ?? team[0]
+  const selectedIndex = team.findIndex(member => member === selected)
   const validMoves = team.every((member) => {
     const moves = chosenByPokemon[member.pokemon] ?? member.selectedMoves
     return moves.length > 0 && moves.length <= MAX_MOVES
@@ -74,30 +82,28 @@ export function TeamSetupPage() {
 
   if (!state || !playerId) return <Navigate to="/" replace />
   if (state.phase !== 'setup' || myPlayer?.ready) return <Navigate to="/batalha" replace />
-  if (team.length < 6) return <Navigate to="/selecao" replace />
+  if (team.length < TEAM_SIZE) return <Navigate to="/selecao" replace />
 
   function selectMember(index: number) {
     audio.play('hover')
-    setSelectedIndex(index)
+    setSelectedId(team[index].pokemon)
     setMoveQuery('')
   }
   function toggle(moveName: string) {
     if (!selected) return
     audio.play('click')
-    setChosenByPokemon((current) => {
-      const currentChosen = current[selected.pokemon] ?? selected.selectedMoves
+      const currentChosen = chosenByPokemon[selected.pokemon] ?? selected.selectedMoves
       const next = currentChosen.includes(moveName)
         ? currentChosen.filter((name) => name !== moveName)
         : currentChosen.length < MAX_MOVES
           ? [...currentChosen, moveName]
           : currentChosen
-      return { ...current, [selected.pokemon]: next }
-    })
+      draftMoves(selected.pokemon, next)
   }
   function keepSuggested() {
     if (!selected) return
     audio.play('select')
-    setChosenByPokemon((current) => ({ ...current, [selected.pokemon]: selected.selectedMoves }))
+    draftMoves(selected.pokemon, selected.selectedMoves)
     setMoves(selected.pokemon, selected.selectedMoves)
   }
   function saveMoves() {
@@ -108,10 +114,11 @@ export function TeamSetupPage() {
 
   return (
     <main className={styles.page}>
+      <MenuScenery menu="setup" />
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>
-            BATTLE LINK <span>02 / 03 · preparar golpes</span>
+            <Brand /> <span>02 / 03 · preparar golpes</span>
           </p>
           <h1 className={styles.title}>Prepare sua equipe</h1>
           <p className={styles.subtitle}>
@@ -119,6 +126,7 @@ export function TeamSetupPage() {
           </p>
         </div>
         <div className={styles.tools}>
+          <MenuEmblem menu="setup" />
           <AudioSettings />
           <Button variant="ghost" size="sm" onClick={leave}>
             Sair
@@ -126,10 +134,13 @@ export function TeamSetupPage() {
         </div>
       </header>
 
+      <MatchBanner />
+      <TeamEditor />
+
       <div className={styles.workspace}>
         <nav className={styles.tabs} aria-label="Pokémon da equipe">
           <div className={styles.partyHeading}>
-            <GameIcon name="ball" size={18} /> Sua equipe <span>6 / 6</span>
+            <GameIcon name="ball" size={18} /> Sua equipe <span>{TEAM_SIZE} / {TEAM_SIZE}</span>
           </div>
           {team.map((member, index) => {
             const count = (chosenByPokemon[member.pokemon] ?? member.selectedMoves).length
@@ -184,7 +195,7 @@ export function TeamSetupPage() {
               </div>
               <div className={styles.identity}>
                 <span className={styles.pokemonKicker}>
-                  Pokémon {selectedIndex + 1} / 6 · Nível 50
+                  Pokémon {selectedIndex + 1} / {TEAM_SIZE} · Nível 50
                 </span>
                 <h2 className={styles.pokemonName}>{formatPokemonName(selected.pokemon)}</h2>
                 <div className={styles.types}>
@@ -231,7 +242,9 @@ export function TeamSetupPage() {
                   return move ? (
                     <button
                       key={name}
-                      className={styles.chosen}
+                      className={`${styles.chosen} ${moveIdentity.surface}`}
+                      data-move-type={move.type}
+                      style={{ '--move-type': `var(--type-${move.type}, var(--type-normal))` } as CSSProperties}
                       onClick={() => toggle(name)}
                       aria-label={`Remover ${move.displayName ?? name} dos golpes escolhidos`}
                     >
@@ -260,12 +273,12 @@ export function TeamSetupPage() {
                 <span className={styles.chosenHint}>Escolha de 1 a 4 golpes abaixo</span>
               )}
               <div className={styles.moveActions}>
-                <Button variant="ghost" onClick={keepSuggested}>
+                <Button variant="ghost" onClick={keepSuggested} disabled={setupPending}>
                   Manter sugeridos
                 </Button>
                 <Button
                   onClick={saveMoves}
-                  disabled={chosen.length === 0 || chosen.length > MAX_MOVES}
+                  disabled={chosen.length === 0 || chosen.length > MAX_MOVES || setupPending}
                 >
                   Salvar golpes
                 </Button>
@@ -302,7 +315,9 @@ export function TeamSetupPage() {
                   return (
                     <article
                       key={move.name}
-                      className={`${styles.moveCard} ${isSelected ? styles.moveSelected : ''}`}
+                      className={`${styles.moveCard} ${moveIdentity.surface} ${isSelected ? styles.moveSelected : ''}`}
+                      data-move-type={move.type}
+                      style={{ '--move-type': `var(--type-${move.type}, var(--type-normal))` } as CSSProperties}
                       data-unavailable={Boolean(move.unsupported?.length) || undefined}
                     >
                       <button
@@ -369,12 +384,12 @@ export function TeamSetupPage() {
           </span>
         </div>
         <div className={styles.footerActions}>
-          <Button variant="ghost" onClick={resetTeam}>
-            ← Voltar e refazer a equipe
+          <Button variant="ghost" onClick={() => navigate('/selecao')} disabled={setupPending}>
+            ← Voltar à seleção
           </Button>
           <Button
             size="lg"
-            disabled={!validMoves}
+            disabled={!validMoves || setupPending}
             onClick={() => {
               audio.play('start')
               for (const member of team) {

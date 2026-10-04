@@ -85,7 +85,8 @@ function profileTests() {
     vector.x > 0 && vector.y < 0,
     "Aproximação percorre a diagonal real",
   );
-  assert.ok(Math.hypot(vector.x, vector.y) <= 230);
+  assert.ok(Math.hypot(vector.x, vector.y) <= 82);
+  assert.ok(Math.abs(vector.y) <= 22);
   const reverse = actionVector(b, a, -1);
   assert.equal(reverse.x, -vector.x);
   assert.equal(reverse.y, -vector.y);
@@ -228,6 +229,7 @@ function round(
 function snapshot(session: BattleSession): RoomSnapshot {
   const view = session.getView("p1");
   return {
+    matchId: "match-fixture", format: { id: "classic" }, mode: "automatic", inviteCode: null, trainerId: null, difficulty: null, rematch: { expiresAt: null, votes: [false, false], available: false },
     roomId: "sprite-events-real-engine",
     phase: "battle",
     viewer: "p1",

@@ -1,3 +1,5 @@
+import { FORMATS } from "./contracts/formats";
+import { TRAINERS } from "./contracts/trainers";
 import { createServer, Socket } from "node:net";
 import { randomUUID } from "node:crypto";
 import {
@@ -10,7 +12,7 @@ import { RoomManager } from "./game/manager";
 import { Room } from "./game/room";
 import { ClientMessage, ServerMessage } from "./game/types";
 import { config, ServerConfig } from "./config";
-import { parseClientMessage } from "./protocol";
+import { parseClientMessage, readSetupEditId } from "./protocol";
 import { catalog } from "./contracts/catalog";
 import { BattleRuleError } from "./game/engine";
 import {
@@ -32,6 +34,13 @@ export function createApplication(
 ) {
   validateServerConfig(settings);
   const manager = new RoomManager();
+  const identities = new Map<string, string>();
+  const peers = new Map<string, string>();
+  const receipts = new Map<string, Map<string, string>>();
+  const admission = new Map<string, { starts: number; creates: number; joins: number }>();
+  const botTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  const rematchTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  let housekeeping: ReturnType<typeof setInterval> | null = null;
   const senders = new Map<string, Sender>();
   const joinTimers = new Map<string, ReturnType<typeof setTimeout>>();
   const preparationTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -48,14 +57,79 @@ export function createApplication(
   let stopping = false;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
 
-  function broadcast(room: Room): void {
+  function broadcast(room: Room, edit?: { playerId: string; editId: string }): void {
+    room.openRematch();
+    scheduleBot(room);
+    scheduleRematch(room);
     for (const player of room.state.players)
       senders.get(player.id)?.({
         type: "state",
         state: room.getStateFor(player.id),
+        ...(edit?.playerId === player.id ? { editId: edit.editId } : {}),
       });
   }
 
+  function sendMatch(room: Room, command?: { playerId: string; commandId: string }): void {
+    for (const player of room.state.players) senders.get(player.id)?.({ type: "match_found", roomId: room.id, state: room.getStateFor(player.id), ...(command?.playerId === player.id ? { commandId: command.commandId } : {}) });
+    updatePreparationTimer(room); scheduleBot(room);
+  }
+  function clearRoomTimers(room: Room): void {
+    for (const timers of [preparationTimers, botTimers, rematchTimers]) { const timer = timers.get(room.id); if (timer) clearTimeout(timer); timers.delete(room.id); }
+  }
+  function scheduleBot(room: Room): void {
+    const requestId = room.botRequest;
+    if (!requestId || botTimers.has(room.id) || stopping) return;
+    const timer = setTimeout(() => {
+      void (async () => {
+        const unlock = await room.mutex.acquire();
+        try {
+          if (manager.roomOf(room.state.players[0].id) !== room || stopping || room.botRequest !== requestId) return;
+          room.playBot(); broadcast(room);
+        } catch (error) {
+          trace(`[bot] falha na partida ${room.id}: ${error instanceof Error ? error.message : "erro"}`);
+          room.forfeit(room.state.players[1].id); broadcast(room);
+        } finally { botTimers.delete(room.id); unlock(); if (manager.roomOf(room.state.players[0].id) === room) scheduleBot(room); }
+      })();
+    }, 180);
+    timer.unref(); botTimers.set(room.id, timer);
+  }
+  function scheduleRematch(room: Room): void {
+    const snapshot = room.getStateFor(room.state.players[0].id);
+    if (!snapshot.rematch.expiresAt || !snapshot.rematch.available || rematchTimers.has(room.id)) return;
+    const timer = setTimeout(() => {
+      void (async () => {
+        const unlock = await room.mutex.acquire();
+        try { if (manager.roomOf(room.state.players[0].id) === room) { room.expireRematch(); broadcast(room); } }
+        finally { rematchTimers.delete(room.id); unlock(); }
+      })();
+    }, Math.max(0, snapshot.rematch.expiresAt - Date.now()));
+    timer.unref(); rematchTimers.set(room.id, timer);
+  }
+  function limitAdmission(id: string, kind: "creates" | "joins"): void {
+    const keys = [`player:${id}`, `ip:${peers.get(id) ?? id}`];
+    const now = Date.now();
+    for (const key of keys) {
+      let entry = admission.get(key);
+      if (!entry || now - entry.starts >= 60000) { entry = { starts: now, creates: 0, joins: 0 }; admission.set(key, entry); }
+      if (++entry[kind] > (kind === "creates" ? 3 : 10)) throw new Error("Muitas tentativas de convite. Aguarde um minuto.");
+    }
+  }
+  async function depart(id: string): Promise<void> {
+    const room = manager.roomOf(id), lobby = manager.lobbyOf(id);
+    const members = room?.state.players ?? lobby?.players ?? [];
+    const unlock = room ? await room.mutex.acquire() : () => undefined;
+    try {
+      if (room && manager.roomOf(id) === room) {
+        if (room.state.phase !== "finished") { room.forfeit(id); broadcast(room); }
+        clearRoomTimers(room);
+      }
+      manager.remove(id);
+      for (const member of members) if (member.id !== id && senders.has(member.id)) {
+        senders.get(member.id)?.({ type: "opponent_left", message: "O oponente saiu. A partida foi encerrada." });
+        if (lobby) senders.get(member.id)?.({ type: "lobby", lobby: manager.lobbyOf(member.id), message: "O convidado saiu ou a sala foi encerrada." });
+      }
+    } finally { unlock(); }
+  }
   function updatePreparationTimer(room: Room): void {
     if (!room.preparing) {
       const timer = preparationTimers.get(room.id);
@@ -86,8 +160,9 @@ export function createApplication(
     sender: Sender,
     message: string,
     code = "INVALID_MESSAGE",
+    editId?: string,
   ): void {
-    sender({ type: "error", code, message });
+    sender({ type: "error", code, message, ...(editId ? { editId } : {}) });
   }
 
   function register(playerId: string, sender: Sender): void {
@@ -111,32 +186,8 @@ export function createApplication(
     if (!senders.delete(playerId)) return;
     trace(`[desconexão] ${playerId}`);
     clearJoinTimer(playerId);
-    const room = manager.roomOf(playerId);
-    if (!room) {
-      manager.remove(playerId);
-      return;
-    }
-    const unlock = await room.mutex.acquire();
-    try {
-      if (manager.roomOf(playerId) !== room) return;
-      if (room.state.phase !== "finished") {
-        room.forfeit(playerId);
-        broadcast(room);
-        const opponent = room.state.players.find(
-          (player) => player.id !== playerId,
-        )!;
-        senders.get(opponent.id)?.({
-          type: "opponent_left",
-          message: "O oponente desconectou. Você venceu por desistência.",
-        });
-      }
-    } finally {
-      const timer = preparationTimers.get(room.id);
-      if (timer) clearTimeout(timer);
-      preparationTimers.delete(room.id);
-      manager.remove(playerId);
-      unlock();
-    }
+    identities.delete(playerId); receipts.delete(playerId); peers.delete(playerId);
+    await depart(playerId);
   }
 
   async function handle(
@@ -161,42 +212,52 @@ export function createApplication(
         sender.close();
         return;
       }
-      const current = manager.roomOf(playerId);
-      if (current) {
-        sender({
-          type: "match_found",
-          roomId: current.id,
-          state: current.getStateFor(playerId),
-        });
-        return;
-      }
-      const room = manager.enqueue(
-        playerId,
-        message.name.slice(0, settings.maxPlayerNameLength),
-      );
-      if (!room) {
-        sender({
-          type: "waiting",
-          message: `Aguardando oponente (posição ${manager.waitingPosition(playerId)}).`,
-        });
-        return;
-      }
-      trace(`[partida] ${room.id}: dois jogadores conectados`);
-      for (const player of room.state.players)
-        senders.get(player.id)?.({
-          type: "match_found",
-          roomId: room.id,
-          state: room.getStateFor(player.id),
-        });
+      identities.set(playerId, message.name.slice(0, settings.maxPlayerNameLength));
+      sender({ type: "lobby", lobby: manager.lobbyOf(playerId), message: "Escolha como jogar." });
       return;
     }
-    if (message.type === "leave") {
-      sender.close();
+    if (message.type === "leave") { sender.close(); return; }
+    const name = identities.get(playerId);
+    if (!name) { fail(sender, "Identifique-se antes de jogar.", "UNAUTHORIZED"); return; }
+    if (message.type === "room_leave") {
+      await depart(playerId);
+      sender({ type: "lobby", lobby: manager.lobbyOf(playerId), message: "Escolha seu próximo desafio." }); return;
+    }
+    if (message.type === "queue_cancel") {
+      if (manager.roomOf(playerId) || manager.lobbyOf(playerId)) throw new Error("Saia da sala atual antes de cancelar uma busca.");
+      manager.cancel(playerId); sender({ type: "lobby", lobby: manager.lobbyOf(playerId), message: "Busca cancelada." }); return;
+    }
+    if (["queue_join", "private_create", "private_join", "pve_start"].includes(message.type) && "commandId" in message) {
+      const history = receipts.get(playerId) ?? new Map<string, string>();
+      const fingerprint = JSON.stringify(message), previous = history.get(message.commandId);
+      if (previous !== undefined) {
+        if (previous !== fingerprint) throw new Error("Identificador de comando reutilizado com outro conteúdo.");
+        const current = manager.roomOf(playerId), lobby = manager.lobbyOf(playerId);
+        if (current) sender({ type: "match_found", roomId: current.id, state: current.getStateFor(playerId), commandId: message.commandId });
+        else if (lobby) sender({ type: "lobby", lobby, message: "Aguardando seu amigo.", commandId: message.commandId });
+        else if (manager.waitingPosition(playerId)) sender({ type: "waiting", message: "Aguardando oponente neste formato.", commandId: message.commandId });
+        else throw new Error("Este comando já foi concluído. Inicie uma nova solicitação.");
+        return;
+      }
+      let found: Room | null = null;
+      if (message.type === "queue_join") {
+        found = manager.enqueue(playerId, name, message.format);
+        if (!found) sender({ type: "waiting", message: `Aguardando oponente neste formato (posição ${manager.waitingPosition(playerId)}).`, commandId: message.commandId });
+      } else if (message.type === "private_create") {
+        limitAdmission(playerId, "creates");
+        sender({ type: "lobby", lobby: manager.createPrivate(playerId, name, message.format), message: "Compartilhe o código para convidar seu amigo.", commandId: message.commandId });
+      } else if (message.type === "private_join") {
+        limitAdmission(playerId, "joins"); found = manager.joinPrivate(playerId, name, message.code);
+      } else if (message.type === "pve_start") {
+        found = manager.startPve(playerId, name, message.trainerId, message.difficulty, message.format);
+      }
+      history.set(message.commandId, fingerprint); if (history.size > 64) history.delete(history.keys().next().value!); receipts.set(playerId, history);
+      if (found) sendMatch(found, { playerId, commandId: message.commandId });
       return;
     }
     const room = manager.roomOf(playerId);
     if (!room) {
-      fail(sender, "Entre na fila antes de jogar.", "NOT_IN_MATCH");
+      fail(sender, "Entre na fila antes de jogar.", "NOT_IN_MATCH", readSetupEditId(message));
       return;
     }
     const unlock = await room.mutex.acquire();
@@ -208,8 +269,20 @@ export function createApplication(
         stopping
       )
         return;
+      room.assertMatch("matchId" in message ? message.matchId : undefined);
+      manager.touch(playerId);
+      if (message.type === "rematch") {
+        if (!message.accept) { room.expireRematch(); broadcast(room); return; }
+        if (room.voteRematch(playerId, message.keepTeam)) { clearRoomTimers(room); sendMatch(manager.rematch(room)); }
+        else broadcast(room);
+        return;
+      }
       if (message.type === "choose_pokemon")
         room.choosePokemon(playerId, message.pokemon);
+      else if (message.type === "remove_pokemon")
+        room.removePokemon(playerId, message.pokemon);
+      else if (message.type === "reorder_team")
+        room.reorderTeam(playerId, message.pokemon);
       else if (message.type === "random_team")
         room.randomTeam(playerId, message.count);
       else if (message.type === "set_moves")
@@ -225,6 +298,7 @@ export function createApplication(
         const update = room.applyAction(playerId, message);
         sender({
           type: "action_ack",
+          matchId: room.matchId,
           requestId: message.requestId,
           actionId: message.actionId,
           duplicate: update.duplicate,
@@ -236,7 +310,7 @@ export function createApplication(
         }
       }
       updatePreparationTimer(room);
-      broadcast(room);
+      broadcast(room, "editId" in message && message.editId ? { playerId, editId: message.editId } : undefined);
     } catch (error) {
       if (room.state.phase === "finished") {
         updatePreparationTimer(room);
@@ -285,6 +359,8 @@ export function createApplication(
         fail(
           sender,
           error instanceof Error ? error.message : "Mensagem inválida.",
+          "INVALID_MESSAGE",
+          readSetupEditId(parsed),
         );
         return;
       }
@@ -294,7 +370,7 @@ export function createApplication(
         return;
       }
       if (pending >= settings.maxPendingMessages) {
-        fail(sender, "Fila de mensagens cheia.", "QUEUE_FULL");
+        fail(sender, "Fila de mensagens cheia.", "QUEUE_FULL", readSetupEditId(message));
         sender.close();
         return;
       }
@@ -320,6 +396,8 @@ export function createApplication(
               ...(message.type === "action"
                 ? { actionId: message.actionId }
                 : {}),
+              ...("editId" in message && message.editId ? { editId: message.editId } : {}),
+              ...("commandId" in message ? { commandId: message.commandId } : {}),
             });
         })
         .finally(() => {
@@ -354,6 +432,7 @@ export function createApplication(
       },
     );
     register(playerId, sender);
+    peers.set(playerId, socket.remoteAddress ?? "unknown");
     const dispatch = dispatcher(sender, playerId);
     const decoder = new StringDecoder("utf8");
     let buffer = "";
@@ -434,6 +513,7 @@ export function createApplication(
         },
       );
       register(playerId, sender);
+      peers.set(playerId, request.socket.remoteAddress ?? "unknown");
       alive.set(ws, true);
       ws.on("pong", () => alive.set(ws, true));
       const dispatch = dispatcher(sender, playerId);
@@ -467,7 +547,7 @@ export function createApplication(
     if (origin) response.setHeader("Access-Control-Allow-Origin", origin);
     const pathname = (request.url ?? "").split("?")[0];
     response.setHeader("Content-Type", "application/json; charset=utf-8");
-    if (pathname !== "/api/pokemon") {
+    if (!["/api/pokemon", "/api/game"].includes(pathname)) {
       response.writeHead(404);
       response.end(JSON.stringify({ error: "Rota não encontrada." }));
       return;
@@ -485,7 +565,7 @@ export function createApplication(
       return;
     }
     response.writeHead(200);
-    response.end(catalogBody);
+    response.end(pathname === "/api/game" ? JSON.stringify({ protocol: settings.protocolVersion, formats: FORMATS, trainers: TRAINERS }) : catalogBody);
   });
 
   for (const listener of [tcpServer, webBridge, apiServer]) {
@@ -519,6 +599,8 @@ export function createApplication(
   async function close(): Promise<void> {
     stopping = true;
     if (heartbeat) clearInterval(heartbeat);
+    if (housekeeping) clearInterval(housekeeping);
+    for (const timers of [botTimers, rematchTimers]) { for (const timer of timers.values()) clearTimeout(timer); timers.clear(); }
     for (const timer of joinTimers.values()) clearTimeout(timer);
     joinTimers.clear();
     for (const timer of preparationTimers.values()) clearTimeout(timer);
@@ -542,6 +624,11 @@ export function createApplication(
   }
   return {
     async listen(): Promise<void> {
+      housekeeping = setInterval(() => {
+        for (const id of manager.sweep()) senders.get(id)?.({ type: "lobby", lobby: null, message: "O convite expirou. Crie uma nova sala." });
+        for (const [key, entry] of admission) if (Date.now() - entry.starts > 60000) admission.delete(key);
+      }, 15000);
+      housekeeping.unref();
       const results = await Promise.allSettled([
         bind(tcpServer, settings.tcpPort, settings.tcpHost),
         bind(webBridge, settings.webSocketPort),

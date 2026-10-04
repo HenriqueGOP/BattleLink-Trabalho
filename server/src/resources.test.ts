@@ -236,8 +236,8 @@ async function run() {
   );
   assert.equal(
     resolveBattleSprite("greninja", false, false).mirrored,
-    true,
-    "Front animado substitui back ausente com espelhamento",
+    false,
+    "Back estático tem prioridade sobre GIF da vista oposta",
   );
   assert.equal(
     resolveBattleSprite("greninja", false, false).staticMirrored,

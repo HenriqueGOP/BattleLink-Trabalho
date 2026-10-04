@@ -1,10 +1,14 @@
 .page {
+  position: relative;
+  isolation: isolate;
   width: min(1320px, 100%);
   margin-inline: auto;
   padding: 32px 32px 64px;
   display: grid;
   gap: 24px;
 }
+.reviewActions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.reviewActions p { color: var(--text-dim); font-size: 14px; }
 .header {
   display: flex;
   align-items: flex-end;
@@ -319,7 +323,7 @@
   display: grid;
   place-items: center;
   min-height: 180px;
-  background: radial-gradient(circle, white 0, var(--portrait-face) 70%);
+  background: var(--portrait-face);
   border-radius: 12px;
 }
 .detail h2 {
@@ -400,7 +404,7 @@
   gap: 16px;
   padding: 20px;
   background: var(--hud-face);
-  color: var(--danger);
+  color: var(--danger-ink);
   border-radius: var(--radius);
 }
 .empty {

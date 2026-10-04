@@ -4,6 +4,7 @@ import { motionProfile } from '../../../../lib/presentation/motionProfiles'
 import { useMotionPreference } from '../../../../hooks/useMotionPreference'
 import styles from './BattleSprite.module.css'
 import type { Player } from '../../../../types/player'
+import { spriteAnchorLayout, spriteLayout } from '../../../../lib/presentation/sceneLayout'
 
 export interface BattleSpriteProps {
   player: Player | null
@@ -56,7 +57,6 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
       data-motion-status={status || undefined}
       data-native-animation={animated ? 'true' : undefined}
     >
-      <span className={styles.shadow} data-motion-shadow aria-hidden="true" />
       <div className={styles.action} data-motion-action>
         <div className={styles.idle} data-motion-idle>
           <div
@@ -68,6 +68,7 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
               <img
                 key={source}
                 className={styles.sprite}
+              style={spriteLayout(source, asset.staticSrc)}
                 src={source}
                 data-creature-sprite
                 data-static-src={asset.staticSrc}
@@ -90,6 +91,7 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
               />
             )}
           </div>
+          {(['body', 'head', 'feet'] as const).map(kind => <span key={kind} className={styles.anchor} data-sprite-anchor={kind} style={spriteAnchorLayout(source, kind, asset.staticSrc)} aria-hidden="true" />)}
         </div>
       </div>
       {player?.pokemonData?.isShiny && (

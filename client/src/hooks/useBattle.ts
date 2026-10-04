@@ -1,3 +1,4 @@
+import { formatSize } from '../../../server/src/contracts/formats'
 import { useMemo } from 'react'
 import { useBattleContext } from '../context/BattleProvider'
 
@@ -26,9 +27,10 @@ export function useBattle(): BattleView {
     const blocked = Boolean(
       connected && state?.phase === 'battle' && myIndex >= 0 && request && request.kind !== 'move'
     )
-    const canChoose = Boolean(state && state.phase === 'setup' && (myPlayer?.team.length ?? 0) < 6)
+    const TEAM_SIZE = state ? formatSize(state.wire.format) : 6
+    const canChoose = Boolean(state && state.phase === 'setup' && (myPlayer?.team.length ?? 0) < TEAM_SIZE)
     const canSetupMoves = Boolean(
-      state?.phase === 'setup' && myPlayer && myPlayer.team.length === 6 && !teamAccepted
+      state?.phase === 'setup' && myPlayer && myPlayer.team.length === TEAM_SIZE && !teamAccepted
     )
     return { myIndex, myPlayer, opponent, myTurn, blocked, canChoose, canSetupMoves }
   }, [state, playerId, teamAccepted, connected, actionPending])

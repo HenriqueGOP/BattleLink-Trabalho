@@ -37,10 +37,10 @@ async function run(): Promise<void> {
     () => room.setMoves("p1", "smeargle", ["growl"]),
     /confirmada/i,
   );
-  room.resetTeam("p1");
-  assert.equal(room.state.players[0].ready, false);
-  for (const pokemon of TEAM) room.choosePokemon("p1", pokemon);
-  room.acceptTeam("p1");
+  const confirmed = room.getStateFor("p1");
+  // Acceptance now locks every setup command, including the legacy reset path.
+  assert.throws(() => room.resetTeam("p1"), /confirmada/i);
+  assert.deepEqual(room.getStateFor("p1"), confirmed);
   room.acceptTeam("p2");
   const before = room.getStateFor("p2");
   assert.throws(

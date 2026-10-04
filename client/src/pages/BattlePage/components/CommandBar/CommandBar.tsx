@@ -47,7 +47,7 @@ export function CommandBar({
   return (
     <section className={styles.bar} aria-label="Comandos de batalha">
       {preview ? (
-        <div className={styles.message}>
+        <div className={styles.message} tabIndex={0} aria-label={`Detalhes de ${preview.displayName ?? preview.name}`}>
           <article className={styles.preview}>
             <header className={styles.previewHead}>
               <h3 className={styles.previewName}>{preview.displayName ?? preview.name}</h3>

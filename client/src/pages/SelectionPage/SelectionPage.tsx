@@ -1,3 +1,4 @@
+import { formatSize } from '../../../../server/src/contracts/formats'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/Button'
@@ -5,7 +6,10 @@ import { PokeballSpinner } from '../../components/PokeballSpinner'
 import { Sprite } from '../../components/Sprite'
 import { TypeBadge } from '../../components/TypeBadge'
 import { AudioSettings } from '../../components/AudioSettings'
+import { TeamEditor } from '../../components/TeamEditor/TeamEditor'
+import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
 import { GameIcon } from '../../components/GameIcon/GameIcon'
+import { Brand, MenuScenery, MenuEmblem } from '../../components/MenuArt/MenuArt'
 import { useBattleContext } from '../../context/BattleProvider'
 import { useBattle } from '../../hooks/useBattle'
 import { useCatalog } from '../../hooks/useCatalog'
@@ -16,7 +20,6 @@ import { formatPokemonName, matchesPokemonSearch, typeLabel } from '../../lib/fo
 import type { PokemonSummary } from '../../types/pokemon'
 import styles from './SelectionPage.module.css'
 
-const TEAM_SIZE = 6
 const PAGE_SIZE = 48
 const STAT_LABELS = {
   hp: 'HP',
@@ -30,12 +33,14 @@ const STAT_LABELS = {
 function PokemonCard({
   pokemon,
   chosen,
+  disabled,
   inspected,
   onChoose,
   onInspect,
 }: {
   pokemon: PokemonSummary
   chosen: boolean
+  disabled: boolean
   inspected: boolean
   onChoose: (name: string) => void
   onInspect: (name: string) => void
@@ -49,7 +54,7 @@ function PokemonCard({
     >
       <button
         className={styles.choose}
-        disabled={chosen}
+        disabled={chosen || disabled}
         onClick={() => {
           audio.play('select')
           onChoose(pokemon.name)
@@ -83,7 +88,7 @@ function PokemonCard({
 
 /** Catálogo local: IDs canônicos permanecem nas escolhas enviadas ao servidor. */
 export function SelectionPage() {
-  const { state, playerId, choosePokemon, randomTeam, leave } = useBattleContext()
+  const { state, playerId, choosePokemon, randomTeam, leave, setupPending } = useBattleContext()
   const { myPlayer } = useBattle()
   const navigate = useNavigate()
   const audioPrefs = useAudio()
@@ -93,6 +98,8 @@ export function SelectionPage() {
   const [limit, setLimit] = useState(PAGE_SIZE)
   const [inspectedId, setInspectedId] = useState('')
   const detailRef = useRef<HTMLElement>(null)
+  const TEAM_SIZE = state ? formatSize(state.wire.format) : 6
+  const theme = state?.wire.format.type
   const team = useMemo(() => myPlayer?.team ?? [], [myPlayer])
 
   useEffect(() => {
@@ -100,19 +107,15 @@ export function SelectionPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (state?.phase === 'setup' && !myPlayer?.ready && team.length >= TEAM_SIZE)
-      navigate('/equipe')
-  }, [team.length, navigate, state?.phase, myPlayer?.ready])
-
   const visible = useMemo(() => {
     return catalog.filter((pokemon) => {
       return (
+        (!theme || speciesById(pokemon.name)?.types.includes(theme)) &&
         matchesPokemonSearch(pokemon, query) &&
         (!typeFilter || speciesById(pokemon.name)?.types.some((type) => type === typeFilter))
       )
     })
-  }, [catalog, query, typeFilter])
+  }, [catalog, query, typeFilter, theme])
   const availableTypes = useMemo(
     () =>
       Array.from(
@@ -145,15 +148,17 @@ export function SelectionPage() {
 
   return (
     <main className={styles.page} aria-busy={loading}>
+      <MenuScenery menu="selection" />
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>
-            BATTLE LINK <span>01 / 03 · montar equipe</span>
+            <Brand /> <span>01 / 03 · montar equipe</span>
           </p>
-          <h1 className={styles.title}>Escolha seus seis</h1>
+          <h1 className={styles.title}>Escolha sua equipe</h1>
           <p className={styles.subtitle}>Encontre seus favoritos e prepare sua estratégia.</p>
         </div>
         <div className={styles.headerTools}>
+          <MenuEmblem menu="selection" />
           <output
             className={styles.counter}
             aria-label={`Equipe ${team.length} de ${TEAM_SIZE}`}
@@ -168,36 +173,12 @@ export function SelectionPage() {
         </div>
       </header>
 
-      <section className={styles.teamRow} aria-label="Pokémon escolhidos">
-        <div className={styles.teamLabel}>
-          <GameIcon name="ball" size={20} />
-          <span>Sua equipe</span>
-        </div>
-        <div className={styles.teamSlots}>
-          {Array.from({ length: TEAM_SIZE }, (_, index) => {
-            const member = team[index]
-            return (
-              <div className={styles.slot} key={index} data-filled={Boolean(member) || undefined}>
-                <span className={styles.slotNumber}>{String(index + 1).padStart(2, '0')}</span>
-                {member ? (
-                  <>
-                    <Sprite src={member.image} name={member.pokemon} size={40} />
-                    <span className={styles.chipName}>{formatPokemonName(member.pokemon)}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className={styles.slotBall} aria-hidden="true">
-                      <GameIcon name="ball" size={22} />
-                    </span>
-                    <span className={styles.slotHint}>Livre</span>
-                  </>
-                )}
-              </div>
-            )
-          })}
-        </div>
-        {team.length === 0 && <span className="sr-only">Nenhum Pokémon escolhido ainda</span>}
-      </section>
+      <MatchBanner />
+      <TeamEditor />
+      <div className={styles.reviewActions}>
+        <p role="status">{setupPending ? 'Sincronizando sua equipe…' : team.length === TEAM_SIZE ? 'Revise a ordem e prepare os golpes quando estiver pronto.' : `Escolha mais ${TEAM_SIZE - team.length} Pokémon para continuar.`}</p>
+        <Button disabled={team.length !== TEAM_SIZE || setupPending} onClick={() => navigate('/equipe')}>Preparar golpes →</Button>
+      </div>
 
       <div className={styles.actions}>
         <label className={styles.searchWrap}>
@@ -234,13 +215,13 @@ export function SelectionPage() {
           <Button
             variant="ghost"
             onClick={() => draw(1)}
-            disabled={team.length >= TEAM_SIZE || loading}
+            disabled={team.length >= TEAM_SIZE || loading || setupPending}
           >
             <GameIcon name="dice" size={18} /> Sortear 1
           </Button>
           <Button
             onClick={() => draw(TEAM_SIZE - team.length)}
-            disabled={team.length >= TEAM_SIZE || loading}
+            disabled={team.length >= TEAM_SIZE || loading || setupPending}
           >
             <GameIcon name="dice" size={18} /> Sortear equipe inteira
           </Button>
@@ -281,6 +262,7 @@ export function SelectionPage() {
                   key={pokemon.name}
                   pokemon={pokemon}
                   chosen={chosenIds.has(pokemon.name)}
+                  disabled={team.length >= TEAM_SIZE || setupPending}
                   inspected={inspected?.name === pokemon.name}
                   onChoose={choosePokemon}
                   onInspect={inspectPokemon}
@@ -338,7 +320,7 @@ export function SelectionPage() {
                 Valores iniciais, antes dos modificadores de batalha.
               </p>
               <Button
-                disabled={chosenIds.has(inspected.name)}
+                disabled={chosenIds.has(inspected.name) || team.length >= TEAM_SIZE || setupPending}
                 onClick={() => {
                   audio.play('select')
                   choosePokemon(inspected.name)

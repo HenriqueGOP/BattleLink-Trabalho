@@ -4,6 +4,7 @@ import { Sprite } from '../../../../components/Sprite'
 import { formatPokemonName } from '../../../../lib/format'
 import { STATUS_SHORT } from '../shared'
 import styles from './BattleControls.module.css'
+import { MenuEmblem, MenuScenery } from '../../../../components/MenuArt/MenuArt'
 import type { Player } from '../../../../types/player'
 import type { ActionRequest } from '../../../../types/protocol'
 
@@ -32,6 +33,8 @@ export const BattleControls = memo(function BattleControls({
 
   return (
     <section className={styles.controls} aria-label="Equipe">
+      <MenuScenery menu="party" panel />
+      <MenuEmblem menu="party" />
       {blocked && (
         <p className={styles.urgent} role="alert">
           {request?.kind === 'revive'

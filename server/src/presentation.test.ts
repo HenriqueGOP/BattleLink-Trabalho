@@ -456,7 +456,8 @@ class FakeNode {
   static created: FakeNode[] = [];
   children = new Set<FakeNode>();
   parent: FakeNode | null = null;
-  style: Record<string, string> = {};
+  style = { setProperty: (key: string, value: string) => { (this.style as Record<string, unknown>)[key] = value; } } as Record<string, unknown> & { setProperty: (key: string, value: string) => void; };
+  dataset: Record<string, string> = {};
   className = "";
   textContent = "";
   selectors = new Map<string, FakeNode>();
@@ -480,8 +481,8 @@ class FakeNode {
     return animation;
   }
 }
-async function until(check: () => boolean) {
-  for (let i = 0; !check() && i < 100; i++) await delay(5);
+async function until(check: () => boolean, limit = 100) {
+  for (let i = 0; !check() && i < limit; i++) await delay(5);
   assert.ok(check());
 }
 async function directorTests() {
@@ -660,6 +661,36 @@ async function directorTests() {
         ),
       ),
     );
+    // Trainer frames finish and exit before any creature enter animation starts.
+    const intro = new FakeNode(), trainer = new FakeNode();
+    stage.selectors.set('[data-trainer-intro]', intro);
+    intro.selectors.set('[data-trainer-sprite]', trainer);
+    const start: CanonicalEvent = { type: 'battle_start', sequence: 0, round: 0, audience: 'public' };
+    const introBefore = FakeNode.animations.length;
+    const entered = director.run(start, wire, new AbortController().signal, () => commits++);
+    await until(() => FakeNode.animations.length > introBefore);
+    assert.equal(stage.dataset.trainerPhase, 'idle');
+    FakeNode.animations[introBefore].finish();
+    await until(() => stage.dataset.trainerPhase === 'prepare', 120);
+    assert.equal(FakeNode.animations.length, introBefore + 1, 'No Pokémon animation during prepare');
+    await until(() => stage.dataset.trainerPhase === 'throw', 120);
+    assert.equal(trainer.style['--trainer-x'], '-320px');
+    await until(() => stage.dataset.trainerPhase === 'follow', 120);
+    await until(() => stage.dataset.trainerPhase === 'exit', 120);
+    assert.equal(FakeNode.animations.length, introBefore + 2, 'Only trainer entry and exit so far');
+    FakeNode.animations[introBefore + 1].finish();
+    await until(() => FakeNode.animations.length > introBefore + 2);
+    assert.equal(stage.dataset.trainerPhase, 'complete');
+    assert.equal(intro.style.opacity, '0', 'Trainer hidden before summon');
+    for (const animation of FakeNode.animations.slice(introBefore + 2)) animation.finish();
+    await entered;
+    assert.equal(trainer.dataset.controlled, undefined);
+    const abortIntro = new AbortController();
+    const cancelledIntro = director.run(start, wire, abortIntro.signal, () => commits++);
+    abortIntro.abort();
+    await cancelledIntro;
+    assert.equal(stage.dataset.trainerPhase, 'complete', 'Skip releases hidden creatures');
+    assert.equal(intro.style.opacity, '0');
     director.dispose();
     let reducedSounds = 0;
     const reduced = new AnimationDirector({
@@ -681,7 +712,10 @@ async function directorTests() {
       1,
       "Movimento reduzido preserva a escolha explícita de áudio",
     );
-    assert.equal(commits, 5);
+    assert.equal(commits, 6);
+    await reduced.run(start, wire, new AbortController().signal, () => commits++);
+    assert.equal(stage.dataset.trainerPhase, 'complete');
+    assert.equal(FakeNode.animations.length, reducedBefore);
     reduced.dispose();
   } finally {
     globalThis.document = originalDocument;

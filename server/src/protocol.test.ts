@@ -24,11 +24,12 @@ assert.throws(
   () => parseClientMessage({ ...join, protocol: "pokemon-battle/2" }),
   /incompatível/,
 );
-assert.deepEqual(parseClientMessage({ type: "accept_team" }), {
-  type: "accept_team",
+assert.deepEqual(parseClientMessage({ type: "accept_team", matchId: "match-fixture" }), {
+  type: "accept_team", matchId: "match-fixture",
 });
 const action = {
   type: "action",
+  matchId: "match-fixture",
   requestId: 1,
   actionId: "id-1",
   choice: { type: "move", moveId: "tackle" },
@@ -87,5 +88,5 @@ assert.throws(() =>
 );
 room.destroy();
 console.log(
-  "Protocol tests passed: v3, malformed actions, old commands rejected and validated snapshots.",
+  "Protocol tests passed: v4, malformed actions, old commands rejected and validated snapshots.",
 );

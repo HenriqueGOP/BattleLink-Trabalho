@@ -1,4 +1,6 @@
 .page {
+  position: relative;
+  isolation: isolate;
   width: min(1320px, 100%);
   margin-inline: auto;
   padding: 32px 32px 80px;
@@ -142,7 +144,7 @@
   color: var(--mint);
 }
 .tabActive .tabReady[data-ready] {
-  color: var(--success);
+  color: var(--success-ink);
 }
 .detail {
   min-width: 0;
@@ -213,7 +215,7 @@
 .memberHp > span {
   font-size: 12px;
   font-weight: 700;
-  color: var(--success);
+  color: var(--success-ink);
 }
 .memberHp b {
   font: 700 32px/1.2 var(--font-display);
@@ -259,9 +261,9 @@
   background: var(--hud-face-2);
 }
 .moveCount[data-full] {
-  color: var(--success);
+  color: var(--success-ink);
   background: var(--mint-soft);
-  border-color: var(--success);
+  border-color: var(--success-ink);
 }
 .chosenRow {
   display: grid;
@@ -279,7 +281,7 @@
   border-radius: var(--radius);
 }
 .chosen:hover {
-  border-color: var(--success);
+  border-color: var(--success-ink);
 }
 .chosen:focus-visible {
   outline-color: var(--focus-on-light);
@@ -293,7 +295,7 @@
   overflow-wrap: anywhere;
 }
 .chosenIndex {
-  color: var(--success);
+  color: var(--success-ink);
   font: 600 11px/1 var(--font-display);
   flex: none;
 }
@@ -371,11 +373,14 @@
   width: 17px;
   height: 17px;
   min-height: 17px;
-  accent-color: var(--success);
+  accent-color: var(--success-ink);
 }
 .moveGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  align-items: start;
   gap: 10px;
   max-height: 600px;
   overflow-y: auto;
@@ -390,8 +395,8 @@
   overflow: hidden;
 }
 .moveSelected {
-  border-color: var(--success);
-  background: var(--mint-soft);
+  outline: 2px solid var(--success);
+  outline-offset: -2px;
 }
 .moveChoice {
   display: grid;
@@ -436,7 +441,7 @@
 .moveSelected .check {
   color: white;
   background: var(--success);
-  border-color: var(--success);
+  border-color: var(--success-ink);
 }
 .moveMeta {
   display: flex;
@@ -482,20 +487,20 @@
 }
 .heal,
 .buff {
-  color: var(--success);
+  color: var(--success-ink);
   background: var(--mint-soft);
 }
 .ailment,
 .debuff {
-  color: var(--danger);
-  background: #f9e9ec;
+  color: var(--danger-ink);
+  background: #442238;
 }
 .info {
   color: var(--hud-ink-soft);
 }
 .unsupported {
   font-size: 10px;
-  color: var(--danger);
+  color: var(--danger-ink);
 }
 .moveCard[data-unavailable] {
   background: var(--hud-face-2);

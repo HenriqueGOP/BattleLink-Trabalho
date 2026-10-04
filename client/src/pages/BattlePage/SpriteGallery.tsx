@@ -5,6 +5,7 @@ import { SPRITE_CLIPS, type SpriteClipId } from '../../lib/presentation/spriteRe
 import styles from './SpriteGallery.module.css'
 
 const labels: Record<SpriteClipId, string> = {
+  frozen: 'Aura de congelamento',
   impact: 'Impacto',
   slash: 'Corte',
   fire: 'Fogo',
@@ -30,7 +31,7 @@ const labels: Record<SpriteClipId, string> = {
   dodge: 'Esquiva',
   psychic: 'Energia psíquica',
 }
-const ids = Object.keys(SPRITE_CLIPS) as SpriteClipId[]
+const regularIds = (Object.keys(SPRITE_CLIPS) as SpriteClipId[]).filter(id => id !== 'frozen')
 interface FrameSample {
   frames: number
   elapsedMs: number
@@ -80,6 +81,8 @@ function sampleFrames(signal: AbortSignal): Promise<FrameSample | null> {
 }
 
 function Clips() {
+  const [iceOnly, setIceOnly] = useState(false)
+  const ids: SpriteClipId[] = iceOnly ? ['frozen'] : regularIds
   const holders = useRef(new Map<SpriteClipId, HTMLDivElement>())
   const [staticFrames, setStaticFrames] = useState(
     () => matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -125,11 +128,16 @@ function Clips() {
       document.removeEventListener('visibilitychange', stopWhenHidden)
       if (abortRef.current === controller) abortRef.current = null
     }
-  }, [epoch, mode, staticFrames])
+  // The gallery displays the ice atlas separately, preserving the 24-instance budget.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [epoch, mode, staticFrames, iceOnly])
 
   return (
     <>
       <div className={styles.controls}>
+        <Button variant="ghost" onClick={() => { abortRef.current?.abort(); setIceOnly(value => !value); setMode('preview') }}>
+          {iceOnly ? 'Mostrar os 24 efeitos de combate' : 'Inspecionar aura de gelo'}
+        </Button>
         <Button
           onClick={() => {
             abortRef.current?.abort()
@@ -139,7 +147,7 @@ function Clips() {
             setStatus(
               staticFrames
                 ? 'Exibindo somente quadros estáticos.'
-                : 'Reproduzindo uma rodada de 24 efeitos.'
+                : `Reproduzindo uma rodada de ${ids.length} efeitos.`
             )
           }}
         >
@@ -215,7 +223,7 @@ function Clips() {
 export function SpriteGallery({ enabled }: { enabled: boolean }) {
   return (
     <section className={styles.section} aria-label="Galeria de sprites de combate">
-      <h2 className={styles.title}>Galeria de 24 efeitos</h2>
+      <h2 className={styles.title}>Galeria de 25 efeitos</h2>
       <p>Previews usam o mesmo renderizador Canvas e os mesmos arquivos da batalha.</p>
       {enabled ? (
         <Clips />

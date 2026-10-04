@@ -1,3 +1,4 @@
+import { trainerAssets } from './trainerAssets'
 import type { RoomSnapshot } from '../types/protocol'
 import {
   pokemonAssets,
@@ -79,7 +80,9 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
   }
   // The visible scene gets the deadline budget first. Audio and bench variants
   // are optional work; missing their deadline cannot invalidate usable artwork.
+  const trainer = trainerAssets(snapshot.trainerId)
   const essential = new Set([
+    ...(trainer ? [trainer.motion, trainer.splash, trainer.art] : []),
     FALLBACK_SPRITE,
     config.primary,
     ...activeSprites,

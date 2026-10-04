@@ -1,0 +1,110 @@
+[
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/1.png",
+      "pokemon": "bulbasaur",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/1.png",
+      "pokemon": "bulbasaur",
+      "side": "me"
+    }
+  ],
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/321.png",
+      "pokemon": "wailord",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/321.png",
+      "pokemon": "wailord",
+      "side": "me"
+    }
+  ],
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/6.png",
+      "pokemon": "charizard",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/6.png",
+      "pokemon": "charizard",
+      "side": "me"
+    }
+  ],
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/669.png",
+      "pokemon": "flabebe",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/669.png",
+      "pokemon": "flabebe",
+      "side": "me"
+    }
+  ],
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/92.png",
+      "pokemon": "gastly",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/92.png",
+      "pokemon": "gastly",
+      "side": "me"
+    }
+  ],
+  [
+    {
+      "feetX": "0.720",
+      "feetY": "0.600",
+      "height": 159.890625,
+      "image": "/pokemon/front/658.png",
+      "pokemon": "greninja",
+      "side": "opponent"
+    },
+    {
+      "feetX": "0.280",
+      "feetY": "0.858",
+      "height": 195,
+      "image": "/pokemon/back/658.png",
+      "pokemon": "greninja",
+      "side": "me"
+    }
+  ]
+]

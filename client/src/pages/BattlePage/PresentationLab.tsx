@@ -11,6 +11,7 @@ import { Button } from '../../components/Button'
 import { EndOverlay } from './components/EndOverlay'
 import { AudioSettings } from '../../components/AudioSettings'
 import { SpriteGallery } from './SpriteGallery'
+import { GroundingPreview } from './GroundingPreview'
 import { battleBackgrounds } from '../../config/battleBackgrounds'
 import styles from './BattlePage.module.css'
 
@@ -89,7 +90,7 @@ function Scenario({ restart }: { restart: () => void }) {
           myId={state.players[0].id}
           totals={totals}
           opponentLeft={false}
-          onLeave={restart}
+          onRematch={() => undefined} onLeave={restart}
         />
       )}
     </>
@@ -97,6 +98,7 @@ function Scenario({ restart }: { restart: () => void }) {
 }
 /** Inspeção somente em desenvolvimento/profile; sem controles de override no jogo distribuído. */
 export function PresentationLab() {
+  const [showGrounding, setShowGrounding] = useState(false)
   const [epoch, setEpoch] = useState(0),
     [mounted, setMounted] = useState(true)
   const [preview, setPreview] = useState<'mobile' | 'desktop' | null>(null)
@@ -105,6 +107,9 @@ export function PresentationLab() {
       <h1>Laboratório de apresentação</h1>
       <AudioSettings />
       <div className={styles.tools}>
+        <Button onClick={() => { setMounted(false); setShowGrounding(value => !value) }}>
+          {showGrounding ? 'Inspecionar efeitos' : 'Inspecionar sprites e arenas'}
+        </Button>
         <Button
           onClick={() => {
             setEpoch((value) => value + 1)
@@ -119,8 +124,9 @@ export function PresentationLab() {
       </div>
       {mounted && <Scenario key={epoch} restart={() => setEpoch((value) => value + 1)} />}
       <BattleProfiler>
-        <SpriteGallery enabled={!mounted} />
+        <SpriteGallery enabled={!mounted && !showGrounding} />
       </BattleProfiler>
+      {!mounted && showGrounding && <GroundingPreview />}
       <section aria-label="Galeria das seis arenas" className={styles.arenaGallery}>
         {battleBackgrounds.map((arena) => (
           <article key={arena.id}>

@@ -1,3 +1,5 @@
+import type { FormatChoice } from "./formats";
+import type { Difficulty } from "./trainers";
 import type {
   BattleChoice,
   BattleEvent,
@@ -6,7 +8,7 @@ import type {
   SideId,
 } from "../game/engine/battle-types";
 
-export const PROTOCOL_VERSION = "pokemon-battle/3";
+export const PROTOCOL_VERSION = "pokemon-battle/4";
 export const ARENA_IDS = [
   "forest",
   "stadium",
@@ -34,7 +36,18 @@ export interface RoomResult {
   readonly reason:
     "knockout" | "draw" | "disconnect" | "preparation_timeout" | "engine_error";
 }
+export interface PrivateLobbySnapshot {
+  readonly roomId: string; readonly code: string; readonly hostId: string;
+  readonly format: FormatChoice; readonly players: readonly { readonly id: string; readonly name: string }[];
+}
 export interface RoomSnapshot {
+  readonly matchId: string;
+  readonly format: FormatChoice;
+  readonly mode: "automatic" | "private" | "pve";
+  readonly inviteCode: string | null;
+  readonly trainerId: string | null;
+  readonly difficulty: Difficulty | null;
+  readonly rematch: { readonly expiresAt: number | null; readonly votes: readonly [boolean, boolean]; readonly available: boolean };
   readonly roomId: string;
   readonly phase: GamePhase;
   readonly viewer: SideId;
@@ -60,35 +73,51 @@ export type ClientMessage =
       token?: string;
     }
   | { type: "leave" }
-  | { type: "choose_pokemon"; pokemon: string }
-  | { type: "random_team"; count: number }
-  | { type: "set_moves"; pokemon: string; moves: string[] }
-  | { type: "reset_team" }
-  | { type: "accept_team" }
-  | { type: "battle_ready"; preparationId: string }
-  | { type: "resync" }
+  | { type: "queue_join"; format: FormatChoice; commandId: string }
+  | { type: "queue_cancel" }
+  | { type: "private_create"; format: FormatChoice; commandId: string }
+  | { type: "private_join"; code: string; commandId: string }
+  | { type: "room_leave" }
+  | { type: "pve_start"; trainerId: string; difficulty: Difficulty; format: FormatChoice; commandId: string }
+  | { type: "rematch"; matchId: string; accept: boolean; keepTeam: boolean }
+  | SetupMessage
+  | { type: "battle_ready"; preparationId: string; matchId?: string }
+  | { type: "resync"; matchId?: string }
   | {
       type: "action";
+      matchId?: string;
       requestId: number;
       actionId: string;
       choice: BattleChoice;
     };
+/** The wire decoder requires matchId; optional only for trusted in-process fixtures. */
+export type SetupMessage = (
+  | { type: "choose_pokemon"; pokemon: string }
+  | { type: "remove_pokemon"; pokemon: string }
+  | { type: "reorder_team"; pokemon: string[] }
+  | { type: "random_team"; count: number }
+  | { type: "set_moves"; pokemon: string; moves: string[] }
+  | { type: "reset_team" }
+  | { type: "accept_team" }
+) & { editId?: string; matchId?: string };
 export type ServerMessage =
+  | { type: "lobby"; lobby: PrivateLobbySnapshot | null; message: string; commandId?: string }
   | {
       type: "welcome";
       playerId: string;
       protocol: string;
       catalogVersion: string;
     }
-  | { type: "waiting"; message: string }
-  | { type: "match_found"; roomId: string; state: RoomSnapshot }
-  | { type: "state"; state: RoomSnapshot }
+  | { type: "waiting"; message: string; commandId?: string }
+  | { type: "match_found"; roomId: string; state: RoomSnapshot; commandId?: string }
+  | { type: "state"; state: RoomSnapshot; editId?: string }
   | {
       type: "action_ack";
+      matchId: string;
       requestId: number;
       actionId: string;
       duplicate: boolean;
       resolved: boolean;
     }
-  | { type: "error"; code: string; message: string; actionId?: string }
+  | { type: "error"; code: string; message: string; actionId?: string; editId?: string; commandId?: string }
   | { type: "opponent_left"; message: string };

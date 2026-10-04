@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react'
 import { audio } from '../../../../lib/audio'
 import { categoryLabel, typeLabel } from '../../../../lib/format'
 import styles from './MoveMenu.module.css'
+import moveIdentity from '../../../../components/MoveIdentity/MoveIdentity.module.css'
+import { MenuEmblem, MenuScenery } from '../../../../components/MenuArt/MenuArt'
 import type { Player } from '../../../../types/player'
 import type { PokemonMove } from '../../../../types/pokemon'
 import type { ActionRequest } from '../../../../types/protocol'
@@ -47,6 +49,8 @@ export const MoveMenu = memo(function MoveMenu({
       aria-label="Golpes disponíveis"
       onMouseLeave={() => onPreview?.(null)}
     >
+      <MenuScenery menu="combat" panel />
+      <MenuEmblem menu="combat" />
       <div className={styles.grid}>
         {moves.map((moveName) => {
           const move = data?.moves.find((item) => item.name === moveName)
@@ -64,8 +68,9 @@ export const MoveMenu = memo(function MoveMenu({
           return (
             <button
               key={moveName}
-              className={styles.move}
-              style={{ '--type-color': `var(--type-${type}, var(--type-normal))` } as CSSProperties}
+              className={`${styles.move} ${moveIdentity.surface}`}
+              data-move-type={type}
+              style={{ '--type-color': `var(--type-${type}, var(--type-normal))`, '--move-type': `var(--type-${type}, var(--type-normal))` } as CSSProperties}
               disabled={disabled || outOfPp}
               onClick={() => {
                 audio.play('select')

@@ -150,7 +150,7 @@ export class BattleEventQueue {
   }
   ingest(next: RoomSnapshot | null) {
     if (this.disposed) return
-    if (!next || this.latest?.roomId !== next.roomId) {
+    if (!next || this.latest?.roomId !== next.roomId || this.latest?.matchId !== next.matchId) {
       this.cancel()
       this.latest = next
       this.received = next?.sequence ?? 0

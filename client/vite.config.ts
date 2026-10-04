@@ -44,6 +44,7 @@ export default defineConfig(({ mode }) => ({
             { name: 'moves', test: /[/\\]data[/\\]moves\.json$/ },
             { name: 'assets', test: /[/\\]data[/\\]asset-registry\.json$/ },
             { name: 'animated-assets', test: /[/\\]data[/\\]animated-registry\.json$/ },
+            { name: 'sprite-metrics', test: /[/\\]data[/\\]sprite-metrics\.json$/ },
             { name: 'react', test: /[/\\]node_modules[/\\](?:react|react-dom|scheduler)[/\\]/ },
             { name: 'animation', test: /[/\\]node_modules[/\\]gsap[/\\]/ },
           ],

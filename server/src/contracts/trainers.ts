@@ -1,0 +1,22 @@
+import type { TypeId } from "../game/engine/types";
+export type Difficulty = "easy" | "normal" | "hard";
+export const DIFFICULTIES = ["easy", "normal", "hard"] as const;
+export interface TrainerDescriptor {
+  readonly id: string; readonly name: string; readonly title: string; readonly description: string;
+  readonly type: TypeId; readonly signature: string; readonly color: string; readonly arena: "forest" | "stadium" | "cave" | "beach" | "space" | "night-city";
+  readonly greeting: string; readonly farewell: string;
+}
+export const TRAINERS: readonly TrainerDescriptor[] = Object.freeze([
+  { id: "vespera", name: "Véspera", title: "Guardiã das almas esquecidas", description: "Reservada e gentil, encontra companhia nos Pokémon que muitos temem.", type: "dark", signature: "spiritomb", color: "#b795dc", arena: "cave", greeting: "Mesmo as almas perdidas merecem companhia…", farewell: "Eles vão se lembrar de você. Eu também." },
+  { id: "mare", name: "Maré", title: "A voz do oceano", description: "Elegante e teatral, lê cada batalha como o movimento das marés.", type: "water", signature: "milotic", color: "#8ed8ee", arena: "beach", greeting: "Vamos descobrir para onde esta corrente nos leva.", farewell: "Toda maré volta. Até nosso próximo encontro." },
+  { id: "teo", name: "Téo Volt", title: "Inventor de possibilidades", description: "Transforma sucata em invenções e cada batalha em uma descoberta.", type: "electric", signature: "ampharos", color: "#ffdc70", arena: "night-city", greeting: "Tudo carregado! Quer testar esta ideia comigo?", farewell: "Anotado! Já sei o que melhorar na próxima." },
+  { id: "brasa", name: "Brasa", title: "Ritmo de fogo", description: "Atleta de rua competitiva, leva energia e movimento a cada desafio.", type: "fire", signature: "blaziken", color: "#ff9d71", arena: "stadium", greeting: "Aqueceu? Então acompanha meu ritmo!", farewell: "Essa batalha mereceu uma plateia!" },
+  { id: "nina", name: "Nina Eco", title: "Coragem em voz baixa", description: "Seu jeito tímido esconde uma observadora paciente e cuidadosa.", type: "ghost", signature: "mimikyu", color: "#c8abe8", arena: "cave", greeting: "Eu… trouxe alguns amigos. Podemos começar?", farewell: "Obrigada por tratar meus amigos com carinho." },
+  { id: "flora", name: "Flora", title: "Pesquisadora dos caminhos verdes", description: "Carrega sementes, histórias e um caderno cheio de descobertas.", type: "grass", signature: "leavanny", color: "#ace09a", arena: "forest", greeting: "Sempre há algo novo crescendo pelo caminho!", farewell: "Mais uma história para o meu caderno." },
+  { id: "nival", name: "Nival", title: "O silêncio antes da neve", description: "Calmo e preciso, observa cada decisão antes de responder.", type: "ice", signature: "frosmoth", color: "#b1e8f1", arena: "space", greeting: "Respire. Há beleza em uma decisão bem pensada.", farewell: "Um encontro que merece ser lembrado." },
+  { id: "rixa", name: "Rixa", title: "Provocação em neon", description: "Uma rival punk de humor afiado que gosta de surpreender.", type: "poison", signature: "toxicroak", color: "#eb91d5", arena: "night-city", greeting: "Espero que sua estratégia tenha personalidade!", farewell: "Tá. Você tem estilo. Vamos repetir isso." },
+  { id: "aren", name: "Aren Cume", title: "Um passo além do horizonte", description: "Guia de montanha que enfrenta cada desafio com confiança tranquila.", type: "rock", signature: "lycanroc", color: "#e4bc8f", arena: "cave", greeting: "Cada subida começa com um passo. Vamos?", farewell: "Foi uma boa trilha. Nos vemos no próximo cume." },
+  { id: "lia", name: "Lia Horizonte", title: "Exploradora dos céus", description: "Otimista e curiosa, nunca perde a vontade de descobrir novos caminhos.", type: "flying", signature: "altaria", color: "#9ec9f5", arena: "beach", greeting: "Olha esse horizonte! Pronto para uma aventura?", farewell: "Essa história vai viajar comigo!" },
+  { id: "bento", name: "Bento Ferrugem", title: "Mãos de ferro, coração gentil", description: "Mecânico veterano, paciente com aprendizes e orgulhoso de seus parceiros.", type: "steel", signature: "aggron", color: "#c2d4d9", arena: "stadium", greeting: "Uma boa equipe precisa de cuidado. Mostre a sua!", farewell: "Bom trabalho! A oficina está sempre aberta." },
+]);
+export const trainerById = (id: string): TrainerDescriptor | undefined => TRAINERS.find(trainer => trainer.id === id);
