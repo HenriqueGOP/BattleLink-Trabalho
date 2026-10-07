@@ -8,6 +8,10 @@ procedência e avisos em `/pokemon`.
 - `attacks.webp`: impacto, corte, fogo, água, raio, folhas, gelo e sombra.
 - `statuses.webp`: queimadura, veneno, sono, confusão, proteção, buff, debuff e cura.
 - `transitions.webp`: recolhimento, invocação, nocaute, vitória, derrota, empate, esquiva e psíquico.
+- `impacts.webp`: substituição artística do atlas de ataques, gerada com imagegen integrado em 04/10/2026. Original e prompt em `docs/art-sources/battle-impacts`; exportação por `scripts/package-battle-impacts.py`. O atlas anterior permanece como histórico.
+- `frozen.webp`: aura local de congelamento; procedência e hashes preservados no manifesto.
+
+Em 07/10/2026, os efeitos de dano passaram a combinar clips existentes com a paleta de tipos e os símbolos SVG originais do projeto. O clip `dodge` é usado para retirada forçada; um evento `miss` mostra apenas “ERROU!”, sem inferir esquiva. `immune` não exibe a barreira de Protect.
 
 Os prompts finais estão em `docs/art-prompts/{attacks,statuses,transitions}.txt`.
 Dimensões e hashes dos originais e arquivos distribuídos estão em `manifest.json`.

@@ -54,5 +54,19 @@
     "originalSha256": "b5b2639eba0cc0cccbf782d934f20efaa8c8fcee3895c2a3b3dcc743fc66e3a8",
     "source": "OpenAI imagegen built-in; original project artwork; 2026-10-03",
     "encoding": "Eight equal frames; shared alpha crop; 256px cells; WebP85 alpha100"
+  },
+  {
+    "id": "impacts",
+    "path": "/battle-vfx/impacts.webp",
+    "width": 1254,
+    "height": 1254,
+    "columns": 8,
+    "rows": 8,
+    "framesPerClip": 8,
+    "bytes": 848922,
+    "sha256": "08ed1acb648e74f95f5d16cf2ac6f5a154cfa9d1d97b5118bcc2d642696572af",
+    "originalSha256": "ddb39ab6b9a4b736776a512fc7fae505f036573b77e4a8b01b7e786c06f13dd5",
+    "source": "OpenAI imagegen built-in, original project artwork; docs/art-sources/battle-impacts/impacts.png; 2026-10-04",
+    "encoding": "WebP quality82 alpha100; unchanged full atlas, eight local impact sequences"
   }
 ]
