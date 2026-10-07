@@ -308,9 +308,21 @@
     animation: none;
   }
 }
-.trainerIntro { position: absolute; right: 20%; bottom: 40%; z-index: 30; opacity: 0; pointer-events: none; }
-.stage[data-trainer-phase]:not([data-trainer-phase='complete']) [data-scene-side] { visibility: hidden; }
+.trainerIntro {
+  position: absolute;
+  width: 160px;
+  height: 200px;
+  transform: translate(-50%, -100%) scale(.7);
+  transform-origin: center bottom;
+  z-index: 18;
+  opacity: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 3px #03112370);
+}
+.stage[data-trainer-phase='pending'] [data-scene-side],
+.stage[data-trainer-summon='both'] [data-scene-side],
+.stage[data-trainer-summon='opponent'] [data-scene-side='opponent'] { visibility: hidden; }
 .actionTabs { padding: 10px 14px; border: 1px solid var(--mint); border-radius: 4px 16px; background: var(--bg-panel); }
 .actionTabs > button { flex: 1; min-height: 52px; font: 800 20px var(--font-display); }
 .stage { border-radius: 6px 24px; border: 2px solid var(--mint); }
-@media (max-width: 560px) { .actionTabs > span { display: none; } .actionTabs > button { font-size: 14px; min-width: 0; } .trainerIntro { right: 12%; bottom: 40%; } }
+@media (max-width: 560px) { .actionTabs > span { display: none; } .actionTabs > button { font-size: 14px; min-width: 0; } .trainerIntro { transform: translate(-50%, -100%) scale(.38); } }

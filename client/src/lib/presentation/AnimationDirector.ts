@@ -3,11 +3,12 @@ import type { CanonicalEvent, RoomSnapshot, CombatantId } from '../../types/prot
 import type { EventRunner } from './BattleEventQueue'
 import { IMPACT } from './impact'
 import { playSprite, type SpriteOptions } from './SpriteRenderer'
-import { attackClip, emissionClip, isChargingMove, type SpriteClipId } from './spriteRegistry'
+import { attackClip, attackVisualType, isChargingMove, type SpriteClipId } from './spriteRegistry'
 import { actionVector, moveProfile, type MoveProfile } from './moveProfiles'
 import { reducedMotion } from './motionPreference'
 import { sceneAnchor, spriteAnchorLayout, spriteLayout } from './sceneLayout'
-import { TRAINER_POSES, type TrainerPose } from '../trainerAssets'
+import { TRAINER_FRAME, type TrainerPose } from '../trainerAssets'
+import { TRAINER_TIMINGS, trainerFramePosition } from './trainerMotion'
 
 interface Scene {
   stage: () => HTMLElement | null
@@ -123,17 +124,19 @@ const majorClips: Record<string, SpriteClipId> = {
 export class AnimationDirector implements EventRunner {
   private scopes = new Set<EffectScope>()
   private critical = new Set<CombatantId>()
+  private knockoutSources = new Map<CombatantId, CombatantId | null>()
   private scene: Scene
   constructor(scene: Scene) {
     this.scene = scene
   }
-  private async trainerFrames(scope: EffectScope, element: HTMLElement, pose: TrainerPose, duration: number) {
+  private async trainerFrames(scope: EffectScope, element: HTMLElement, pose: TrainerPose) {
     element.dataset.pose = pose
     element.dataset.controlled = 'true'
-    element.style.setProperty('--trainer-x', `${-160 * TRAINER_POSES.indexOf(pose)}px`)
-    for (let frame = 0; frame < 2 && !scope.cancelled; frame++) {
-      element.style.setProperty('--trainer-y', `${-200 * frame}px`)
-      await scope.wait(duration / 2)
+    for (let frame = 0; frame < TRAINER_FRAME.columns && !scope.cancelled; frame++) {
+      const position = trainerFramePosition(pose, frame)
+      element.style.setProperty('--trainer-x', `${position.x}px`)
+      element.style.setProperty('--trainer-y', `${position.y}px`)
+      await scope.wait(TRAINER_TIMINGS[pose] / TRAINER_FRAME.columns)
     }
   }
   private trainerElements(scope: EffectScope) {
@@ -142,14 +145,39 @@ export class AnimationDirector implements EventRunner {
     const trainer = intro?.querySelector<HTMLElement>('[data-trainer-sprite]')
     if (!stage || !intro || !trainer) return null
     scope.own(() => {
-      intro.style.opacity = '0'
+      intro.style.opacity = '1'
       stage.dataset.trainerPhase = 'complete'
+      delete stage.dataset.trainerSummon
       trainer.dataset.pose = 'idle'
       delete trainer.dataset.controlled
       trainer.style.setProperty('--trainer-x', '0px')
       trainer.style.setProperty('--trainer-y', '0px')
     })
     return { stage, intro, trainer }
+  }
+  private async trainerSummon(scope: EffectScope, initial: boolean) {
+    const elements = this.trainerElements(scope)
+    if (!elements) return
+    const { stage, intro, trainer } = elements
+    stage.dataset.trainerSummon = initial ? 'both' : 'opponent'
+    intro.style.opacity = '1'
+    if (initial) {
+      stage.dataset.trainerPhase = 'idle'
+      await scope.animate(intro, [{ opacity: 0 }, { opacity: 1 }], { duration: 240 })
+      await this.trainerFrames(scope, trainer, 'idle')
+    }
+    for (const pose of ['prepare', 'throw', 'follow'] as const) {
+      if (scope.cancelled) return
+      stage.dataset.trainerPhase = pose
+      await this.trainerFrames(scope, trainer, pose)
+    }
+    if (!scope.cancelled) stage.dataset.trainerPhase = 'complete'
+  }
+  private async trainerReaction(scope: EffectScope, pose: 'celebrate' | 'defeated') {
+    const elements = this.trainerElements(scope)
+    if (!elements) return
+    elements.intro.style.opacity = '1'
+    await this.trainerFrames(scope, elements.trainer, pose)
   }
   private side(id: CombatantId, wire: RoomSnapshot) {
     return id.startsWith(wire.viewer) ? ('me' as const) : ('opponent' as const)
@@ -174,9 +202,15 @@ export class AnimationDirector implements EventRunner {
       const orientation = anchor.querySelector<HTMLElement>('[data-motion-orientation]')
       const priorOrientation = orientation?.style.transform ?? ''
       const priorStyle = creature.getAttribute('style') ?? ''
-      const anchors = Array.from(anchor.querySelectorAll?.<HTMLElement>('[data-sprite-anchor]') ?? []).map(element => ({ element, style: element.getAttribute('style') ?? '' }))
+      const anchors = Array.from(
+        anchor.querySelectorAll?.<HTMLElement>('[data-sprite-anchor]') ?? []
+      ).map((element) => ({ element, style: element.getAttribute('style') ?? '' }))
       Object.assign(creature.style, spriteLayout(still))
-      for (const { element } of anchors) Object.assign(element.style, spriteAnchorLayout(still, element.dataset.spriteAnchor as 'head' | 'body' | 'feet'))
+      for (const { element } of anchors)
+        Object.assign(
+          element.style,
+          spriteAnchorLayout(still, element.dataset.spriteAnchor as 'head' | 'body' | 'feet')
+        )
       if (orientation)
         orientation.style.transform =
           orientation.getAttribute('data-static-mirrored') === 'true' ? 'scaleX(-1)' : 'scaleX(1)'
@@ -185,7 +219,8 @@ export class AnimationDirector implements EventRunner {
         if (creature.isConnected && creature.getAttribute('src') === still) {
           creature.src = original
           creature.setAttribute('style', priorStyle)
-          for (const { element, style } of anchors) if (element.isConnected) element.setAttribute('style', style)
+          for (const { element, style } of anchors)
+            if (element.isConnected) element.setAttribute('style', style)
           if (orientation?.isConnected) orientation.style.transform = priorOrientation
         }
       })
@@ -196,9 +231,9 @@ export class AnimationDirector implements EventRunner {
     parent: HTMLElement | null,
     id: SpriteClipId,
     size?: number,
-    travelTo?: HTMLElement | null,
     presentation?: SpriteOptions['presentation'],
-    staticFrame = false
+    staticFrame = false,
+    visualType?: SpriteOptions['visualType']
   ) {
     const controller = new AbortController()
     scope.own(() => controller.abort())
@@ -206,28 +241,38 @@ export class AnimationDirector implements EventRunner {
     return playSprite(parent, id, {
       signal: controller.signal,
       size,
-      travelTo,
       presentation,
       static: staticFrame,
+      visualType,
       paused: () => scope.spritePaused,
     })
   }
-  private text(scope: EffectScope, parent: HTMLElement | null, text: string, tone = 'damage') {
+  private text(
+    scope: EffectScope,
+    parent: HTMLElement | null,
+    text: string,
+    tone = 'damage',
+    still = false
+  ) {
     if (!parent) return Promise.resolve()
     const label = document.createElement('span')
     label.className = `battle-float battle-float-${tone}`
     label.textContent = text
+    if (still) label.style.transform = 'translate(-50%, 0)'
     label.setAttribute('aria-hidden', 'true')
     parent.appendChild(label)
     scope.own(() => label.remove())
+    if (still) return scope.wait(400)
     return scope.animate(
       label,
-      [
-        { opacity: 0, transform: 'translate(-50%, 4px) scale(.8)' },
-        { opacity: 1, transform: 'translate(-50%, -14px) scale(1)', offset: 0.2 },
-        { opacity: 0, transform: 'translate(-50%, -42px) scale(.95)' },
-      ],
-      { duration: IMPACT.text, easing: 'ease-out' }
+      still
+        ? [{ opacity: 1 }, { opacity: 1 }]
+        : [
+            { opacity: 0, transform: 'translate(-50%, 4px) scale(.8)' },
+            { opacity: 1, transform: 'translate(-50%, -14px) scale(1)', offset: 0.2 },
+            { opacity: 0, transform: 'translate(-50%, -42px) scale(.95)' },
+          ],
+      { duration: still ? 400 : IMPACT.text, easing: 'ease-out' }
     )
   }
   private hp(
@@ -283,11 +328,44 @@ export class AnimationDirector implements EventRunner {
         return
       }
       const target = 'target' in event ? this.element(event.target, wire) : null
+      if (
+        ['move', 'switch', 'state_sync', 'round_start', 'battle_start', 'battle_end'].includes(
+          event.type
+        )
+      )
+        this.critical.clear()
       if (reduced) {
         if (event.type === 'battle_start') {
           const stage = this.scene.stage()
           if (stage) stage.dataset.trainerPhase = 'complete'
         }
+        const caption =
+          event.type === 'miss'
+            ? 'ERROU!'
+            : event.type === 'immune'
+              ? 'NÃO AFETA!'
+              : event.type === 'hit_count'
+                ? `${event.hits} acertos`
+                : event.type === 'critical'
+                  ? 'CRÍTICO!'
+                  : event.type === 'super_effective'
+                    ? 'SUPER EFETIVO!'
+                    : event.type === 'resisted'
+                      ? 'POUCO EFETIVO'
+                      : event.type === 'damage'
+                        ? `−${event.amount}`
+                        : event.type === 'heal'
+                          ? `+${event.amount}${event.cause === 'drain' ? ' DRENAGEM' : ''}`
+                          : null
+        const captionDone = caption
+          ? this.text(
+              scope,
+              event.type === 'miss' ? this.element(event.actor, wire) : target,
+              caption,
+              'info',
+              true
+            )
+          : Promise.resolve()
         // Feedback legível e curto conserva os fatos sem tremores ou deslocamentos.
         const clip =
           event.type === 'status'
@@ -302,12 +380,23 @@ export class AnimationDirector implements EventRunner {
                   ? (majorClips[event.cause ?? ''] ?? attackClip(event.cause ?? '') ?? 'impact')
                   : null
         if (clip && target) {
-          const feedback = this.fx(scope, target, clip, 80, null, undefined, true)
-          await scope.wait(120)
+          const feedback = this.fx(
+            scope,
+            target,
+            clip,
+            80,
+            undefined,
+            true,
+            event.type === 'damage' ? attackVisualType(event.cause ?? '') : undefined
+          )
+          await Promise.all([scope.wait(120), captionDone])
           confirm()
           scope.dispose()
           await feedback
-        } else confirm()
+        } else {
+          await captionDone
+          confirm()
+        }
         return
       }
       const targetBody = this.body(target)
@@ -318,40 +407,19 @@ export class AnimationDirector implements EventRunner {
           const actor = this.element(event.actor, wire)
           const actorBody = this.body(actor)
           const profile = moveProfile(event.moveId)
-          const clip = emissionClip(event.moveId)
           if (!profile) break
           this.hold(scope, actor)
           const contact =
             (profile.family === 'contact' || profile.family === 'slash') &&
             event.target !== event.actor
-          const presentation: SpriteOptions['presentation'] =
-            profile.family === 'projectile'
-              ? 'orb'
-              : profile.family === 'slash' || profile.family === 'status'
-                ? 'contact'
-                : profile.family
-          const travelling =
-            profile.family === 'projectile' ||
-            profile.family === 'beam' ||
-            profile.family === 'wave' ||
-            profile.family === 'powder'
-          const actorPoint = sceneAnchor(actor), targetPoint = sceneAnchor(target)
+          const actorPoint = sceneAnchor(actor),
+            targetPoint = sceneAnchor(target)
           const vector = actionVector(
             actorPoint ? { left: actorPoint.x, top: actorPoint.y, width: 0, height: 0 } : null,
             targetPoint ? { left: targetPoint.x, top: targetPoint.y, width: 0, height: 0 } : null,
             event.actor.startsWith(wire.viewer) ? 1 : -1
           )
           await Promise.all([
-            clip
-              ? this.fx(
-                  scope,
-                  contact ? actorBody : actor,
-                  clip,
-                  profile.statusMove ? 100 : profile.size,
-                  travelling && event.target !== event.actor ? target : null,
-                  presentation
-                )
-              : Promise.resolve(),
             actorBody && contact
               ? scope.lunge(actorBody, vector, profile)
               : scope.animate(
@@ -376,6 +444,10 @@ export class AnimationDirector implements EventRunner {
         case 'damage':
         case 'heal': {
           const healing = event.type === 'heal'
+          if (!healing) {
+            if (event.hpAfter === 0) this.knockoutSources.set(event.target, event.source)
+            else this.knockoutSources.delete(event.target)
+          }
           const pendingCrit = this.critical.delete(event.target)
           const crit =
             !healing &&
@@ -405,7 +477,7 @@ export class AnimationDirector implements EventRunner {
             this.text(
               scope,
               target,
-              `${healing ? '+' : '−'}${event.amount}${crit ? ' CRÍTICO!' : ''}`,
+              `${healing ? '+' : '−'}${event.amount}${crit ? ' CRÍTICO!' : healing && event.cause === 'drain' ? ' DRENAGEM' : ''}`,
               healing ? 'heal' : crit ? 'critical' : 'damage'
             ),
             this.fx(
@@ -414,7 +486,10 @@ export class AnimationDirector implements EventRunner {
               healing
                 ? 'heal'
                 : (majorClips[event.cause ?? ''] ?? attackClip(event.cause ?? '') ?? 'impact'),
-              crit ? 185 : undefined
+              crit ? 185 : undefined,
+              undefined,
+              false,
+              healing ? undefined : attackVisualType(event.cause ?? '')
             ),
           ]
           this.hold(scope, target)
@@ -453,10 +528,17 @@ export class AnimationDirector implements EventRunner {
               ),
             ])
           if (scope.cancelled) return
+          // Keep the outgoing state until all six preparation/throw/follow frames finish.
+          if (wire.trainerId && !event.target.startsWith(wire.viewer)) {
+            await this.trainerSummon(scope, false)
+            if (scope.cancelled) return
+          }
           confirm()
           await scope.paint()
           if (scope.cancelled) return
           const incoming = this.scene.sprite(this.side(event.target, wire))
+          const stage = this.scene.stage()
+          if (stage) delete stage.dataset.trainerSummon
           this.hold(scope, incoming)
           await Promise.all([
             this.fx(scope, incoming, 'summon'),
@@ -472,7 +554,7 @@ export class AnimationDirector implements EventRunner {
           ])
           break
         }
-        case 'faint':
+        case 'faint': {
           this.hold(scope, target)
           await Promise.all([
             this.fx(scope, target, 'faint'),
@@ -490,40 +572,32 @@ export class AnimationDirector implements EventRunner {
               { duration: IMPACT.faint, easing: 'ease-in' }
             ),
           ])
-          if (wire.trainerId && event.target.startsWith(wire.viewer) && !scope.cancelled) {
-            const elements = this.trainerElements(scope)
-            if (elements) {
-              elements.intro.style.opacity = '1'
-              await this.trainerFrames(scope, elements.trainer, 'celebrate', 440)
-              await scope.animate(elements.intro, [{ opacity: 1 }, { opacity: 0 }], { duration: 180 })
-              elements.intro.style.opacity = '0'
-            }
-          }
+          const source = this.knockoutSources.get(event.target)
+          this.knockoutSources.delete(event.target)
+          // Commit the fall before the reaction, so a finished WAAPI fall cannot
+          // restore the defeated creature while the trainer is celebrating.
+          confirm()
+          await scope.paint()
+          if (
+            wire.trainerId &&
+            event.target.startsWith(wire.viewer) &&
+            source &&
+            !source.startsWith(wire.viewer) &&
+            !scope.cancelled
+          )
+            await this.trainerReaction(scope, 'celebrate')
           break
+        }
         case 'miss':
-          this.hold(scope, target)
-          await Promise.all([
-            this.fx(scope, target, 'dodge'),
-            scope.animate(
-              targetBody,
-              [
-                { transform: 'translateX(0)' },
-                {
-                  transform: `translateX(${event.target?.startsWith(wire.viewer) ? -24 : 24}px) rotate(-4deg)`,
-                  offset: 0.35,
-                },
-                { transform: 'translateX(0)' },
-              ],
-              { duration: 360 }
-            ),
-            this.text(scope, target, 'ESQUIVOU!', 'info'),
-          ])
+          await this.text(scope, this.element(event.actor, wire), 'ERROU!', 'info')
+          break
+        case 'hit_count':
+          await this.text(scope, target, `${event.hits} acertos`, 'info')
           break
         case 'immune':
         case 'super_effective':
         case 'resisted':
           await Promise.all([
-            event.type === 'immune' ? this.fx(scope, target, 'protect') : Promise.resolve(),
             this.text(
               scope,
               target,
@@ -570,10 +644,7 @@ export class AnimationDirector implements EventRunner {
             scope.animate(
               targetBody,
               event.status === 'slp'
-                ? [
-                    { transform: ' rotate(0deg)' },
-                    { transform: ' rotate(-3deg)' },
-                  ]
+                ? [{ transform: ' rotate(0deg)' }, { transform: ' rotate(-3deg)' }]
                 : event.status === 'par'
                   ? [
                       { transform: 'translateX(0)' },
@@ -654,24 +725,11 @@ export class AnimationDirector implements EventRunner {
           }
           break
         case 'battle_start': {
-          const elements = this.trainerElements(scope)
-          if (elements) {
-            const { stage, intro, trainer } = elements
-            stage.dataset.trainerPhase = 'idle'
-            intro.style.opacity = '1'
-            await scope.animate(intro, [{ opacity: 0, transform: 'translateX(18px)' }, { opacity: 1, transform: 'translateX(0)' }], { duration: 200 })
-            for (const [pose, duration] of [['idle', 360], ['prepare', 320], ['throw', 280], ['follow', 260]] as const) {
-              if (scope.cancelled) break
-              stage.dataset.trainerPhase = pose
-              await this.trainerFrames(scope, trainer, pose, duration)
-            }
-            if (scope.cancelled) break
-            stage.dataset.trainerPhase = 'exit'
-            await scope.animate(intro, [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(65px)' }], { duration: 240 })
-            intro.style.opacity = '0'
-            stage.dataset.trainerPhase = 'complete'
-          }
+          this.knockoutSources.clear()
+          if (wire.trainerId) await this.trainerSummon(scope, true)
           if (scope.cancelled) break
+          const stage = this.scene.stage()
+          if (stage) delete stage.dataset.trainerSummon
           await Promise.all(
             ['me', 'opponent'].map((side) => {
               const sprite = this.scene.sprite(side as 'me' | 'opponent')
@@ -719,7 +777,13 @@ export class AnimationDirector implements EventRunner {
               ])
             })
           )
+          if (wire.trainerId && event.result.winner !== null && !scope.cancelled)
+            await this.trainerReaction(
+              scope,
+              event.result.winner === wire.viewer ? 'defeated' : 'celebrate'
+            )
           this.critical.clear()
+          this.knockoutSources.clear()
           break
         case 'state_sync':
           this.critical.clear()
@@ -733,6 +797,7 @@ export class AnimationDirector implements EventRunner {
       if (!scope.cancelled) confirm()
     } finally {
       if (scope.cancelled) this.critical.clear()
+      if (scope.cancelled) this.knockoutSources.clear()
       scope.dispose()
       this.scopes.delete(scope)
     }
@@ -741,5 +806,6 @@ export class AnimationDirector implements EventRunner {
     for (const scope of this.scopes) scope.dispose()
     this.scopes.clear()
     this.critical.clear()
+    this.knockoutSources.clear()
   }
 }

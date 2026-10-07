@@ -1,12 +1,12 @@
 .art { position: relative; isolation: isolate; min-height: 0; height: 100%; }
 .art img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
 .art .partner { position: absolute; width: 90px; height: 90px; right: 4%; bottom: 2%; image-rendering: pixelated; z-index: 2; }
-.sprite { --trainer-x: 0px; --trainer-y: 0px; width: 160px; height: 200px; background-repeat: no-repeat; background-size: 960px 400px; background-position: var(--trainer-x) var(--trainer-y); image-rendering: pixelated; animation: trainerFrames 1.2s step-end infinite; }
+.sprite { --trainer-x: 0px; --trainer-y: 0px; width: 160px; height: 200px; background-repeat: no-repeat; background-size: 960px 1200px; background-position: var(--trainer-x) var(--trainer-y); image-rendering: pixelated; animation: trainerFrames 1.8s steps(1, end) infinite; }
 .sprite[data-controlled='true'] { animation: none; }
-.sprite[data-pose='celebrate'] { animation-duration: .8s; }
+.sprite[data-pose='celebrate'] { animation-duration: 1.8s; }
 .sprite[data-pose='defeated'] { animation-duration: 2.4s; }
 .fallback { width: 100%; height: 100%; object-fit: contain; }
-@keyframes trainerFrames { 0%, 100% { background-position: var(--trainer-x) 0px; } 50% { background-position: var(--trainer-x) -200px; } }
+@keyframes trainerFrames { 0%, 100% { background-position: 0px var(--trainer-y); } 16.667% { background-position: -160px var(--trainer-y); } 33.333% { background-position: -320px var(--trainer-y); } 50% { background-position: -480px var(--trainer-y); } 66.667% { background-position: -640px var(--trainer-y); } 83.333% { background-position: -800px var(--trainer-y); } }
 :global([data-paused='true']) .sprite { animation-play-state: paused; }
 .sprite[data-paused='true'] { animation-play-state: paused; }
 :global(html[data-motion-preference='reduced']) .sprite { animation: none; }

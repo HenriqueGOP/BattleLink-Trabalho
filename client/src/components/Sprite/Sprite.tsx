@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styles from './Sprite.module.css'
-import { safeAsset } from '../../lib/assets'
+import { menuArtworkMetrics, resolveMenuSprite, safeAsset } from '../../lib/assets'
 import { spriteMetrics } from '../../lib/presentation/sceneLayout'
 
 export interface SpriteProps {
@@ -21,12 +21,15 @@ export interface SpriteProps {
  * alternativo esparramado por cima do layout. A falha usa um emblema raster local.
  */
 export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: SpriteProps) {
-  // guarda QUAL src falhou: dispensa efeito para limpar a flag quando src muda
-  const [failedSrc, setFailedSrc] = useState<string | null>(null)
-  const broken = !safeAsset(src) || failedSrc === src
+  // Keep each failed URL so art -> pixel -> fallback cannot retry in a loop.
+  const [failedSources, setFailedSources] = useState<ReadonlySet<string>>(() => new Set())
+  const original = safeAsset(src)
+  const artwork = resolveMenuSprite(original)
+  const source = artwork && failedSources.has(artwork) ? original : artwork
+  const broken = !source || failedSources.has(source)
 
   const classes = [styles.sprite, className].filter(Boolean).join(' ')
-  const style = { width: size, height: size }
+  const style = { width: size, maxWidth: '100%', aspectRatio: '1 / 1' }
 
   if (broken) {
     return (
@@ -39,25 +42,34 @@ export function Sprite({ src, name, size = 76, className, loading = 'lazy' }: Sp
     )
   }
 
-  const source = safeAsset(src)!
-  const metrics = spriteMetrics(source)
+  const metrics = menuArtworkMetrics(source) ?? spriteMetrics(source)
   const [left, top, right, bottom] = metrics.bounds
-  const scale = size * .85 / Math.max(right - left, bottom - top, 1)
+  // Visible bounds, rather than source padding, define a stable card silhouette.
+  const scale = 90 / Math.max(right - left, bottom - top, 1)
   return (
-    <span className={classes} style={style}>
-    <img
-      className={styles.image}
-      style={{ width: metrics.width * scale, height: metrics.height * scale, left: (size - (right - left) * scale) / 2 - left * scale, top: (size - (bottom - top) * scale) / 2 - top * scale }}
-      src={safeAsset(src) ?? undefined}
-      /* alt vazio: o nome sempre aparece ao lado, e um alt longo virava texto
+    <span
+      className={classes}
+      style={style}
+      data-sprite-source={menuArtworkMetrics(source) ? 'artwork' : 'pixel'}
+    >
+      <img
+        className={styles.image}
+        style={{
+          width: `${metrics.width * scale}%`,
+          height: `${metrics.height * scale}%`,
+          left: `${(100 - (right - left) * scale) / 2 - left * scale}%`,
+          top: `${(100 - (bottom - top) * scale) / 2 - top * scale}%`,
+        }}
+        src={source}
+        /* alt vazio: o nome sempre aparece ao lado, e um alt longo virava texto
          solto no layout quando a imagem falhava */
-      alt=""
-      width={size}
-      height={size}
-      loading={loading}
-      decoding="async"
-      onError={() => setFailedSrc(src ?? null)}
-    />
+        alt=""
+        width={size}
+        height={size}
+        loading={loading}
+        decoding="async"
+        onError={() => setFailedSources((previous) => new Set([...previous, source]))}
+      />
     </span>
   )
 }

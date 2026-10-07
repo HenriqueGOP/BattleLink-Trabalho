@@ -385,6 +385,7 @@ function nativeTokenTests() {
 }
 
 class Node {
+  static placements: { parent: Node; node: Node }[] = [];
   static created: Node[] = [];
   static animated: {
     element: Node;
@@ -399,6 +400,7 @@ class Node {
   style: Record<string, string> = {};
   setAttribute() {}
   appendChild(node: Node) {
+    Node.placements.push({ parent: this, node });
     node.remove();
     node.parent = this;
     this.children.add(node);
@@ -472,6 +474,12 @@ async function directorTests() {
       let commits = 0;
       const originalWire = JSON.stringify(wire);
       const before = Node.animated.length;
+      let requestedAtlases = 0;
+      globalThis.Image = class {
+        onerror: (() => void) | null = null;
+        constructor() { requestedAtlases++; }
+        set src(_value: string) { queueMicrotask(() => this.onerror?.()); }
+      } as unknown as typeof Image;
       await gestureDirector.run(
         {
           type: "move",
@@ -487,6 +495,26 @@ async function directorTests() {
         () => commits++,
       );
       assert.equal(commits, 1);
+      assert.equal(requestedAtlases, 0, 'move não inicia atlas antes de um resultado confirmado');
+      const semanticEvents = [
+        { type: 'miss', actor: 'p1s0', target: 'p2s0' },
+        { type: 'immune', target: 'p2s0' },
+        { type: 'hit_count', target: 'p2s0', hits: 4 },
+      ] as const;
+      for (const [index, event] of semanticEvents.entries()) {
+        const animationsBefore = Node.animated.length;
+        const placementsBefore = Node.placements.length;
+        await gestureDirector.run({ ...event, round: 1, sequence: 30 + index, audience: 'public' }, wire,
+          new AbortController().signal, () => {});
+        assert.equal(requestedAtlases, 0, `${event.type} não inventa impacto, esquiva ou proteção`);
+        assert.ok(Node.animated.slice(animationsBefore).every(entry => entry.element !== myBody && entry.element !== foeBody));
+        const labels = Node.placements.slice(placementsBefore);
+        assert.equal(labels.length, 1);
+        assert.equal(labels[0].parent, event.type === 'miss' ? me : foe);
+        assert.equal(labels[0].node.textContent, ['ERROU!', 'NÃO AFETA!', '4 acertos'][index]);
+        assert.equal(labels[0].node.parent, null, 'Texto transitório é removido');
+      }
+      globalThis.Image = undefined as unknown as typeof Image;
       assert.ok(
         Node.animated.slice(before).some((entry) => entry.element === myBody),
       );

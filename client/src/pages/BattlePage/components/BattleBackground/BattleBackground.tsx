@@ -9,6 +9,7 @@ import styles from './BattleBackground.module.css'
 
 export interface BattleBackgroundProps {
   background: string | null
+  trainerId?: string | null
 }
 
 function ArenaScene({ config }: { config: BattleBackgroundConfig }) {
@@ -84,7 +85,7 @@ function ArenaScene({ config }: { config: BattleBackgroundConfig }) {
 }
 
 /** Keyed lifecycle also clears an earlier image error when the room chooses a new arena. */
-export function BattleBackground({ background }: BattleBackgroundProps) {
-  const config = resolveBackground(background)
-  return <ArenaScene key={config.id} config={config} />
+export function BattleBackground({ background, trainerId }: BattleBackgroundProps) {
+  const config = resolveBackground(background, trainerId)
+  return <ArenaScene key={config.primary} config={config} />
 }

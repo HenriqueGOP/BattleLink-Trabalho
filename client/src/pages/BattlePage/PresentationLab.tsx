@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import fixture from '../../data/presentation-fixture.json'
+import pveFixture from '../../data/pve-presentation-fixture.json'
 import type { RoomSnapshot } from '../../types/protocol'
 import { presentSnapshot } from '../../lib/battleView'
 import { useBattleEvents } from '../../hooks/useBattleEvents'
+import { useMotionPreference } from '../../hooks/useMotionPreference'
+import type { MotionPreference } from '../../lib/presentation/motionPreference'
 import { BattleSpot } from './components/BattleSpot'
 import { BattleBackground } from './components/BattleBackground'
 import { HudCard } from './components/HudCard'
@@ -13,10 +16,25 @@ import { AudioSettings } from '../../components/AudioSettings'
 import { SpriteGallery } from './SpriteGallery'
 import { GroundingPreview } from './GroundingPreview'
 import { battleBackgrounds } from '../../config/battleBackgrounds'
+import { TrainerSprite } from '../../components/TrainerArt/TrainerArt'
+import { TRAINERS } from '../../../../server/src/contracts/trainers'
+import { SCENE_LAYOUT } from '../../lib/presentation/sceneLayout'
 import styles from './BattlePage.module.css'
 
 const snapshots = fixture as unknown as { label: string; state: RoomSnapshot }[]
-function Scenario({ restart }: { restart: () => void }) {
+const pveSnapshots = pveFixture as unknown as Record<'player' | 'trainer', typeof snapshots>
+function Scenario({
+  restart,
+  pve,
+  trainerId,
+  winner,
+}: {
+  restart: () => void
+  pve: boolean
+  trainerId: string
+  winner: 'player' | 'trainer'
+}) {
+  const frames = pve ? pveSnapshots[winner] : snapshots
   const [step, setStep] = useState(0)
   const stage = useRef<HTMLDivElement>(null),
     me = useRef<HTMLDivElement>(null),
@@ -26,22 +44,51 @@ function Scenario({ restart }: { restart: () => void }) {
     (side: 'me' | 'opponent') => (side === 'me' ? me.current : foe.current),
     []
   )
-  const authoritative = useMemo(() => presentSnapshot(snapshots[step].state), [step])
+  const authoritative = useMemo(() => {
+    const wire = frames[step].state
+    return presentSnapshot(
+      pve
+        ? {
+            ...wire,
+            mode: 'pve',
+            trainerId,
+            players: [
+              wire.players[0],
+              {
+                ...wire.players[1],
+                name: TRAINERS.find((trainer) => trainer.id === trainerId)!.name,
+              },
+            ],
+          }
+        : wire
+    )
+  }, [step, frames, pve, trainerId])
   const { presented, busy, hidden, skip, setHidden, current, totals } = useBattleEvents(
     authoritative,
     0,
     getStage,
-    getPlayer,
-    true
+    getPlayer
   )
   const state = presented ?? authoritative
+  const finished = state.phase === 'finished' && !busy
+  const { preference, setPreference } = useMotionPreference()
   return (
     <>
-      <p>Movimento completo neste laboratório; o jogo segue a preferência do sistema.</p>
+      <label>
+        Animações{' '}
+        <select
+          value={preference}
+          onChange={(event) => setPreference(event.target.value as MotionPreference)}
+        >
+          <option value="system">Sistema</option>
+          <option value="full">Completo</option>
+          <option value="reduced">Reduzido</option>
+        </select>
+      </label>
       <div className={styles.tools}>
         <Button
-          onClick={() => setStep((value) => Math.min(value + 1, snapshots.length - 1))}
-          disabled={step === snapshots.length - 1}
+          onClick={() => setStep((value) => Math.min(value + 1, frames.length - 1))}
+          disabled={step === frames.length - 1}
         >
           Próxima sequência
         </Button>
@@ -53,7 +100,8 @@ function Scenario({ restart }: { restart: () => void }) {
         </Button>
       </div>
       <p role="status">
-        {snapshots[step].label} · {busy ? 'Animando' : 'Concluído'} · {current?.message ?? ''}
+        {step + 1}/{frames.length} · {frames[step].label} · {busy ? 'Animando' : 'Concluído'} ·{' '}
+        {current?.message ?? ''}
       </p>
       <div className={styles.layout}>
         <BattleProfiler>
@@ -64,17 +112,39 @@ function Scenario({ restart }: { restart: () => void }) {
             data-fx-stage
             data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
             data-event-sequence={current?.id ?? state.wire.sequence}
-            data-paused={hidden ? 'true' : undefined}
+            data-paused={hidden || finished ? 'true' : undefined}
+            data-trainer-phase={
+              pve && busy && current?.type === 'battle_start' ? 'pending' : undefined
+            }
+            data-lab-scenario={pve ? 'pve' : 'pvp'}
           >
-            <BattleBackground background={state.field.background} />
+            {pve && (
+              <div
+                className={styles.trainerIntro}
+                style={{ left: `${SCENE_LAYOUT.trainer.x}%`, top: `${SCENE_LAYOUT.trainer.y}%` }}
+                data-trainer-intro
+                aria-hidden="true"
+              >
+                <TrainerSprite id={trainerId} />
+              </div>
+            )}
+            <BattleBackground
+              background={state.field.background}
+              trainerId={pve ? trainerId : null}
+            />
             <div className={styles.spots}>
               <HudCard player={state.players[1]} opponent />
-              <BattleSpot player={state.players[1]} opponent spriteRef={foe} paused={hidden} />
+              <BattleSpot
+                player={state.players[1]}
+                opponent
+                spriteRef={foe}
+                paused={hidden || finished}
+              />
               <BattleSpot
                 player={state.players[0]}
                 opponent={false}
                 spriteRef={me}
-                paused={hidden}
+                paused={hidden || finished}
               />
               <HudCard player={state.players[0]} opponent={false} />
             </div>
@@ -90,7 +160,8 @@ function Scenario({ restart }: { restart: () => void }) {
           myId={state.players[0].id}
           totals={totals}
           opponentLeft={false}
-          onRematch={() => undefined} onLeave={restart}
+          onRematch={() => undefined}
+          onLeave={restart}
         />
       )}
     </>
@@ -102,12 +173,72 @@ export function PresentationLab() {
   const [epoch, setEpoch] = useState(0),
     [mounted, setMounted] = useState(true)
   const [preview, setPreview] = useState<'mobile' | 'desktop' | null>(null)
+  const [pve, setPve] = useState(true)
+  const [trainerId, setTrainerId] = useState('vespera')
+  const [winner, setWinner] = useState<'player' | 'trainer'>('player')
   return (
     <main className={styles.page}>
       <h1>Laboratório de apresentação</h1>
       <AudioSettings />
+      <p>
+        Conferência de desenvolvimento com eventos canônicos de equipes de diagnóstico do motor
+        real.
+      </p>
       <div className={styles.tools}>
-        <Button onClick={() => { setMounted(false); setShowGrounding(value => !value) }}>
+        <label>
+          Cenário{' '}
+          <select
+            value={pve ? 'pve' : 'pvp'}
+            onChange={(event) => {
+              setPve(event.target.value === 'pve')
+              setEpoch((value) => value + 1)
+            }}
+          >
+            <option value="pve">PvE: treinadora, alvos e substitutos</option>
+            <option value="pvp">PvP: múltiplos hits, status e cura</option>
+          </select>
+        </label>
+        {pve && (
+          <>
+            <label>
+              Treinador{' '}
+              <select
+                value={trainerId}
+                onChange={(event) => {
+                  setTrainerId(event.target.value)
+                  setEpoch((value) => value + 1)
+                }}
+              >
+                {TRAINERS.map((trainer) => (
+                  <option key={trainer.id} value={trainer.id}>
+                    {trainer.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Resultado{' '}
+              <select
+                value={winner}
+                onChange={(event) => {
+                  setWinner(event.target.value as 'player' | 'trainer')
+                  setEpoch((value) => value + 1)
+                }}
+              >
+                <option value="player">Derrota da treinadora</option>
+                <option value="trainer">Vitória da treinadora</option>
+              </select>
+            </label>
+          </>
+        )}
+      </div>
+      <div className={styles.tools}>
+        <Button
+          onClick={() => {
+            setMounted(false)
+            setShowGrounding((value) => !value)
+          }}
+        >
           {showGrounding ? 'Inspecionar efeitos' : 'Inspecionar sprites e arenas'}
         </Button>
         <Button
@@ -122,7 +253,15 @@ export function PresentationLab() {
           {mounted ? 'Desmontar cena' : 'Montar cena'}
         </Button>
       </div>
-      {mounted && <Scenario key={epoch} restart={() => setEpoch((value) => value + 1)} />}
+      {mounted && (
+        <Scenario
+          key={epoch}
+          restart={() => setEpoch((value) => value + 1)}
+          pve={pve}
+          trainerId={trainerId}
+          winner={winner}
+        />
+      )}
       <BattleProfiler>
         <SpriteGallery enabled={!mounted && !showGrounding} />
       </BattleProfiler>

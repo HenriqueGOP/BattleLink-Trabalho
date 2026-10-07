@@ -1,4 +1,5 @@
 import { TrainerSprite } from '../../components/TrainerArt/TrainerArt'
+import { SCENE_LAYOUT } from '../../lib/presentation/sceneLayout'
 import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
 import { useCallback, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -99,7 +100,7 @@ export function BattlePage() {
   }
 
   return (
-    <main className={styles.page} data-arena={state.field.background} style={arenaMenuStyle(state.field.background)}>
+    <main className={styles.page} data-arena={state.field.background} style={arenaMenuStyle(state.field.background, state.wire.trainerId)}>
       <header className={styles.topbar}>
         <Brand />
         <span className={styles.room}>{status}</span>
@@ -134,7 +135,7 @@ export function BattlePage() {
           <div className={styles.battleHeading}>
             <div>
               <span className={styles.eyebrow}>BATALHA ONLINE</span>
-              <h1>{resolveBackground(state.field.background).name}</h1>
+              <h1>{resolveBackground(state.field.background, state.wire.trainerId).name}</h1>
             </div>
             <div className={styles.turnDock}>
               <span className={styles.round}>Rodada {state.wire.battle?.round ?? 1}</span>
@@ -148,26 +149,26 @@ export function BattlePage() {
                 ref={stageRef}
                 aria-label="Campo de batalha"
                 data-fx-stage
-                data-paused={hidden ? 'true' : undefined}
+                data-paused={hidden || finished ? 'true' : undefined}
                 data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
                 data-trainer-phase={state.wire.trainerId && busy && current?.type === 'battle_start' ? 'pending' : undefined}
                 data-event-sequence={current?.id ?? state.wire.sequence}
               >
-            {state.wire.trainerId && <div className={styles.trainerIntro} data-trainer-intro aria-hidden="true"><TrainerSprite id={state.wire.trainerId} /></div>}
+            {state.wire.trainerId && <div className={styles.trainerIntro} style={{ left: `${SCENE_LAYOUT.trainer.x}%`, top: `${SCENE_LAYOUT.trainer.y}%` }} data-trainer-intro aria-hidden="true"><TrainerSprite id={state.wire.trainerId} /></div>}
                 {/* O cenário, os atores e os efeitos compartilham o mesmo campo. */}
-                <BattleBackground background={state.field.background} />
+                <BattleBackground background={state.field.background} trainerId={state.wire.trainerId} />
                 {(state.field.weather || state.field.terrain) && (
                   <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
                 )}
                 <div className={styles.spots}>
                   <HudCard player={opponent} opponent />
-                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} paused={hidden} />
+                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} paused={hidden || finished} />
                   <BattleSpot
                     player={myPlayer}
                     opponent={false}
                     spriteRef={mySpriteRef}
                     urgent={blocked}
-                    paused={hidden}
+                    paused={hidden || finished}
                   />
                   <HudCard player={myPlayer} opponent={false} />
                 </div>

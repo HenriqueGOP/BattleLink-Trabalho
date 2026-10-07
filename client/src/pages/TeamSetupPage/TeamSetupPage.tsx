@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react'
 import { TeamEditor } from '../../components/TeamEditor/TeamEditor'
 import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
 import moveIdentity from '../../components/MoveIdentity/MoveIdentity.module.css'
+import { MoveTypeIcon } from '../../components/MoveIdentity/MoveTypeIcon'
 import { Button } from '../../components/Button'
 import { TypeBadge } from '../../components/TypeBadge'
 import { Sprite } from '../../components/Sprite'
@@ -43,7 +44,16 @@ function MoveStats({ move }: { move: PokemonMove }) {
 
 /** Prepara a equipe sem mudar IDs ou regras do catálogo. */
 export function TeamSetupPage() {
-  const { state, playerId, setMoves, acceptTeam, leave, setupPending, moveDrafts: chosenByPokemon, draftMoves } = useBattleContext()
+  const {
+    state,
+    playerId,
+    setMoves,
+    acceptTeam,
+    leave,
+    setupPending,
+    moveDrafts: chosenByPokemon,
+    draftMoves,
+  } = useBattleContext()
   const navigate = useNavigate()
   const { myPlayer } = useBattle()
   const audioPrefs = useAudio()
@@ -53,8 +63,8 @@ export function TeamSetupPage() {
 
   const TEAM_SIZE = state ? formatSize(state.wire.format) : 6
   const team = myPlayer?.team ?? []
-  const selected = team.find(member => member.pokemon === selectedId) ?? team[0]
-  const selectedIndex = team.findIndex(member => member === selected)
+  const selected = team.find((member) => member.pokemon === selectedId) ?? team[0]
+  const selectedIndex = team.findIndex((member) => member === selected)
   const validMoves = team.every((member) => {
     const moves = chosenByPokemon[member.pokemon] ?? member.selectedMoves
     return moves.length > 0 && moves.length <= MAX_MOVES
@@ -92,13 +102,13 @@ export function TeamSetupPage() {
   function toggle(moveName: string) {
     if (!selected) return
     audio.play('click')
-      const currentChosen = chosenByPokemon[selected.pokemon] ?? selected.selectedMoves
-      const next = currentChosen.includes(moveName)
-        ? currentChosen.filter((name) => name !== moveName)
-        : currentChosen.length < MAX_MOVES
-          ? [...currentChosen, moveName]
-          : currentChosen
-      draftMoves(selected.pokemon, next)
+    const currentChosen = chosenByPokemon[selected.pokemon] ?? selected.selectedMoves
+    const next = currentChosen.includes(moveName)
+      ? currentChosen.filter((name) => name !== moveName)
+      : currentChosen.length < MAX_MOVES
+        ? [...currentChosen, moveName]
+        : currentChosen
+    draftMoves(selected.pokemon, next)
   }
   function keepSuggested() {
     if (!selected) return
@@ -114,7 +124,7 @@ export function TeamSetupPage() {
 
   return (
     <main className={styles.page}>
-      <MenuScenery menu="setup" />
+      <MenuScenery menu="setup" viewport />
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>
@@ -140,7 +150,10 @@ export function TeamSetupPage() {
       <div className={styles.workspace}>
         <nav className={styles.tabs} aria-label="Pokémon da equipe">
           <div className={styles.partyHeading}>
-            <GameIcon name="ball" size={18} /> Sua equipe <span>{TEAM_SIZE} / {TEAM_SIZE}</span>
+            <GameIcon name="ball" size={18} /> Sua equipe{' '}
+            <span>
+              {TEAM_SIZE} / {TEAM_SIZE}
+            </span>
           </div>
           {team.map((member, index) => {
             const count = (chosenByPokemon[member.pokemon] ?? member.selectedMoves).length
@@ -244,11 +257,17 @@ export function TeamSetupPage() {
                       key={name}
                       className={`${styles.chosen} ${moveIdentity.surface}`}
                       data-move-type={move.type}
-                      style={{ '--move-type': `var(--type-${move.type}, var(--type-normal))` } as CSSProperties}
+                      style={
+                        {
+                          '--move-type': `var(--type-${move.type}, var(--type-normal))`,
+                        } as CSSProperties
+                      }
                       onClick={() => toggle(name)}
                       aria-label={`Remover ${move.displayName ?? name} dos golpes escolhidos`}
                     >
+                      <MoveTypeIcon type={move.type} watermark />
                       <span className={styles.chosenName}>
+                        <MoveTypeIcon type={move.type} size={18} />
                         <span className={styles.chosenIndex}>{index + 1}</span>
                         {move.displayName ?? name}
                         <span className={styles.remove} aria-hidden="true">
@@ -317,9 +336,14 @@ export function TeamSetupPage() {
                       key={move.name}
                       className={`${styles.moveCard} ${moveIdentity.surface} ${isSelected ? styles.moveSelected : ''}`}
                       data-move-type={move.type}
-                      style={{ '--move-type': `var(--type-${move.type}, var(--type-normal))` } as CSSProperties}
+                      style={
+                        {
+                          '--move-type': `var(--type-${move.type}, var(--type-normal))`,
+                        } as CSSProperties
+                      }
                       data-unavailable={Boolean(move.unsupported?.length) || undefined}
                     >
+                      <MoveTypeIcon type={move.type} watermark />
                       <button
                         className={styles.moveChoice}
                         disabled={disabled}
@@ -329,6 +353,7 @@ export function TeamSetupPage() {
                         title={move.description ?? move.name}
                       >
                         <span className={styles.moveName}>
+                          <MoveTypeIcon type={move.type} size={20} />
                           <span className={styles.check} aria-hidden="true">
                             {isSelected ? '✓' : '+'}
                           </span>

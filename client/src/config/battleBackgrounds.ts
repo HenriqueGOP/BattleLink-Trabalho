@@ -1,5 +1,6 @@
 import type { ArenaId } from '../../../server/src/contracts/protocol'
 import type { CSSProperties } from 'react'
+import { TRAINERS, trainerById } from '../../../server/src/contracts/trainers'
 
 const menuPalettes: Record<ArenaId, readonly [string, string, string, string]> = {
   forest: ['#0b2423', '#123631', '#77dec0', '#092721'],
@@ -9,8 +10,8 @@ const menuPalettes: Record<ArenaId, readonly [string, string, string, string]> =
   space: ['#101a30', '#1d2b49', '#bfcfff', '#151f37'],
   'night-city': ['#19192d', '#33263f', '#f4badd', '#231b32'],
 }
-export function arenaMenuStyle(id: string): CSSProperties {
-  const config = resolveBackground(id)
+export function arenaMenuStyle(id: string, trainerId?: string | null): CSSProperties {
+  const config = resolveBackground(id, trainerId)
   const [base, panel, accent, face] = menuPalettes[config.id]
   return { '--bg-deep': base, '--bg-base': base, '--bg-panel': panel, '--mint': accent, '--focus-ring': accent, '--hud-face': face, '--menu-face': face, '--line': `color-mix(in srgb, ${accent} 35%, ${base})`, '--arena-backdrop': config.background ? `url("${config.background}")` : 'none' } as CSSProperties
 }
@@ -94,7 +95,7 @@ export const battleBackgrounds: readonly BattleBackgroundConfig[] = Object.freez
 
 const failed = new Map<string, number>()
 export const markBackgroundFailed = (path: string): void => {
-  if (battleBackgrounds.some((config) => config.primary === path || config.fallback === path))
+  if (battleBackgrounds.some((config) => config.primary === path || config.fallback === path) || TRAINERS.some(trainer => path === `/trainers/${trainer.id}/background.webp`))
     failed.set(path, Date.now() + 1000)
 }
 export const markBackgroundLoaded = (path: string): void => {
@@ -108,8 +109,10 @@ function coolingDown(path: string) {
   return false
 }
 
-export function resolveBackground(id: string | null | undefined): BattleBackgroundConfig {
-  const config = battleBackgrounds.find((entry) => entry.id === id) ?? battleBackgrounds[0]
+export function resolveBackground(id: string | null | undefined, trainerId?: string | null): BattleBackgroundConfig {
+  const arena = battleBackgrounds.find((entry) => entry.id === id) ?? battleBackgrounds[0]
+  const trainer = trainerById(trainerId ?? '')
+  const config = trainer ? { ...arena, name: `Arena de ${trainer.name}`, primary: `/trainers/${trainer.id}/background.webp`, background: `/trainers/${trainer.id}/background.webp`, fallback: arena.primary } : arena
   return coolingDown(config.primary)
     ? { ...config, background: coolingDown(config.fallback) ? null : config.fallback }
     : config

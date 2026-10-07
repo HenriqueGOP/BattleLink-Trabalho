@@ -1,7 +1,8 @@
 .page {
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   position: relative;
   isolation: isolate;
 }
@@ -38,29 +39,6 @@
   width: min(1280px, 100%);
   margin-inline: auto;
   padding: 56px clamp(20px, 6vw, 80px);
-}
-.scene {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  background: var(--bg-deep);
-}
-.scene::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(90deg, rgba(7, 26, 45, 0.84), rgba(7, 26, 45, 0.58)),
-    url('/arenas/forest.webp'), url('/arenas/forest.svg');
-  background-size: cover;
-  background-position: center;
-}
-.scene::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, var(--bg-deep), transparent 65%);
 }
 .titleCard {
   display: grid;
@@ -209,12 +187,19 @@
 }
 .footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   color: var(--text-faint);
   font-size: 12px;
-  padding: 20px clamp(20px, 6vw, 80px);
+  height: 64px;
+  min-height: 64px;
+  padding: 10px clamp(20px, 6vw, 80px);
   border-top: 1px solid var(--line);
+  background: #041725e8;
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
 }
 @media (max-width: 820px) {
   .hero {
@@ -228,9 +213,6 @@
   .card {
     max-width: 480px;
     width: 100%;
-  }
-  .scene::before {
-    background-position: 40% center;
   }
 }
 @media (max-width: 480px) {
@@ -250,15 +232,18 @@
     padding: 22px 18px;
   }
   .footer {
-    padding: 18px 20px;
-    flex-wrap: wrap;
+    padding: 10px 16px;
+    font-size: 10px;
+    gap: 12px;
   }
+  .footer > span:first-child { max-width: 220px; }
+  .footer > span:last-child { white-space: nowrap; }
 }
 .launcher { min-height: 100dvh; }
-.landing { justify-content: center; padding: 64px clamp(20px, 6vw, 90px); }
+.landing { grid-template-rows: minmax(0, 1fr) auto; }
 .landing > div img { opacity: .8; }
 .landingTools { position: absolute; right: 5vw; top: 32px; z-index: 2; }
-.landingContent { width: min(1400px, 100%); margin-inline: auto; }
+.landingContent { width: min(1580px, 100%); margin-inline: auto; padding: 64px clamp(20px, 6vw, 90px); align-self: center; min-height: 0; max-height: 100%; overflow-y: auto; }
 .modeCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .modeCards button { min-width: 0; min-height: 345px; padding: 30px; border: 2px solid #639abe; border-radius: 12px 30px 12px 30px; background: #081b2bef; color: #f4f8ff; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 16px 32px #0006; transition: border-color .18s, transform .18s; }
 .modeCards button:hover, .modeCards button:focus-visible { border-color: #3de8ff; transform: translateY(-4px); }
@@ -266,8 +251,8 @@
 .modeCards strong { font: 800 clamp(20px, 2vw, 30px) var(--font-display); text-transform: uppercase; text-align: center; }
 .modeCards button > span:last-child { max-width: 260px; text-align: center; color: #bfd7eb; font-size: 17px; }
 .modeIcon { width: 150px; height: 150px; background: url('/interface/home-modes.webp') no-repeat; background-size: 300% 100%; image-rendering: pixelated; }
-@media (max-width: 700px) { .landing { padding: 96px 20px 36px; justify-content: start; } .modeCards { grid-template-columns: 1fr; gap: 14px; } .modeCards button { min-height: 0; display: grid; grid-template-columns: 80px 1fr; gap: 8px 20px; padding: 20px; text-align: left; } .modeIcon { width: 80px; height: 80px; grid-row: span 2; } .modeCards strong, .modeCards button > span:last-child { text-align: left; } .modeCards button > span:last-child { font-size: 14px; } }
-.hub { position: relative; width: min(1520px, 100%); margin: 0 auto; padding: 22px 32px 30px; }
+@media (max-width: 700px) { .landingContent { padding: 96px 20px 36px; align-self: start; } .modeCards { grid-template-columns: 1fr; gap: 14px; } .modeCards button { min-height: 0; display: grid; grid-template-columns: 80px 1fr; gap: 8px 20px; padding: 20px; text-align: left; } .modeIcon { width: 80px; height: 80px; grid-row: span 2; } .modeCards strong, .modeCards button > span:last-child { text-align: left; } .modeCards button > span:last-child { font-size: 14px; } }
+.hub { position: relative; width: min(1520px, 100%); min-height: 0; margin: 0 auto; padding: 22px 32px 30px; overflow-y: auto; scrollbar-gutter: stable; }
 .hubHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
 .hubHeading h1 { font-size: clamp(24px, 3vw, 40px); line-height: 1.25; max-width: 780px; margin: 10px 0; }
 .modeTabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 20px; }
@@ -283,7 +268,8 @@
 .invitation { display: grid; gap: 12px; text-align: center; padding-top: 20px; }
 .invitation strong { font: 700 28px var(--font-display); letter-spacing: .1em; }
 .challenge { display: contents; }
-.spotlight { position: relative; min-width: 0; min-height: 460px; display: grid; grid-template-columns: 1fr 1.2fr; padding: 20px 26px 0; overflow: hidden; background: #07162bed; border: 1px solid var(--trainer-color); border-radius: 4px 18px; }
+.spotlight { position: relative; isolation: isolate; min-width: 0; min-height: 460px; display: grid; grid-template-columns: 1fr 1.2fr; padding: 20px 26px 0; overflow: hidden; background: #07162b; border: 1px solid var(--trainer-color); border-radius: 4px 18px; }
+.spotlight::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, #061426ee, #06142699 48%, #06142618); }
 .trainerStory { position: relative; z-index: 2; padding: 24px 0 35px; }
 .trainerStory h2 { font: 700 clamp(32px, 4vw, 52px) var(--font-display); color: #fff; margin: 14px 0 4px; }
 .trainerStory strong { color: var(--trainer-color); font-size: 15px; }
@@ -292,7 +278,7 @@
 .trainerStory p, .trainerStory blockquote { color: #e1eaf1; font-size: 15px; line-height: 1.7; }
 .trainerStory blockquote { margin: 20px 0; border-left: 2px solid var(--trainer-color); padding-left: 14px; font-style: italic; }
 .partner { display: block; margin-bottom: 14px; color: #dce4ef; font-size: 13px; }
-.heroArt { height: 460px; align-self: end; }
+.heroArt { height: 460px; align-self: end; position: relative; z-index: 1; }
 .trainerGrid { grid-column: 1 / -1; display: flex; gap: 8px; padding: 12px; border: 1px solid #457696; background: #071e34ed; border-radius: 4px 16px; overflow-x: auto; scroll-snap-type: x proximity; }
 .trainerGrid > button { flex: 1 0 95px; scroll-snap-align: center; }
 .trainerTile { min-width: 0; min-height: 110px; display: flex; flex-direction: column; align-items: center; border: 1px solid #5a7184; border-radius: 4px 10px; background: #102a42; color: #f5faff; padding: 7px 4px 10px; cursor: pointer; }

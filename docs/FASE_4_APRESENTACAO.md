@@ -1,5 +1,9 @@
 # Fase 4 — apresentação sincronizada
 
+## Revisão atual — 2026-10-07
+
+Consulte a [auditoria incremental de combate](COMBAT_PRESENTATION_AUDIT_2026-10-07.md) para comportamento e evidências atuais. A arquitetura de fila/diretor foi mantida no protocolo v4 já existente. Movimento reduzido agora conserva legendas e quadros estáticos breves; resultado apresentado encerra loops persistentes. O restante deste documento é o registro histórico da fase 4.
+
 Data: 2026-10-02. Etapa iniciada após `eae5795` (fase 3); mudanças anteriores preservadas nos commits existentes. Protocolo `pokemon-battle/3` e regras de combate permanecem os da fase 3.
 
 ## Entrega

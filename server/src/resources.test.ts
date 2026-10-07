@@ -12,6 +12,8 @@ import {
   animatedPokemonAssets,
   markAssetFailed,
   markAssetLoaded,
+  resolveMenuSprite,
+  menuArtworkMetrics,
 } from "../../client/src/lib/assets";
 import { preloadBattle } from "../../client/src/lib/preloadBattle";
 import { displayMove } from "../../client/src/lib/catalog";
@@ -23,6 +25,160 @@ import {
   markBackgroundLoaded,
   resolveBackground,
 } from "../../client/src/config/battleBackgrounds";
+import {
+  MOVE_TYPE_GLYPHS,
+  moveTypeGlyph,
+} from "../../client/src/components/MoveIdentity/moveTypeGlyphs";
+import {
+  battleSpriteExtent,
+  spriteVisibleSize,
+} from "../../client/src/lib/presentation/sceneLayout";
+
+async function menuArtworkTests(root: string) {
+  const manifest = JSON.parse(
+    await readFile(resolve(root, "pokemon/artwork/manifest.json"), "utf8"),
+  ) as Record<
+    string,
+    Partial<
+      Record<
+        "normal" | "shiny",
+        {
+          path: string;
+          bytes: number;
+          sha256: string;
+          width: number;
+          height: number;
+          bounds: number[];
+          sourceWidth: number;
+          sourceHeight: number;
+          revision: string;
+        }
+      >
+    >
+  >;
+  const revision = JSON.parse(
+    await readFile(resolve(root, "pokemon/sources.json"), "utf8"),
+  ).sprites;
+  let files = 0;
+  for (const species of catalog.species) {
+    const original = pokemonAssets(species.id);
+    const variants = manifest[species.id] ?? {};
+    assert.equal(
+      resolveMenuSprite(original.front),
+      variants.normal?.path ?? original.front,
+    );
+    assert.equal(
+      resolveMenuSprite(original.shinyFront),
+      variants.shiny?.path ?? original.shinyFront,
+    );
+    // The two battle views keep their existing perspective and shiny variant.
+    assert.equal(
+      resolveBattleSprite(species.id, true, false).staticSrc,
+      variants.normal?.path ?? original.front,
+    );
+    assert.equal(
+      resolveBattleSprite(species.id, true, true).staticSrc,
+      variants.shiny?.path ?? original.shinyFront,
+    );
+    assert.equal(
+      resolveBattleSprite(species.id, false, false).staticSrc,
+      original.back ?? original.front,
+    );
+    for (const [variant, entry] of Object.entries(variants)) {
+      assert.match(
+        entry.path,
+        /^\/pokemon\/artwork\/(normal|shiny)\/\d+\.webp$/,
+      );
+      assert.ok(entry.path.includes(`/${variant}/`));
+      assert.equal(safeAsset(entry.path), entry.path);
+      const bytes = await readFile(resolve(root, `.${entry.path}`));
+      assert.equal(bytes.toString("ascii", 0, 4), "RIFF");
+      assert.equal(bytes.toString("ascii", 8, 12), "WEBP");
+      assert.equal(bytes.length, entry.bytes);
+      assert.equal(
+        createHash("sha256").update(bytes).digest("hex"),
+        entry.sha256,
+      );
+      assert.equal(
+        entry.revision,
+        revision,
+        "Menu art uses the pinned project source",
+      );
+      assert.ok(entry.width <= 384 && entry.height <= 384);
+      assert.ok(
+        entry.width <= entry.sourceWidth && entry.height <= entry.sourceHeight,
+        "No source upscaling",
+      );
+      const [left, top, right, bottom] = entry.bounds;
+      assert.ok(
+        left >= 0 &&
+          top >= 0 &&
+          right <= entry.width &&
+          bottom <= entry.height &&
+          right > left &&
+          bottom > top,
+      );
+      assert.deepEqual(menuArtworkMetrics(entry.path), {
+        path: entry.path,
+        width: entry.width,
+        height: entry.height,
+        bounds: entry.bounds,
+      });
+      files++;
+    }
+    for (const source of [original.front, original.back].filter(
+      (value): value is string => Boolean(value),
+    )) {
+      const extent = battleSpriteExtent(source);
+      const visible = spriteVisibleSize(source);
+      assert.ok(
+        extent >= 70 && extent <= 94,
+        "Battle creatures stay legible without filling their whole slot",
+      );
+      assert.ok(
+        Math.abs(Math.max(visible.width, visible.height) - extent) < 0.00001,
+      );
+    }
+  }
+  assert.equal(
+    Object.values(manifest).filter((variants) => variants.normal).length,
+    1025,
+    "High resolution local artwork covers every catalog species",
+  );
+  const bulbasaur = pokemonAssets("bulbasaur");
+  const artwork = resolveMenuSprite(bulbasaur.front)!;
+  markAssetFailed(artwork);
+  assert.equal(
+    resolveMenuSprite(bulbasaur.front),
+    bulbasaur.front,
+    "Failed art falls back to the bundled sprite",
+  );
+  markAssetLoaded(artwork);
+  assert.equal(
+    resolveMenuSprite(bulbasaur.front),
+    artwork,
+    "Recovered art becomes available again",
+  );
+  for (const invalid of [
+    "https://evil.test/pokemon.png",
+    "../pokemon/1.webp",
+    "__proto__",
+  ])
+    assert.equal(resolveMenuSprite(invalid), null);
+  assert.equal(Object.keys(MOVE_TYPE_GLYPHS).length, 18);
+  assert.equal(
+    new Set(Object.values(MOVE_TYPE_GLYPHS)).size,
+    18,
+    "Every move type has its own original silhouette",
+  );
+  for (const type of catalog.species.flatMap((species) => species.types))
+    assert.ok(Object.hasOwn(MOVE_TYPE_GLYPHS, type));
+  for (const invalid of ["__proto__", "constructor", "unknown"])
+    assert.equal(moveTypeGlyph(invalid), MOVE_TYPE_GLYPHS.normal);
+  console.log(
+    `Menu artwork passed: ${files} local normal/shiny WebPs, pinned hashes, alpha bounds, no upscaling, sprite fallback, 18 unique SVG type glyphs and bounded arena extents.`,
+  );
+}
 
 function gifFrames(buffer: Buffer): number {
   assert.match(buffer.toString("ascii", 0, 6), /^GIF8[79]a$/);
@@ -127,6 +283,7 @@ async function run() {
     "Pode aumentar o Ataque do usuário e dos aliados",
   );
   const root = resolve(__dirname, "../../client/public");
+  await menuArtworkTests(root);
   const manifest = JSON.parse(
     await readFile(resolve(root, "pokemon/manifest.json"), "utf8"),
   ) as Record<
@@ -228,7 +385,8 @@ async function run() {
   assert.equal(animatedBytes, 165270133);
   assert.equal(
     resolveBattleSprite("pikachu", true, false).src,
-    animations.pikachu.front.path,
+    resolveMenuSprite(pokemonAssets("pikachu").front),
+    "Opponent front uses the higher resolution local artwork",
   );
   assert.equal(
     resolveBattleSprite("pikachu", false, true).src,

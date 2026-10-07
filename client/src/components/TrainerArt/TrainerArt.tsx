@@ -1,4 +1,4 @@
-import { trainerAssets, TRAINER_POSES, type TrainerPose } from '../../lib/trainerAssets'
+import { trainerAssets, TRAINER_POSES, TRAINER_FRAME, type TrainerPose } from '../../lib/trainerAssets'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { trainerById } from '../../../../server/src/contracts/trainers'
 import { pokemonAssets } from '../../lib/assets'
@@ -32,5 +32,5 @@ export function TrainerSprite({ id, pose = 'idle' }: { id: string; pose?: Traine
   }, [id])
   if (!trainer) return null
   if (failed) return <div className={styles.sprite} data-trainer-sprite data-pose="idle" role="img" aria-label={trainer.name}><img className={styles.fallback} src={pokemonAssets(trainer.signature).front} alt="" /></div>
-  return <div ref={spriteRef} className={styles.sprite} data-trainer-sprite data-atlas="motion" data-pose={pose} role="img" aria-label={trainer.name} style={{ backgroundImage: `url("${trainerAssets(id)!.motion}")`, '--trainer-x': `${-160 * TRAINER_POSES.indexOf(pose)}px` } as CSSProperties} />
+  return <div ref={spriteRef} className={styles.sprite} data-trainer-sprite data-atlas="motion" data-pose={pose} role="img" aria-label={trainer.name} style={{ backgroundImage: `url("${trainerAssets(id)!.motion}")`, '--trainer-x': '0px', '--trainer-y': `${-TRAINER_FRAME.height * TRAINER_POSES.indexOf(pose)}px` } as CSSProperties} />
 }

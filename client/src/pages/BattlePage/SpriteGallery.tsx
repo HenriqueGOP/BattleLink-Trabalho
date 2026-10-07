@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { playSprite, spriteStats } from '../../lib/presentation/SpriteRenderer'
-import { SPRITE_CLIPS, type SpriteClipId } from '../../lib/presentation/spriteRegistry'
+import {
+  SPRITE_CLIPS,
+  TYPE_VISUALS,
+  type VisualType,
+  type SpriteClipId,
+} from '../../lib/presentation/spriteRegistry'
 import styles from './SpriteGallery.module.css'
+import { typeLabel } from '../../lib/format'
 
 const labels: Record<SpriteClipId, string> = {
   frozen: 'Aura de congelamento',
@@ -28,10 +34,10 @@ const labels: Record<SpriteClipId, string> = {
   victory: 'Vitória',
   defeat: 'Derrota',
   draw: 'Empate',
-  dodge: 'Esquiva',
+  dodge: 'Retirada forçada',
   psychic: 'Energia psíquica',
 }
-const regularIds = (Object.keys(SPRITE_CLIPS) as SpriteClipId[]).filter(id => id !== 'frozen')
+const regularIds = (Object.keys(SPRITE_CLIPS) as SpriteClipId[]).filter((id) => id !== 'frozen')
 interface FrameSample {
   frames: number
   elapsedMs: number
@@ -81,9 +87,16 @@ function sampleFrames(signal: AbortSignal): Promise<FrameSample | null> {
 }
 
 function Clips() {
+  const [typesOnly, setTypesOnly] = useState(false)
   const [iceOnly, setIceOnly] = useState(false)
-  const ids: SpriteClipId[] = iceOnly ? ['frozen'] : regularIds
-  const holders = useRef(new Map<SpriteClipId, HTMLDivElement>())
+  const ids: (SpriteClipId | VisualType)[] = typesOnly
+    ? (Object.keys(TYPE_VISUALS) as VisualType[])
+    : iceOnly
+      ? ['frozen']
+      : regularIds
+  const clipFor = (id: SpriteClipId | VisualType): SpriteClipId =>
+    typesOnly ? TYPE_VISUALS[id as VisualType].clip : (id as SpriteClipId)
+  const holders = useRef(new Map<string, HTMLDivElement>())
   const [staticFrames, setStaticFrames] = useState(
     () => matchMedia('(prefers-reduced-motion: reduce)').matches
   )
@@ -106,10 +119,11 @@ function Clips() {
     document.addEventListener('visibilitychange', stopWhenHidden)
     if (mode !== 'stopped') {
       const plays = ids.map((id) =>
-        playSprite(holders.current.get(id) ?? null, id, {
+        playSprite(holders.current.get(id) ?? null, clipFor(id), {
           signal: controller.signal,
           static: mode === 'preview' || staticFrames,
           size: 128,
+          visualType: typesOnly ? (id as VisualType) : undefined,
         })
       )
       if (mode === 'play' && !staticFrames) {
@@ -128,14 +142,32 @@ function Clips() {
       document.removeEventListener('visibilitychange', stopWhenHidden)
       if (abortRef.current === controller) abortRef.current = null
     }
-  // The gallery displays the ice atlas separately, preserving the 24-instance budget.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [epoch, mode, staticFrames, iceOnly])
+    // The gallery displays the ice atlas separately, preserving the 24-instance budget.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [epoch, mode, staticFrames, iceOnly, typesOnly])
 
   return (
     <>
       <div className={styles.controls}>
-        <Button variant="ghost" onClick={() => { abortRef.current?.abort(); setIceOnly(value => !value); setMode('preview') }}>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            abortRef.current?.abort()
+            setTypesOnly((value) => !value)
+            setMode('preview')
+          }}
+        >
+          {typesOnly ? 'Mostrar famílias de efeitos' : 'Inspecionar os 18 tipos'}
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            abortRef.current?.abort()
+            setTypesOnly(false)
+            setIceOnly((value) => !value)
+            setMode('preview')
+          }}
+        >
           {iceOnly ? 'Mostrar os 24 efeitos de combate' : 'Inspecionar aura de gelo'}
         </Button>
         <Button
@@ -198,9 +230,11 @@ function Clips() {
                 else holders.current.delete(id)
               }}
             />
-            <h3 className={styles.name}>{labels[id]}</h3>
+            <h3 className={styles.name}>
+              {typesOnly ? typeLabel(id) : labels[id as SpriteClipId]}
+            </h3>
             <span className={styles.caption}>
-              {id} · 8 quadros · {SPRITE_CLIPS[id].fps} FPS
+              {id} · 8 quadros · {SPRITE_CLIPS[clipFor(id)].fps} FPS
             </span>
           </article>
         ))}

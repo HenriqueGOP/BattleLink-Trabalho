@@ -1,24 +1,85 @@
-.surface[data-move-type] { position: relative; isolation: isolate; border-left: 4px solid var(--move-type, var(--type-normal)); background: color-mix(in srgb, var(--move-type, var(--type-normal)) 11%, var(--hud-face)); color: var(--hud-ink); }
-.surface::after { content: ''; position: absolute; inset: 0; background: var(--move-ornament) center/100% 100% no-repeat; opacity: .32; pointer-events: none; z-index: -1; }
-.surface[data-move-type='fire'] { --move-ornament: url('/interface/type-fire.webp'); }
-.surface[data-move-type='water'] { --move-ornament: url('/interface/type-water.webp'); }
-.surface[data-move-type='ice'] { --move-ornament: url('/interface/type-ice.webp'); }
-.surface[data-move-type='grass'] { --move-ornament: url('/interface/type-grass.webp'); }
-.surface[data-move-type='electric'] { --move-ornament: url('/interface/type-electric.webp'); }
-.surface[data-move-type='dark'] { --move-ornament: url('/interface/type-dark.webp'); }
-.surface[data-move-type='ghost'] { --move-ornament: url('/interface/type-ghost.webp'); }
-.surface[data-move-type='steel'] { --move-ornament: url('/interface/type-steel.webp'); }
-.surface[data-move-type='dragon'] { --move-ornament: url('/interface/type-dragon.webp'); }
-.surface[data-move-type='fairy'] { --move-ornament: url('/interface/type-fairy.webp'); }
-.surface[data-move-type='bug'] { --move-ornament: url('/interface/type-bug.webp'); }
-.surface[data-move-type='fighting'] { --move-ornament: url('/interface/type-fighting.webp'); }
-.surface[data-move-type='normal'] { --move-ornament: url('/interface/type-normal.webp'); }
-.surface[data-move-type='rock'] { --move-ornament: url('/interface/type-rock.webp'); }
-.surface[data-move-type='psychic'] { --move-ornament: url('/interface/type-psychic.webp'); }
-.surface[data-move-type='ground'] { --move-ornament: url('/interface/type-ground.webp'); }
-.surface[data-move-type='poison'] { --move-ornament: url('/interface/type-poison.webp'); }
-.surface[data-move-type='flying'] { --move-ornament: url('/interface/type-flying.webp'); }
-.surface:is(:hover,:focus-within)::after { animation: shimmer 2.2s ease-in-out infinite; }
-@keyframes shimmer { 0%,100% { transform: translateY(1px); opacity: .36; } 50% { transform: translateY(-2px); opacity: .64; } }
-:global(html[data-motion-preference='reduced']) .surface::after { animation: none !important; }
-@media (prefers-reduced-motion: reduce) { .surface::after { animation: none !important; } }
+.surface[data-move-type] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-left: 3px solid var(--move-type, var(--type-normal));
+  background:
+    radial-gradient(
+      ellipse at 100% 0,
+      color-mix(in srgb, var(--move-type, var(--type-normal)) 18%, transparent),
+      transparent 74%
+    ),
+    var(--hud-face);
+  color: var(--hud-ink);
+}
+.surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+  background: repeating-linear-gradient(
+    128deg,
+    transparent 0 15px,
+    var(--move-type, var(--type-normal)) 16px 17px,
+    transparent 18px 34px
+  );
+  mask-image: linear-gradient(90deg, transparent 30%, black);
+}
+.surface[data-move-type='water']::after,
+.surface[data-move-type='ice']::after {
+  background: repeating-radial-gradient(
+    ellipse at 100% 130%,
+    transparent 0 10px,
+    var(--move-type) 11px 12px,
+    transparent 13px 23px
+  );
+}
+.surface[data-move-type='grass']::after,
+.surface[data-move-type='bug']::after {
+  background: repeating-linear-gradient(
+    38deg,
+    transparent 0 12px,
+    var(--move-type) 13px 14px,
+    transparent 15px 28px
+  );
+}
+.surface[data-move-type='psychic']::after,
+.surface[data-move-type='ghost']::after,
+.surface[data-move-type='dark']::after {
+  background: repeating-radial-gradient(
+    ellipse at 100% 50%,
+    transparent 0 10px,
+    var(--move-type) 11px 12px,
+    transparent 13px 25px
+  );
+}
+.surface[data-move-type='rock']::after,
+.surface[data-move-type='ground']::after,
+.surface[data-move-type='steel']::after {
+  background: repeating-linear-gradient(
+    50deg,
+    transparent 0 18px,
+    var(--move-type) 19px 20px,
+    transparent 21px 45px
+  );
+}
+.icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.2em;
+  color: color-mix(in srgb, var(--move-type, var(--type-normal)) 72%, white);
+}
+.watermark {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 88px;
+  height: 88px;
+  opacity: 0.09;
+  color: var(--move-type, var(--type-normal));
+  pointer-events: none;
+  z-index: -1;
+}

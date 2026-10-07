@@ -1,5 +1,9 @@
 # Fase 7 — animações de combate em spritesheets
 
+## Revisão atual — 2026-10-07
+
+A [auditoria incremental de combate](COMBAT_PRESENTATION_AUDIT_2026-10-07.md) registra correções, testes e capturas atuais. `move` não antecipa impacto; `miss` apresenta erro, sem inventar esquiva; os 18 tipos usam famílias, cores e símbolos locais. O laboratório respeita a preferência de movimento. Menções divergentes abaixo descrevem a implementação histórica.
+
 ## Atualização de frontend — 2026-10-03
 
 A reformulação amplia a apresentação com **3.368 GIFs locais para 868 espécies**, usando sprites estáticos locais quando uma variante animada não existe, além dos atlas de efeitos. O controle **Animações** oferece **Sistema / Completo / Reduzido**; a preferência não altera regras de combate. Evidências e limites atuais ficam em [Frontend Refresh](FRONTEND_REFRESH.md).

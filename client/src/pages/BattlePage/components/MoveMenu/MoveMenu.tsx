@@ -4,6 +4,7 @@ import { audio } from '../../../../lib/audio'
 import { categoryLabel, typeLabel } from '../../../../lib/format'
 import styles from './MoveMenu.module.css'
 import moveIdentity from '../../../../components/MoveIdentity/MoveIdentity.module.css'
+import { MoveTypeIcon } from '../../../../components/MoveIdentity/MoveTypeIcon'
 import { MenuEmblem, MenuScenery } from '../../../../components/MenuArt/MenuArt'
 import type { Player } from '../../../../types/player'
 import type { PokemonMove } from '../../../../types/pokemon'
@@ -70,7 +71,12 @@ export const MoveMenu = memo(function MoveMenu({
               key={moveName}
               className={`${styles.move} ${moveIdentity.surface}`}
               data-move-type={type}
-              style={{ '--type-color': `var(--type-${type}, var(--type-normal))`, '--move-type': `var(--type-${type}, var(--type-normal))` } as CSSProperties}
+              style={
+                {
+                  '--type-color': `var(--type-${type}, var(--type-normal))`,
+                  '--move-type': `var(--type-${type}, var(--type-normal))`,
+                } as CSSProperties
+              }
               disabled={disabled || outOfPp}
               onClick={() => {
                 audio.play('select')
@@ -83,7 +89,11 @@ export const MoveMenu = memo(function MoveMenu({
               onFocus={() => onPreview?.(move ?? null)}
               onBlur={() => onPreview?.(null)}
             >
-              <span className={styles.name}>{move?.displayName ?? moveName}</span>
+              <MoveTypeIcon type={type} watermark />
+              <span className={styles.name}>
+                <MoveTypeIcon type={type} />
+                {move?.displayName ?? moveName}
+              </span>
               <span className={styles.stats}>
                 <span>
                   Poder <b>{move?.power || '—'}</b>

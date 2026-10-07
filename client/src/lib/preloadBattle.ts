@@ -4,6 +4,7 @@ import {
   pokemonAssets,
   animatedPokemonAssets,
   resolveBattleSprite,
+  resolveMenuSprite,
   markAssetFailed,
   markAssetLoaded,
   FALLBACK_SPRITE,
@@ -75,7 +76,7 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
         side !== snapshot.viewer,
         snapshot.revealedShiny[pokemon.id] ?? false
       )
-      activeSprites.push(asset.src, asset.staticSrc)
+      activeSprites.push(asset.src, asset.staticSrc, asset.fallbackSrc)
     }
   }
   // The visible scene gets the deadline budget first. Audio and bench variants
@@ -90,6 +91,9 @@ export async function preloadBattle(snapshot: RoomSnapshot, signal: AbortSignal)
     config.fallback,
   ])
   const reserves = [...ids].flatMap((id) => [
+    ...[pokemonAssets(id).front, pokemonAssets(id).shinyFront]
+      .map(resolveMenuSprite)
+      .filter((path): path is string => !!path),
     ...Object.values(animatedPokemonAssets(id)).map((asset) => asset.path),
     ...Object.values(pokemonAssets(id)).filter(
       (path): path is string => !!path && !/\.(?:ogg|mp3)$/.test(path)

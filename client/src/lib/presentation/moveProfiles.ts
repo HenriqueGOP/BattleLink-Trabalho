@@ -67,9 +67,9 @@ export function moveProfile(moveId: string): MoveProfile | null {
     family,
     element: move.type,
     statusMove: move.category === 'Status',
-    anticipation: family === 'contact' || family === 'slash' ? 120 : 160,
-    travel: family === 'contact' ? 230 : family === 'beam' ? 390 : 340,
-    recovery: family === 'contact' || family === 'slash' ? 220 : 170,
+    anticipation: family === 'contact' || family === 'slash' ? 170 : 220,
+    travel: family === 'contact' ? 310 : family === 'beam' ? 520 : 460,
+    recovery: family === 'contact' || family === 'slash' ? 300 : 240,
     size: family === 'area' ? 230 : family === 'beam' ? 190 : family === 'wave' ? 190 : 160,
   }
 }

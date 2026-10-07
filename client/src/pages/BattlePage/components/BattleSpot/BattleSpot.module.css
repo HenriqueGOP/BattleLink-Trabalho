@@ -20,3 +20,31 @@
 .spot.self {
   margin: 0;
 }
+.statStages {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - var(--sprite-visible-height, 100%));
+  transform: translate(-50%, calc(-100% - 8px));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  width: max-content;
+  max-width: 170px;
+  z-index: 32;
+  pointer-events: none;
+}
+.statBadge {
+  padding: 3px 6px;
+  border-radius: 6px;
+  font: 800 10px var(--font-body);
+  line-height: 1.25;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px #00101980;
+}
+.buff { color: #c3ffe8; background: #064c3fee; border: 1px solid #64deba; }
+.debuff { color: #fff0e5; background: #753541ee; border: 1px solid #ffa3ab; }
+@media (max-width: 560px) {
+  .statStages { max-width: 135px; gap: 3px; }
+  .statBadge { padding: 2px 4px; font-size: 9px; }
+}

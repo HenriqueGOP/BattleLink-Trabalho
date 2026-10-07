@@ -1,3 +1,22 @@
-.sprite { flex: none; display: inline-block; position: relative; overflow: hidden; image-rendering: pixelated; }
-.image { position: absolute; object-fit: fill; max-width: none; }
-.fallback { background: url('/interface/quick-emblem.webp') center/contain no-repeat; opacity: .75; }
+.sprite {
+  flex: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: auto;
+}
+.image {
+  position: absolute;
+  object-fit: fill;
+  max-width: none;
+}
+.sprite[data-sprite-source='artwork'] .image {
+  image-rendering: auto;
+}
+.sprite[data-sprite-source='pixel'] .image {
+  image-rendering: pixelated;
+}
+.fallback {
+  background: url('/interface/quick-emblem.webp') center/contain no-repeat;
+  opacity: 0.75;
+}

@@ -68,6 +68,7 @@ export function presentSnapshot(wire: RoomSnapshot): GameState {
       pokemonData:
         pokemon && member
           ? {
+              id: pokemon.id,
               moves: (request?.moves.map((move) => move.id) ?? member.selectedMoves).map(
                 displayMove
               ),

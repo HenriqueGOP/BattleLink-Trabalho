@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from 'react'
-import { resolveBattleSprite } from '../../../../lib/assets'
+import { menuArtworkMetrics, resolveBattleSprite } from '../../../../lib/assets'
 import { motionProfile } from '../../../../lib/presentation/motionProfiles'
 import { useMotionPreference } from '../../../../hooks/useMotionPreference'
 import styles from './BattleSprite.module.css'
@@ -37,7 +37,9 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
   // Falhas do recurso local usam um placeholder sem esticar texto sobre a arena.
   // Guardar o src permite recuperar naturalmente quando o Pokémon troca.
   const [failedSources, setFailedSources] = useState<ReadonlySet<string>>(() => new Set())
-  const source = failedSources.has(src) ? asset.staticSrc : src
+  const source =
+    [src, asset.staticSrc, asset.fallbackSrc].find((candidate) => !failedSources.has(candidate)) ??
+    asset.fallbackSrc
   const broken = failedSources.has(source)
 
   // A flag apresentada muda após o evento faint; HP zero não antecipa a queda.
@@ -68,10 +70,13 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
               <img
                 key={source}
                 className={styles.sprite}
-              style={spriteLayout(source, asset.staticSrc)}
+                style={spriteLayout(source, asset.staticSrc)}
                 src={source}
                 data-creature-sprite
-                data-static-src={asset.staticSrc}
+                data-sprite-source={menuArtworkMetrics(source) ? 'artwork' : 'pixel'}
+                data-static-src={
+                  failedSources.has(asset.staticSrc) ? asset.fallbackSrc : asset.staticSrc
+                }
                 /* alt vazio + role de apresentacao: o nome ja aparece no HUD e na
              legenda, e um alt longo virava texto solto quando a imagem falhava */
                 alt=""
@@ -91,7 +96,15 @@ export function BattleSprite({ player, opponent, spriteRef, paused = false }: Ba
               />
             )}
           </div>
-          {(['body', 'head', 'feet'] as const).map(kind => <span key={kind} className={styles.anchor} data-sprite-anchor={kind} style={spriteAnchorLayout(source, kind, asset.staticSrc)} aria-hidden="true" />)}
+          {(['body', 'head', 'feet'] as const).map((kind) => (
+            <span
+              key={kind}
+              className={styles.anchor}
+              data-sprite-anchor={kind}
+              style={spriteAnchorLayout(source, kind, asset.staticSrc)}
+              aria-hidden="true"
+            />
+          ))}
         </div>
       </div>
       {player?.pokemonData?.isShiny && (

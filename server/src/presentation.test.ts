@@ -23,6 +23,9 @@ import {
   buildLogEntries,
 } from "../../client/src/lib/eventEngine";
 import { presentSnapshot } from "../../client/src/lib/battleView";
+import { TRAINER_TIMINGS, trainerFramePosition } from "../../client/src/lib/presentation/trainerMotion";
+import { TRAINER_FRAME, TRAINER_POSES } from "../../client/src/lib/trainerAssets";
+import { visibleStatStages } from "../../client/src/lib/presentation/statStages";
 
 function messageTests() {
   const room = fixtureRoom();
@@ -410,6 +413,24 @@ async function queueTests() {
   assert.equal(shown.battle!.ownTeam[0].boosts.atk, 2);
   const enemy = shown.battle!.opponentTeam[0];
   assert.ok(!("hidden" in enemy) && enemy.status === "brn");
+  const oldIdentity = presentSnapshot(shown).players[1].pokemonData!.id;
+  const sameStatusSwitch: CanonicalEvent = {
+    type: 'switch', target: 'p2s1', previous: 'p2s0', forced: false,
+    pokemon: { ...enemy, id: 'p2s1' }, sequence: shown.sequence + 1, round: 1, audience: 'public',
+  };
+  const replacementView = presentSnapshot(applyPresentedEvent(shown, sameStatusSwitch));
+  assert.equal(replacementView.players[1].pokemonData!.status, 'burn');
+  assert.equal(replacementView.players[1].pokemonData!.id, 'p2s1');
+  assert.notEqual(replacementView.players[1].pokemonData!.id, oldIdentity, 'Troca conserva identidade distinta mesmo com espécie e status iguais; chave da aura é reiniciada');
+  const activeStages = presentSnapshot(shown).players[0].pokemonData!.statStages;
+  assert.deepEqual(visibleStatStages(activeStages).map(stage => [stage.stat, stage.value]), [['attack', 2]], 'Buff do jogador permanece enquanto estiver no snapshot apresentado');
+  const foeBoost: CanonicalEvent = { type: 'boost', target: 'p2s0', stat: 'def', before: 0, after: -1, sequence: shown.sequence + 1, round: 1, audience: 'public' };
+  shown = applyPresentedEvent(shown, foeBoost);
+  assert.deepEqual(visibleStatStages(presentSnapshot(shown).players[1].pokemonData!.statStages).map(stage => [stage.stat, stage.value]), [['defense', -1]], 'Debuff do adversário tem o próprio alvo');
+  const cleared: CanonicalEvent = { type: 'state_sync', sequence: shown.sequence + 1, round: 1, audience: 'public', active: shown.battle!.ownTeam.slice(0, 1).map(pokemon => ({ ...pokemon, boosts: {} })), sideConditions: shown.battle!.sideConditions, fieldConditions: shown.battle!.fieldConditions };
+  shown = applyPresentedEvent(shown, cleared);
+  assert.equal(visibleStatStages(presentSnapshot(shown).players[0].pokemonData!.statStages).length, 0, 'A limpeza real remove o indicador imediatamente');
+  assert.equal(visibleStatStages(activeStages, true).length, 0, 'Pokémon nocauteado não mantém indicadores');
   statusRoom.destroy();
 }
 
@@ -456,7 +477,8 @@ class FakeNode {
   static created: FakeNode[] = [];
   children = new Set<FakeNode>();
   parent: FakeNode | null = null;
-  style = { setProperty: (key: string, value: string) => { (this.style as Record<string, unknown>)[key] = value; } } as Record<string, unknown> & { setProperty: (key: string, value: string) => void; };
+  propertyWrites: { key: string; value: string; pose: string }[] = [];
+  style = { setProperty: (key: string, value: string) => { (this.style as Record<string, unknown>)[key] = value; this.propertyWrites.push({ key, value, pose: this.dataset.pose }); } } as Record<string, unknown> & { setProperty: (key: string, value: string) => void; };
   dataset: Record<string, string> = {};
   className = "";
   textContent = "";
@@ -661,36 +683,103 @@ async function directorTests() {
         ),
       ),
     );
-    // Trainer frames finish and exit before any creature enter animation starts.
+    // Every authored frame finishes before any creature enter animation starts.
     const intro = new FakeNode(), trainer = new FakeNode();
     stage.selectors.set('[data-trainer-intro]', intro);
     intro.selectors.set('[data-trainer-sprite]', trainer);
     const start: CanonicalEvent = { type: 'battle_start', sequence: 0, round: 0, audience: 'public' };
     const introBefore = FakeNode.animations.length;
-    const entered = director.run(start, wire, new AbortController().signal, () => commits++);
+    const trainerWire: RoomSnapshot = { ...wire, trainerId: 'vespera' };
+    const entered = director.run(start, trainerWire, new AbortController().signal, () => commits++);
     await until(() => FakeNode.animations.length > introBefore);
     assert.equal(stage.dataset.trainerPhase, 'idle');
     FakeNode.animations[introBefore].finish();
-    await until(() => stage.dataset.trainerPhase === 'prepare', 120);
+    await until(() => stage.dataset.trainerPhase === 'prepare', 300);
     assert.equal(FakeNode.animations.length, introBefore + 1, 'No Pokémon animation during prepare');
-    await until(() => stage.dataset.trainerPhase === 'throw', 120);
-    assert.equal(trainer.style['--trainer-x'], '-320px');
-    await until(() => stage.dataset.trainerPhase === 'follow', 120);
-    await until(() => stage.dataset.trainerPhase === 'exit', 120);
-    assert.equal(FakeNode.animations.length, introBefore + 2, 'Only trainer entry and exit so far');
-    FakeNode.animations[introBefore + 1].finish();
-    await until(() => FakeNode.animations.length > introBefore + 2);
+    await until(() => stage.dataset.trainerPhase === 'throw', 300);
+    assert.equal(trainer.style['--trainer-y'], '-400px');
+    await until(() => stage.dataset.trainerPhase === 'follow', 300);
+    assert.equal(FakeNode.animations.length, introBefore + 1, 'No Pokémon appears before follow-through finishes');
+    await until(() => FakeNode.animations.length > introBefore + 1, 300);
     assert.equal(stage.dataset.trainerPhase, 'complete');
-    assert.equal(intro.style.opacity, '0', 'Trainer hidden before summon');
-    for (const animation of FakeNode.animations.slice(introBefore + 2)) animation.finish();
+    assert.equal(intro.style.opacity, '1', 'Trainer remains in the dedicated arena area');
+    for (const pose of ['idle', 'prepare', 'throw', 'follow']) {
+      assert.equal(new Set(trainer.propertyWrites.filter(write => write.pose === pose && write.key === '--trainer-x').map(write => write.value)).size, TRAINER_FRAME.columns, `${pose} presents every distinct authored frame`);
+    }
+    assert.equal(stage.dataset.trainerSummon, undefined);
+    for (const animation of FakeNode.animations.slice(introBefore + 1)) animation.finish();
     await entered;
     assert.equal(trainer.dataset.controlled, undefined);
     const abortIntro = new AbortController();
-    const cancelledIntro = director.run(start, wire, abortIntro.signal, () => commits++);
+    const cancelledIntro = director.run(start, trainerWire, abortIntro.signal, () => commits++);
     abortIntro.abort();
     await cancelledIntro;
     assert.equal(stage.dataset.trainerPhase, 'complete', 'Skip releases hidden creatures');
-    assert.equal(intro.style.opacity, '0');
+    assert.equal(intro.style.opacity, '1');
+    assert.equal(stage.dataset.trainerSummon, undefined);
+
+    // Forced opponent replacement must wait for a fresh full throw before commit.
+    const foeSwitch: CanonicalEvent = { ...switching, type: 'switch', target: 'p2s1', previous: 'p2s0', forced: true, pokemon: { ...('pokemon' in switching ? switching.pokemon : trainerWire.battle!.ownTeam[1]), id: 'p2s1' } };
+    const faintedWire: RoomSnapshot = { ...trainerWire, battle: { ...trainerWire.battle!, opponentTeam: trainerWire.battle!.opponentTeam.map(pokemon => pokemon.id === 'p2s0' && !('hidden' in pokemon) ? { ...pokemon, fainted: true, hp: 0 } : pokemon) } };
+    const beforeReplace = FakeNode.animations.length;
+    let replacementCommitted = false;
+    const replaced = director.run(foeSwitch, faintedWire, new AbortController().signal, () => { replacementCommitted = true; });
+    await until(() => stage.dataset.trainerPhase === 'prepare');
+    assert.equal(stage.dataset.trainerSummon, 'opponent');
+    assert.equal(replacementCommitted, false);
+    await until(() => stage.dataset.trainerPhase === 'throw', 300);
+    assert.equal(replacementCommitted, false);
+    await until(() => stage.dataset.trainerPhase === 'follow', 300);
+    assert.equal(replacementCommitted, false);
+    await until(() => replacementCommitted, 300);
+    await until(() => FakeNode.animations.length > beforeReplace);
+    assert.equal(stage.dataset.trainerSummon, undefined, 'Replacement becomes visible only after the throw');
+    for (const animation of FakeNode.animations.slice(beforeReplace)) animation.finish();
+    await replaced;
+    const interruptedReplace = new AbortController();
+    let lateCommit = false;
+    const replaceAborted = director.run(foeSwitch, faintedWire, interruptedReplace.signal, () => { lateCommit = true; });
+    await until(() => stage.dataset.trainerPhase === 'prepare');
+    interruptedReplace.abort();
+    await replaceAborted;
+    assert.equal(lateCommit, false);
+    assert.equal(stage.dataset.trainerSummon, undefined, 'Skip releases a pending replacement');
+
+    // Trainer reactions use the target/source, and result uses the winner side.
+    const ownKo: CanonicalEvent = { ...damage, target: 'p1s0', source: 'p2s0', hpAfter: 0 };
+    const koBefore = FakeNode.animations.length;
+    const koDamage = director.run(ownKo, trainerWire, new AbortController().signal, () => {});
+    for (const animation of FakeNode.animations.slice(koBefore)) animation.finish();
+    await koDamage;
+    const faint: CanonicalEvent = { type: 'faint', target: 'p1s0', sequence: 15, audience: 'public', round: 1 };
+    const faintBefore = FakeNode.animations.length;
+    let fallCommitted = false;
+    const faintPlay = director.run(faint, trainerWire, new AbortController().signal, () => { fallCommitted = true; });
+    for (const animation of FakeNode.animations.slice(faintBefore)) animation.finish();
+    await until(() => trainer.dataset.pose === 'celebrate');
+    assert.equal(fallCommitted, true, 'A queda já foi aplicada e o sprite não reaparece durante a comemoração');
+    await faintPlay;
+    assert.equal(new Set(trainer.propertyWrites.filter(write => write.pose === 'celebrate' && write.key === '--trainer-x').map(write => write.value)).size, TRAINER_FRAME.columns);
+    const wrongFaintBefore = trainer.propertyWrites.length;
+    const foeFaint: CanonicalEvent = { ...faint, target: 'p2s0' };
+    const wrongBefore = FakeNode.animations.length;
+    const wrongPlay = director.run(foeFaint, trainerWire, new AbortController().signal, () => {});
+    for (const animation of FakeNode.animations.slice(wrongBefore)) animation.finish();
+    await wrongPlay;
+    assert.equal(trainer.propertyWrites.length, wrongFaintBefore, 'Trainer never celebrates its own Pokémon fainting');
+    const endBefore = FakeNode.animations.length;
+    const trainerLoss: CanonicalEvent = { type: 'battle_end', result: { winner: 'p1', reason: 'knockout' }, sequence: 20, round: 1, audience: 'public' };
+    const ending = director.run(trainerLoss, trainerWire, new AbortController().signal, () => {});
+    for (const animation of FakeNode.animations.slice(endBefore)) animation.finish();
+    await until(() => trainer.dataset.pose === 'defeated');
+    await ending;
+    assert.equal(new Set(trainer.propertyWrites.filter(write => write.pose === 'defeated' && write.key === '--trainer-x').map(write => write.value)).size, TRAINER_FRAME.columns);
+    const victoryBefore = FakeNode.animations.length;
+    const trainerVictory: CanonicalEvent = { ...trainerLoss, result: { winner: 'p2', reason: 'knockout' } };
+    const victory = director.run(trainerVictory, trainerWire, new AbortController().signal, () => {});
+    for (const animation of FakeNode.animations.slice(victoryBefore)) animation.finish();
+    await until(() => trainer.dataset.pose === 'celebrate');
+    await victory;
     director.dispose();
     let reducedSounds = 0;
     const reduced = new AnimationDirector({
@@ -713,7 +802,7 @@ async function directorTests() {
       "Movimento reduzido preserva a escolha explícita de áudio",
     );
     assert.equal(commits, 6);
-    await reduced.run(start, wire, new AbortController().signal, () => commits++);
+    await reduced.run(start, trainerWire, new AbortController().signal, () => commits++);
     assert.equal(stage.dataset.trainerPhase, 'complete');
     assert.equal(FakeNode.animations.length, reducedBefore);
     reduced.dispose();
@@ -729,10 +818,19 @@ async function directorTests() {
   assert.equal(flash.allow(200), false);
   assert.equal(flash.allow(1000), true);
   assert.ok(IMPACT.hitStop >= 60 && IMPACT.criticalHitStop <= 90);
+  for (const pose of TRAINER_POSES) {
+    assert.ok(TRAINER_TIMINGS[pose] >= 900, `${pose} is slow enough to read`);
+    assert.equal(new Set(Array.from({ length: TRAINER_FRAME.columns }, (_, frame) => trainerFramePosition(pose, frame).x)).size, 6);
+  }
   const a = visualRandom(8),
     b = visualRandom(8);
   for (let i = 0; i < 100; i++) assert.equal(a(), b());
 }
+// An unresolved mock animation must fail instead of letting Node exit silently.
+const completionDeadline = setTimeout(() => {
+  console.error('Presentation tests did not complete within 60 seconds');
+  process.exitCode = 1;
+}, 60_000);
 void (async () => {
   messageTests();
   await queueTests();
@@ -743,4 +841,4 @@ void (async () => {
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;
-});
+}).finally(() => clearTimeout(completionDeadline));

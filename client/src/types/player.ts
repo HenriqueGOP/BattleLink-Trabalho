@@ -38,6 +38,7 @@ export interface TeamMember {
 
 /** Dados do Pokémon ativo no snapshot (server ActivePokemonData). */
 export interface ActivePokemonData {
+  id?: import('./protocol').CombatantId
   moves: PokemonMove[]
   selectedMoves: string[]
   types: string[]

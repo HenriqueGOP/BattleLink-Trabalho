@@ -1,4 +1,12 @@
-import { SPRITE_CLIPS, VFX_ATLASES, type SpriteClip, type SpriteClipId } from './spriteRegistry'
+import {
+  SPRITE_CLIPS,
+  VFX_ATLASES,
+  TYPE_VISUALS,
+  type VisualType,
+  type SpriteClip,
+  type SpriteClipId,
+} from './spriteRegistry'
+import { MOVE_TYPE_GLYPHS } from '../../components/MoveIdentity/moveTypeGlyphs'
 import { sceneAnchor } from './sceneLayout'
 
 const images = new Map<string, Promise<HTMLImageElement | null>>()
@@ -9,6 +17,7 @@ const jobs = new Set<Job>()
 const instances = new Set<object>()
 let frame: number | null = null
 const MAX_CLIPS = 24
+const glyphs = new Map<VisualType, Path2D>()
 function tick(now: number) {
   frame = null
   for (const job of [...jobs]) if (!job(now)) jobs.delete(job)
@@ -103,12 +112,14 @@ export function frameRect(width: number, height: number, clip: SpriteClip, index
 }
 export interface SpriteOptions {
   signal: AbortSignal
+  visualType?: VisualType
   loop?: boolean
   size?: number
   reverse?: boolean
   static?: boolean
   position?: 'center' | 'above'
   delay?: number
+  /** Legacy callers can name a destination; artwork is placed there without travel. */
   travelTo?: HTMLElement | null
   paused?: () => boolean
   presentation?: 'orb' | 'beam' | 'wave' | 'area' | 'powder' | 'contact'
@@ -122,6 +133,7 @@ export function playSprite(
   id: SpriteClipId,
   options: SpriteOptions
 ): Promise<void> {
+  parent = options.travelTo ?? parent
   if (!parent || options.signal.aborted || typeof Image === 'undefined') return Promise.resolve()
   return new Promise<void>((resolve) => {
     const token = {}
@@ -166,9 +178,18 @@ export function playSprite(
       canvas.className = `battle-sprite-fx${options.position === 'above' ? ' battle-sprite-fx-above' : ''}`
       canvas.setAttribute('aria-hidden', 'true')
       canvas.setAttribute('data-sprite-clip', id)
+      const visual = options.visualType ? TYPE_VISUALS[options.visualType] : undefined
+      let glyph: Path2D | undefined
+      if (options.visualType && typeof Path2D !== 'undefined') {
+        glyph = glyphs.get(options.visualType)
+        if (!glyph) {
+          glyph = new Path2D(MOVE_TYPE_GLYPHS[options.visualType])
+          glyphs.set(options.visualType, glyph)
+        }
+        canvas.setAttribute('data-visual-type', options.visualType)
+      }
       const source = image
       const origin = parent.getBoundingClientRect?.()
-      const destination = options.travelTo?.getBoundingClientRect?.()
       // Short-lived effects use the stage plane rather than a transformed actor
       // stacking context. Persistent auras remain anchored to their local holder.
       const stage =
@@ -177,49 +198,24 @@ export function playSprite(
       ;(stage ?? parent).appendChild(canvas)
       const center = (rect: DOMRect | undefined) =>
         rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : null
-      const actor = parent.closest?.<HTMLElement>('[data-scene-side]')?.querySelector<HTMLElement>('[data-battle-anchor]') ?? parent
-      const startPoint = sceneAnchor(actor, options.anchor ?? 'body') ?? center(origin),
-        endPoint = sceneAnchor(options.travelTo ?? null, 'body') ?? center(destination)
-      const dx = startPoint && endPoint ? endPoint.x - startPoint.x : 0
-      const dy = startPoint && endPoint ? endPoint.y - startPoint.y : 0
-      const angle = options.rotate ?? (Math.atan2(dy, dx) * 180) / Math.PI
+      const actor =
+        parent
+          .closest?.<HTMLElement>('[data-scene-side]')
+          ?.querySelector<HTMLElement>('[data-battle-anchor]') ?? parent
+      const startPoint = sceneAnchor(actor, options.anchor ?? 'body') ?? center(origin)
+      const angle = options.rotate ?? 0
       const presentation = options.presentation ?? 'orb'
       if (!stage && origin && startPoint) {
-        const point = options.position === 'above' ? sceneAnchor(actor, 'head') ?? startPoint : startPoint
+        const point =
+          options.position === 'above' ? (sceneAnchor(actor, 'head') ?? startPoint) : startPoint
         canvas.style.left = `${point.x - origin.left}px`
-        canvas.style.top = `${point.y - origin.top - (options.position === 'above' ? size * .32 : 0)}px`
+        canvas.style.top = `${point.y - origin.top - (options.position === 'above' ? size * 0.32 : 0)}px`
       }
       if (stage && stageRect && startPoint) {
-        let anchor = startPoint
-        if (presentation === 'area')
-          anchor = {
-            x: stageRect.left + stageRect.width / 2,
-            y: stageRect.top + stageRect.height * 0.56,
-          }
-        if (presentation === 'beam' && endPoint)
-          anchor = { x: (startPoint.x + endPoint.x) / 2, y: (startPoint.y + endPoint.y) / 2 }
-        canvas.style.left = `${anchor.x - stageRect.left - stage.clientLeft}px`
-        canvas.style.top = `${anchor.y - stageRect.top - stage.clientTop}px`
+        canvas.style.left = `${startPoint.x - stageRect.left - stage.clientLeft}px`
+        canvas.style.top = `${startPoint.y - stageRect.top - stage.clientTop}px`
         canvas.style.zIndex = 'var(--z-effects, 30)'
-        if (presentation === 'beam' && endPoint) {
-          const width = Math.max(32, Math.min(900, Math.hypot(dx, dy)))
-          const height = Math.max(28, size * 0.38)
-          canvas.style.width = `${width}px`
-          canvas.style.height = `${height}px`
-          canvas.width = Math.round(width * ratio)
-          canvas.height = Math.round(height * ratio)
-        } else if (presentation === 'wave') {
-          canvas.style.width = `${size * 1.4}px`
-          canvas.style.height = `${size * 0.75}px`
-        } else if (presentation === 'area') {
-          const area = Math.min(440, stageRect.width * 0.78)
-          canvas.style.width = canvas.style.height = `${area}px`
-        }
       }
-      const travel =
-        startPoint && endPoint
-          ? { x: dx, y: dy }
-          : null
       const draw = (index: number) => {
         const rect = frameRect(source.naturalWidth, source.naturalHeight, clip, index)
         context.clearRect(0, 0, canvas!.width, canvas!.height)
@@ -234,6 +230,26 @@ export function playSprite(
           canvas!.width,
           canvas!.height * (1 - (clip.cropTop ?? 0) - (clip.cropBottom ?? 0))
         )
+        if (visual) {
+          context.save()
+          context.globalCompositeOperation = 'source-atop'
+          context.globalAlpha = 0.45
+          context.fillStyle = visual.color
+          context.fillRect(0, 0, canvas!.width, canvas!.height)
+          context.restore()
+          if (glyph) {
+            context.save()
+            // Small type seal, outside the central body; no additional RAF or DOM node.
+            const unit = (canvas!.width * 0.18) / 24
+            context.translate(canvas!.width * 0.7, canvas!.height * 0.12)
+            context.scale(unit, unit)
+            context.fillStyle = visual.color
+            context.shadowColor = '#fff'
+            context.shadowBlur = 3 * ratio
+            context.fill(glyph, 'evenodd')
+            context.restore()
+          }
+        }
       }
       if (options.static) {
         draw(3)
@@ -266,18 +282,14 @@ export function playSprite(
           previous = index
           if (presentation === 'beam') {
             const pulse = Math.sin(Math.min(1, step / (clip.frames - 1)) * Math.PI)
-            canvas!.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scaleY(${0.3 + pulse * 0.7})`
+            canvas!.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scale(${0.8 + pulse * 0.2})`
             canvas!.style.opacity = `${0.25 + pulse * 0.75}`
           } else if (presentation === 'powder') {
             const progress = Math.min(1, step / (clip.frames - 1))
-            canvas!.style.transform = `translate(calc(-50% + ${(travel?.x ?? 0) * progress}px), calc(-50% + ${(travel?.y ?? 0) * progress}px)) scale(${0.5 + progress * 0.65})`
+            canvas!.style.transform = `translate(-50%, -50%) scale(${0.8 + progress * 0.2})`
           } else if (presentation === 'area') {
             const progress = Math.min(1, step / (clip.frames - 1))
-            canvas!.style.transform = `translate(-50%, -50%) scale(${0.5 + progress * 0.65})`
-          } else if (travel) {
-            const progress = Math.min(1, step / (clip.frames - 1))
-            canvas!.style.transform = `translate(calc(-50% + ${travel.x * progress}px), calc(-50% + ${travel.y * progress}px))`
-            if (presentation === 'wave') canvas!.style.transform += ` rotate(${angle}deg)`
+            canvas!.style.transform = `translate(-50%, -50%) scale(${0.8 + progress * 0.2})`
           }
         }
         return true

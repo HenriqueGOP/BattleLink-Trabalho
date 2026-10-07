@@ -148,7 +148,7 @@ export function SelectionPage() {
 
   return (
     <main className={styles.page} aria-busy={loading}>
-      <MenuScenery menu="selection" />
+      <MenuScenery menu="selection" viewport />
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>

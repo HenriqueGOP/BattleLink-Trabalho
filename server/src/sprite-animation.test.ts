@@ -7,10 +7,13 @@ import {
   VFX_ATLASES,
   SPRITE_CLIPS,
   attackClip,
+  attackVisualType,
+  TYPE_VISUALS,
   statusClip,
 } from "../../client/src/lib/presentation/spriteRegistry";
 import type { SpriteClipId } from "../../client/src/lib/presentation/spriteRegistry";
 import type { SpriteClip } from "../../client/src/lib/presentation/spriteRegistry";
+import { MOVE_TYPE_GLYPHS } from '../../client/src/components/MoveIdentity/moveTypeGlyphs';
 import {
   frameRect,
   markVfxFailed,
@@ -19,7 +22,7 @@ import {
 } from "../../client/src/lib/presentation/SpriteRenderer";
 
 interface AtlasEntry {
-  id: keyof typeof VFX_ATLASES;
+  id: keyof typeof VFX_ATLASES | 'impacts' | 'legacy-attacks';
   path: string;
   width: number;
   height: number;
@@ -58,16 +61,13 @@ async function assetTests() {
   const manifest = JSON.parse(
     await readFile(resolve(root, "battle-vfx/manifest.json"), "utf8"),
   ) as AtlasEntry[];
-  assert.deepEqual(
-    manifest.map((entry) => entry.id).sort(),
-    Object.keys(VFX_ATLASES).sort(),
-  );
+  for (const path of Object.values(VFX_ATLASES))
+    assert.equal(manifest.filter(entry => entry.path === path).length, 1, `${path} has exactly one authoritative asset record`);
   let totalBytes = 0;
   for (const entry of manifest) {
-    assert.equal(entry.path, VFX_ATLASES[entry.id]);
     assert.match(
       entry.path,
-      /^\/battle-vfx\/(attacks|statuses|transitions|frozen)\.webp$/,
+      /^\/battle-vfx\/(attacks|impacts|statuses|transitions|frozen)\.webp$/,
     );
     const buffer = await readFile(resolve(root, `.${entry.path}`));
     const actual = webpSize(buffer);
@@ -128,6 +128,17 @@ async function assetTests() {
   assert.equal(attackClip("shadowball"), "shadow");
   assert.equal(attackClip("psychic"), "psychic");
   assert.equal(attackClip("protect"), null);
+  assert.equal(Object.keys(TYPE_VISUALS).length, 18);
+  assert.deepEqual(Object.keys(TYPE_VISUALS).sort(), Object.keys(MOVE_TYPE_GLYPHS).sort());
+  const tokens = await readFile(resolve(__dirname, '../../client/src/styles/tokens.css'), 'utf8');
+  for (const [type, visual] of Object.entries(TYPE_VISUALS)) {
+    assert.ok(SPRITE_CLIPS[visual.clip]);
+    assert.ok(tokens.includes(`--type-${type}: ${visual.color}`), 'Paleta corresponde ao tipo existente');
+    assert.ok(MOVE_TYPE_GLYPHS[type as keyof typeof MOVE_TYPE_GLYPHS].length > 10);
+  }
+  assert.equal(attackVisualType('thunderbolt'), 'electric');
+  assert.equal(attackVisualType('protect'), undefined);
+  assert.equal(attackVisualType('../fire'), undefined);
   for (const invalid of [
     "https://evil.test/a.webp",
     "//evil.test",
@@ -162,7 +173,11 @@ class ControlledCanvas {
   attributes = new Map<string, string>();
   parent: ControlledParent | null = null;
   draws: unknown[][] = [];
+  tints: string[] = [];
   context = {
+    fillStyle: '',
+    save() {}, restore() {}, translate() {}, scale() {}, fill() {},
+    fillRect: () => this.tints.push(this.context.fillStyle),
     clearRect() {},
     drawImage: (...args: unknown[]) => this.draws.push(args),
   };
@@ -238,6 +253,7 @@ async function rendererTests() {
       },
     },
     window: { devicePixelRatio: 3 },
+    Path2D: class { constructor(readonly path: string) {} },
     Image: ControlledImage,
     requestAnimationFrame: (callback: FrameRequestCallback) => {
       const id = nextFrame++;
@@ -294,6 +310,7 @@ async function rendererTests() {
     const finitePlay = playSprite(asElement(active), "fire", {
       signal: second.signal,
       size: 100,
+      visualType: 'dragon',
     });
     let finiteFinished = false;
     void finitePlay.then(() => {
@@ -328,6 +345,8 @@ async function rendererTests() {
     );
     assert.equal(canvas.attributes.get("aria-hidden"), "true");
     tick(0);
+    assert.equal(canvas.attributes.get('data-visual-type'), 'dragon');
+    assert.deepEqual(canvas.tints, [TYPE_VISUALS.dragon.color]);
     assert.deepEqual(canvas.draws[0].slice(1, 5), [0, 313.5, 156.75, 156.75]);
     tick(20);
     assert.equal(
@@ -335,13 +354,13 @@ async function rendererTests() {
       1,
       "Frame igual não redesenha nem recria DOM",
     );
-    tick(60);
+    tick(90);
     assert.equal(canvas.draws.length, 2);
     assert.equal(canvas.draws[1][1], 156.75);
-    tick(400);
+    tick(650);
     assert.equal(canvas.draws.at(-1)![1], 1097.25);
     assert.equal(finiteFinished, false);
-    tick(450);
+    tick(700);
     await finitePlay;
     assert.equal(finiteFinished, true);
     assert.equal(active.children.size, 0);
@@ -366,7 +385,7 @@ async function rendererTests() {
     assert.equal(reverseCanvas.draws.length, 0, "Atraso adia o primeiro frame");
     tick(1100);
     assert.equal(reverseCanvas.draws[0][1], 1097.25);
-    tick(1160);
+    tick(1190);
     assert.equal(reverseCanvas.draws[1][1], 940.5);
     reverseController.abort();
     await reversePlay;
@@ -539,19 +558,15 @@ async function rendererTests() {
       travelTo: asElement(destination),
     });
     await flush();
-    const travelCanvas = [...travelling.children][0];
+    const travelCanvas = [...destination.children][0];
+    assert.equal(travelling.children.size, 0, 'Golpe nunca cria efeito sobre o atacante');
+    assert.equal(travelCanvas.style.left, '100px');
+    assert.equal(travelCanvas.style.top, '50px');
     tick(7000);
-    assert.equal(
-      travelCanvas.style.transform,
-      "translate(calc(-50% + 0px), calc(-50% + 0px))",
-    );
-    tick(7400);
-    assert.equal(
-      travelCanvas.style.transform,
-      "translate(calc(-50% + 350px), calc(-50% + -150px))",
-      "Projétil termina no centro do alvo",
-    );
-    tick(7450);
+    const targetPosition = { left: travelCanvas.style.left, top: travelCanvas.style.top, transform: travelCanvas.style.transform };
+    tick(7650);
+    assert.deepEqual({ left: travelCanvas.style.left, top: travelCanvas.style.top, transform: travelCanvas.style.transform }, targetPosition, 'Efeito nasce e permanece no alvo, sem viajar');
+    tick(7700);
     await travelPlay;
     assert.equal(travelling.children.size, 0);
     assertIdle();
@@ -570,7 +585,7 @@ async function rendererTests() {
     await flush();
     const pausedCanvas = [...pausedParent.children][0];
     tick(8000);
-    tick(8060);
+    tick(8090);
     assert.equal(pausedCanvas.draws.at(-1)![1], 156.75);
     paused = true;
     tick(8100);
@@ -588,10 +603,10 @@ async function rendererTests() {
       2,
       "Retomar não consome o último intervalo ainda pausado",
     );
-    tick(8740);
+    tick(8750);
     assert.equal(pausedCanvas.draws.at(-1)![1], 313.5);
     assert.equal(pauseFinished, false);
-    tick(9070);
+    tick(9300);
     await pausePlay;
     assert.equal(pauseFinished, true, "Conclusão desconta o tempo de pausa");
     assert.equal(pausedParent.children.size, 0);
@@ -604,6 +619,7 @@ async function rendererTests() {
     anchor.rect = { left: 120, top: 120, width: 100, height: 100 };
     beamTarget.rect = { left: 420, top: 50, width: 100, height: 100 };
     anchor.stage = plane;
+    beamTarget.stage = plane;
     const beamController = new AbortController();
     const beamPlay = playSprite(asElement(anchor), "fire", {
       signal: beamController.signal,
@@ -617,18 +633,18 @@ async function rendererTests() {
       "Efeito transitório sai do stacking context da criatura",
     );
     const beam = [...plane.children][0];
-    assert.equal(beam.style.left, "300px");
-    assert.equal(beam.style.top, "95px");
+    assert.equal(beam.style.left, "450px");
+    assert.equal(beam.style.top, "60px");
     assert.equal(beam.style.zIndex, "var(--z-effects, 30)");
-    assert.equal(beam.style.width, `${Math.hypot(300, -70)}px`);
+    assert.equal(beam.style.width, "180px", 'Feixe é um impacto no alvo, sem comprimento entre os atores');
     tick(10000);
-    tick(10180);
-    assert.match(beam.style.transform, /^translate\(-50%, -50%\) rotate\(-/);
+    tick(10300);
+    assert.match(beam.style.transform, /^translate\(-50%, -50%\) rotate\(0deg\)/);
     assert.ok(
       Number(beam.style.opacity) > 0.9,
       "Feixe mantém arte perceptível no centro do efeito",
     );
-    tick(10450);
+    tick(10700);
     await beamPlay;
     assert.equal(plane.children.size, 0);
     assertIdle();
@@ -641,14 +657,14 @@ async function rendererTests() {
     });
     await flush();
     const powder = [...plane.children][0];
-    assert.equal(powder.style.left, "150px");
-    assert.equal(powder.style.top, "130px");
+    assert.equal(powder.style.left, "450px");
+    assert.equal(powder.style.top, "60px");
     tick(12000);
     tick(12875);
     assert.equal(
       powder.style.transform,
-      "translate(calc(-50% + 300px), calc(-50% + -70px)) scale(1.15)",
-      "Pó viaja até o alvo sem antecipar confirmação de status",
+      "translate(-50%, -50%) scale(1)",
+      "Pó permanece no alvo sem antecipar confirmação de status",
     );
     tick(13000);
     await powderPlay;
@@ -661,11 +677,11 @@ async function rendererTests() {
     });
     await flush();
     const area = [...plane.children][0];
-    assert.equal(area.style.left, "300px");
-    assert.ok(Math.abs(Number.parseFloat(area.style.top) - 168) < 1e-9);
-    assert.equal(area.style.width, "440px");
+    assert.equal(area.style.left, "150px");
+    assert.equal(area.style.top, "130px");
+    assert.equal(area.style.width, "180px");
     tick(14000);
-    tick(14450);
+    tick(14700);
     await areaPlay;
     assert.equal(plane.children.size, 0);
     assertIdle();
@@ -896,7 +912,7 @@ async function run() {
   );
   assert.match(child.stdout, /cold-load failures: .* passed/);
   console.log(
-    `Sprite animation: 25 clips, four transparent WebP hashes (${bytes} bytes), real 8×8 geometry, shared clock/cache, limits, cancellation, loops, reduced motion, travel, pause clock, cold-load deadline and fallback passed.`,
+    `Sprite animation: 25 clips, all local transparent WebP hashes (${bytes} bytes), real 8×8 geometry, shared clock/cache, limits, cancellation, loops, reduced motion, target-only effects, pause clock, cold-load deadline and fallback passed.`,
   );
 }
 void run().catch((error) => {
