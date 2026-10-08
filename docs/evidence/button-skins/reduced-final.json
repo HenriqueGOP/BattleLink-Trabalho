@@ -1,0 +1,33 @@
+{
+  "buttons": [
+    {
+      "animation": "none",
+      "client": 156,
+      "scroll": 156,
+      "transform": "none",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "client": 156,
+      "scroll": 156,
+      "transform": "none",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "client": 111,
+      "scroll": 111,
+      "transform": "none",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "client": 111,
+      "scroll": 111,
+      "transform": "none",
+      "transition": "0s"
+    }
+  ],
+  "motion": "reduced"
+}

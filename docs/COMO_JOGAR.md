@@ -105,3 +105,15 @@ estado de combate. Celebração e derrota aparecem no resultado. Áudio fecha po
 **Escape** e devolve o foco ao botão de configurações.
 
 Recursos e evidências: [Refatoração visual](FRONTEND_VISUAL.md).
+
+### Notebooks e botões
+
+Em notebooks com largura a partir de 980 px e altura até 800 px, arena e registro
+ficam à esquerda, comandos e golpes à direita. Na preparação, a lista de golpes
+rola separadamente; Salvar e Confirmar permanecem acessíveis. Em telas menores,
+use **Revisar e confirmar ↓** para chegar à confirmação da equipe.
+
+Os golpes preservam cores, símbolos e dados de cada tipo e recebem uma moldura
+estática discreta. A skin também aparece em Lutar, Pokémon e Fugir. Movimento
+reduzido elimina o pequeno deslocamento de pressionamento. Recarga e PP continuam
+informados pelo servidor. Conferências atuais: [skin e notebooks](button-art-notebook.md).

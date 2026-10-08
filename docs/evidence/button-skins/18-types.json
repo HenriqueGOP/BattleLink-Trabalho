@@ -1,0 +1,128 @@
+[
+  {
+    "accent": "#8f4199",
+    "icon": "poison",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "poison"
+  },
+  {
+    "accent": "#7f8fd6",
+    "icon": "flying",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "flying"
+  },
+  {
+    "accent": "#9fa19f",
+    "icon": "normal",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "normal"
+  },
+  {
+    "accent": "#dc4569",
+    "icon": "psychic",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "psychic"
+  },
+  {
+    "accent": "#e28fb4",
+    "icon": "fairy",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "fairy"
+  },
+  {
+    "accent": "#a68b3c",
+    "icon": "rock",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "rock"
+  },
+  {
+    "accent": "#4a7ddb",
+    "icon": "water",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "water"
+  },
+  {
+    "accent": "#5c4f43",
+    "icon": "dark",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "dark"
+  },
+  {
+    "accent": "#bf3f38",
+    "icon": "fighting",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "fighting"
+  },
+  {
+    "accent": "#5fc7c7",
+    "icon": "ice",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "ice"
+  },
+  {
+    "accent": "#e8532b",
+    "icon": "fire",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "fire"
+  },
+  {
+    "accent": "#5a50c8",
+    "icon": "dragon",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "dragon"
+  },
+  {
+    "accent": "#8fa832",
+    "icon": "bug",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "bug"
+  },
+  {
+    "accent": "#b58a3c",
+    "icon": "ground",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "ground"
+  },
+  {
+    "accent": "#4faa54",
+    "icon": "grass",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "grass"
+  },
+  {
+    "accent": "#e8b918",
+    "icon": "electric",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "electric"
+  },
+  {
+    "accent": "#66517f",
+    "icon": "ghost",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "ghost"
+  },
+  {
+    "accent": "#8b93a8",
+    "icon": "steel",
+    "skin": "url(\"http://localhost:5173/interface/button-skins/button_rectangle_depth.svg\")",
+    "slice": "14",
+    "type": "steel"
+  }
+]

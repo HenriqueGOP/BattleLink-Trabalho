@@ -1,0 +1,667 @@
+[
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 513,
+          "height": 44,
+          "left": 410.5,
+          "right": 602,
+          "top": 469,
+          "width": 191.5,
+          "x": 410.5,
+          "y": 469
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 581,
+          "height": 44,
+          "left": 747.421875,
+          "right": 999,
+          "top": 537,
+          "width": 251.578125,
+          "x": 747.421875,
+          "y": 537
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 118,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 216,
+          "right": 399.5,
+          "top": 329.640625,
+          "width": 183.5,
+          "x": 216,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 405.5,
+          "right": 589,
+          "top": 329.640625,
+          "width": 183.5,
+          "x": 405.5,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 216,
+          "right": 399.5,
+          "top": 453.234375,
+          "width": 183.5,
+          "x": 216,
+          "y": 453.234375
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 405.5,
+          "right": 589,
+          "top": 453.234375,
+          "width": 183.5,
+          "x": 405.5,
+          "y": 453.234375
+        },
+        "scroll": 118
+      }
+    ],
+    "height": 600,
+    "overflow": false,
+    "width": 1024
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 633,
+          "height": 44,
+          "left": 474.5,
+          "right": 730,
+          "top": 589,
+          "width": 255.5,
+          "x": 474.5,
+          "y": 589
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 701,
+          "height": 44,
+          "left": 1003.421875,
+          "right": 1255,
+          "top": 657,
+          "width": 251.578125,
+          "x": 1003.421875,
+          "y": 657
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 118,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 216,
+          "right": 463.5,
+          "top": 329.640625,
+          "width": 247.5,
+          "x": 216,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 469.5,
+          "right": 717,
+          "top": 329.640625,
+          "width": 247.5,
+          "x": 469.5,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 216,
+          "right": 463.5,
+          "top": 453.234375,
+          "width": 247.5,
+          "x": 216,
+          "y": 453.234375
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 469.5,
+          "right": 717,
+          "top": 453.234375,
+          "width": 247.5,
+          "x": 469.5,
+          "y": 453.234375
+        },
+        "scroll": 118
+      }
+    ],
+    "height": 720,
+    "overflow": false,
+    "width": 1280
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 563,
+          "height": 44,
+          "left": 507.5,
+          "right": 773,
+          "top": 519,
+          "width": 265.5,
+          "x": 507.5,
+          "y": 519
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 631,
+          "height": 44,
+          "left": 1066.421875,
+          "right": 1318,
+          "top": 587,
+          "width": 251.578125,
+          "x": 1066.421875,
+          "y": 587
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 118,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 239,
+          "right": 496.5,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 239,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 502.5,
+          "right": 760,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 502.5,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 239,
+          "right": 496.5,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 239,
+          "y": 453.234375
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 502.5,
+          "right": 760,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 502.5,
+          "y": 453.234375
+        },
+        "scroll": 118
+      }
+    ],
+    "height": 650,
+    "overflow": false,
+    "width": 1366
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 681,
+          "height": 44,
+          "left": 507.5,
+          "right": 773,
+          "top": 637,
+          "width": 265.5,
+          "x": 507.5,
+          "y": 637
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 749,
+          "height": 44,
+          "left": 1066.421875,
+          "right": 1318,
+          "top": 705,
+          "width": 251.578125,
+          "x": 1066.421875,
+          "y": 705
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 118,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 239,
+          "right": 496.5,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 239,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 502.5,
+          "right": 760,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 502.5,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 239,
+          "right": 496.5,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 239,
+          "y": 453.234375
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 502.5,
+          "right": 760,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 502.5,
+          "y": 453.234375
+        },
+        "scroll": 118
+      }
+    ],
+    "height": 768,
+    "overflow": false,
+    "width": 1366
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 713,
+          "height": 44,
+          "left": 544.5,
+          "right": 810,
+          "top": 669,
+          "width": 265.5,
+          "x": 544.5,
+          "y": 669
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 781,
+          "height": 44,
+          "left": 1103.421875,
+          "right": 1355,
+          "top": 737,
+          "width": 251.578125,
+          "x": 1103.421875,
+          "y": 737
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 118,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 276,
+          "right": 533.5,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 276,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 447.234375,
+          "height": 117.59375,
+          "left": 539.5,
+          "right": 797,
+          "top": 329.640625,
+          "width": 257.5,
+          "x": 539.5,
+          "y": 329.640625
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 276,
+          "right": 533.5,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 276,
+          "y": 453.234375
+        },
+        "scroll": 118
+      },
+      {
+        "client": 118,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 570.828125,
+          "height": 117.59375,
+          "left": 539.5,
+          "right": 797,
+          "top": 453.234375,
+          "width": 257.5,
+          "x": 539.5,
+          "y": 453.234375
+        },
+        "scroll": 118
+      }
+    ],
+    "height": 800,
+    "overflow": false,
+    "width": 1440
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 1401.34375,
+          "height": 44,
+          "left": 179,
+          "right": 325,
+          "top": 1357.34375,
+          "width": 146,
+          "x": 179,
+          "y": 1357.34375
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 2434.53125,
+          "height": 54,
+          "left": 27,
+          "right": 323,
+          "top": 2380.53125,
+          "width": 296,
+          "x": 27,
+          "y": 2380.53125
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 165,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 1161.75,
+          "height": 164.59375,
+          "left": 25,
+          "right": 171,
+          "top": 997.15625,
+          "width": 146,
+          "x": 25,
+          "y": 997.15625
+        },
+        "scroll": 165
+      },
+      {
+        "client": 165,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 1161.75,
+          "height": 164.59375,
+          "left": 179,
+          "right": 325,
+          "top": 997.15625,
+          "width": 146,
+          "x": 179,
+          "y": 997.15625
+        },
+        "scroll": 165
+      },
+      {
+        "client": 174,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 1343.34375,
+          "height": 173.59375,
+          "left": 25,
+          "right": 171,
+          "top": 1169.75,
+          "width": 146,
+          "x": 25,
+          "y": 1169.75
+        },
+        "scroll": 174
+      },
+      {
+        "client": 174,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 1343.34375,
+          "height": 173.59375,
+          "left": 179,
+          "right": 325,
+          "top": 1169.75,
+          "width": 146,
+          "x": 179,
+          "y": 1169.75
+        },
+        "scroll": 174
+      }
+    ],
+    "height": 800,
+    "overflow": false,
+    "width": 360
+  },
+  {
+    "actions": [
+      {
+        "name": "Salvar golpes",
+        "rect": {
+          "bottom": 1311.171875,
+          "height": 44,
+          "left": 590.25,
+          "right": 717,
+          "top": 1267.171875,
+          "width": 126.75,
+          "x": 590.25,
+          "y": 1267.171875
+        }
+      },
+      {
+        "name": "Aceitar equipe e batalhar ▶",
+        "rect": {
+          "bottom": 2267.671875,
+          "height": 54,
+          "left": 208.671875,
+          "right": 460.25,
+          "top": 2213.671875,
+          "width": 251.578125,
+          "x": 208.671875,
+          "y": 2213.671875
+        }
+      }
+    ],
+    "buttons": [
+      {
+        "client": 132,
+        "name": "1Dream Eater×PsíquicoEspecialPoder100Precisão100%PP15",
+        "rect": {
+          "bottom": 1107.171875,
+          "height": 132,
+          "left": 41,
+          "right": 374,
+          "top": 975.171875,
+          "width": 333,
+          "x": 41,
+          "y": 975.171875
+        },
+        "scroll": 132
+      },
+      {
+        "client": 132,
+        "name": "2Future Sight×PsíquicoEspecialPoder120Precisão100%PP10",
+        "rect": {
+          "bottom": 1107.171875,
+          "height": 132,
+          "left": 384,
+          "right": 717,
+          "top": 975.171875,
+          "width": 333,
+          "x": 384,
+          "y": 975.171875
+        },
+        "scroll": 132
+      },
+      {
+        "client": 132,
+        "name": "3Psychic×PsíquicoEspecialPoder90Precisão100%PP10",
+        "rect": {
+          "bottom": 1249.171875,
+          "height": 132,
+          "left": 41,
+          "right": 374,
+          "top": 1117.171875,
+          "width": 333,
+          "x": 41,
+          "y": 1117.171875
+        },
+        "scroll": 132
+      },
+      {
+        "client": 132,
+        "name": "4Psychic Fangs×PsíquicoFísicoPoder85Precisão100%PP10",
+        "rect": {
+          "bottom": 1249.171875,
+          "height": 132,
+          "left": 384,
+          "right": 717,
+          "top": 1117.171875,
+          "width": 333,
+          "x": 384,
+          "y": 1117.171875
+        },
+        "scroll": 132
+      }
+    ],
+    "height": 1024,
+    "overflow": false,
+    "width": 768
+  }
+]

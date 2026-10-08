@@ -1,3 +1,4 @@
+import buttonSkin from '../../components/MoveIdentity/ButtonSkin.module.css'
 import { TrainerSprite } from '../../components/TrainerArt/TrainerArt'
 import { SCENE_LAYOUT } from '../../lib/presentation/sceneLayout'
 import { MatchBanner } from '../../components/MatchBanner/MatchBanner'
@@ -208,6 +209,8 @@ export function BattlePage() {
           <nav className={styles.actionTabs} aria-label="Menu de batalha">
             <span>Sua ação</span>
             <Button
+              className={`${styles.commandButton} ${buttonSkin.frame}`}
+              data-command="fight"
               variant={activePanel === 'moves' ? 'fight' : 'ghost'}
               size="sm"
               aria-pressed={activePanel === 'moves'}
@@ -216,6 +219,8 @@ export function BattlePage() {
               LUTAR
             </Button>
             <Button
+              className={`${styles.commandButton} ${buttonSkin.frame}`}
+              data-command="party"
               variant={activePanel === 'party' ? 'party' : 'ghost'}
               size="sm"
               aria-pressed={activePanel === 'party'}
@@ -224,6 +229,8 @@ export function BattlePage() {
               POKÉMON
             </Button>
             <Button
+              className={`${styles.commandButton} ${buttonSkin.frame}`}
+              data-command="run"
               variant="ghost"
               size="sm"
               onClick={leaveAndHome}

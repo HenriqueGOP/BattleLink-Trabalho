@@ -1,0 +1,56 @@
+/* Kenney UI Pack Sci-Fi 2.0 (CC0). Only the border is drawn; HTML owns the face. */
+.frame {
+  position: relative;
+  isolation: isolate;
+  min-height: 44px;
+  --skin-accent: var(--move-type, var(--accent));
+  --skin-focus: var(--focus-on-light);
+  --skin-selection: inset 0 0 0 0 transparent;
+}
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border: 7px solid transparent;
+  border-image-source: url('/interface/button-skins/button_rectangle_depth.svg');
+  border-image-slice: 14;
+  border-image-width: 7px;
+  border-image-repeat: stretch;
+}
+.frame.frame:not(:disabled):hover {
+  transform: none;
+  box-shadow:
+    var(--skin-selection),
+    0 0 0 1px var(--skin-accent),
+    0 2px 10px color-mix(in srgb, var(--skin-accent) 24%, transparent);
+}
+.frame.frame:not(:disabled):active {
+  transform: translateY(1px);
+}
+.frame:not(:disabled):active::before {
+  border-image-source: url('/interface/button-skins/button_rectangle.svg');
+}
+.frame[aria-pressed='true'],
+.frame[data-skin-selected='true'] {
+  --skin-selection: inset 0 0 0 9px var(--skin-accent);
+  box-shadow: var(--skin-selection);
+}
+.frame.frame:focus-visible {
+  outline: 3px solid var(--skin-focus);
+  outline-offset: -3px;
+}
+.frame:disabled {
+  cursor: not-allowed;
+}
+:global(html[data-motion-preference='reduced']) .frame.frame {
+  transform: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :global(html:not([data-motion-preference='full'])) .frame.frame {
+    transform: none !important;
+    transition: none !important;
+  }
+}

@@ -119,7 +119,7 @@
 }
 @media (max-width: 560px) {
   .move {
-    padding: 10px 8px;
+    padding: 12px;
     min-height: 104px;
   }
   .name {

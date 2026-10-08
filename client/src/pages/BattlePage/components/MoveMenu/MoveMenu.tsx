@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import buttonSkin from '../../../../components/MoveIdentity/ButtonSkin.module.css'
+import { memo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { audio } from '../../../../lib/audio'
 import { categoryLabel, typeLabel } from '../../../../lib/format'
@@ -41,6 +42,9 @@ export const MoveMenu = memo(function MoveMenu({
   onPreview,
 }: MoveMenuProps) {
   const data = player?.pokemonData
+  const [chosenAction, setChosenAction] = useState<{ requestId: number; moveId: string } | null>(
+    null
+  )
   const moves = data?.selectedMoves ?? []
   const disabled = !myTurn || blocked
 
@@ -63,14 +67,21 @@ export const MoveMenu = memo(function MoveMenu({
             legal.disabled ||
             (legal.pp <= 0 && moveName !== 'struggle' && request?.lockedMoveId !== moveName)
           const type = move?.type ?? 'normal'
+          const recharge = request?.lockedMoveId === 'recharge' && moveName === 'recharge'
+          const selected = Boolean(
+            request?.submitted &&
+            chosenAction?.requestId === request.id &&
+            chosenAction.moveId === moveName
+          )
           const low =
             typeof current === 'number' && total != null && current > 0 && current / total <= 0.25
 
           return (
             <button
               key={moveName}
-              className={`${styles.move} ${moveIdentity.surface}`}
+              className={`${styles.move} ${moveIdentity.surface} ${buttonSkin.frame}`}
               data-move-type={type}
+              data-skin-selected={selected || undefined}
               style={
                 {
                   '--type-color': `var(--type-${type}, var(--type-normal))`,
@@ -80,6 +91,7 @@ export const MoveMenu = memo(function MoveMenu({
               disabled={disabled || outOfPp}
               onClick={() => {
                 audio.play('select')
+                if (request) setChosenAction({ requestId: request.id, moveId: moveName })
                 onAttack(moveName)
               }}
               onMouseEnter={() => {
@@ -105,7 +117,7 @@ export const MoveMenu = memo(function MoveMenu({
               </span>
               <span className={styles.foot}>
                 <b className={low ? `${styles.pp} ${styles.ppLow}` : styles.pp}>
-                  PP {current ?? '-'}/{total ?? '-'}
+                  {recharge ? 'Recarga' : `PP ${current ?? '-'}/${total ?? '-'}`}
                 </b>
                 <b className={styles.type}>{typeLabel(type)}</b>
               </span>

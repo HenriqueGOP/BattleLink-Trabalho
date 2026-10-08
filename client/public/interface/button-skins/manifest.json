@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+  "download": "https://kenney.nl/media/pages/assets/ui-pack-sci-fi/b67c2acd31-1724181109/kenney_ui-pack-space-expansion.zip",
+  "package": "UI Pack Sci-Fi 2.0",
+  "license": "CC0-1.0",
+  "slice": 14,
+  "borderWidth": 7,
+  "assets": {
+    "idle": {
+      "path": "/interface/button-skins/button_rectangle_depth.svg",
+      "archivePath": "Vector/Extra/button_rectangle_depth.svg",
+      "width": 192,
+      "height": 64,
+      "bytes": 2692,
+      "sha256": "ec326f1d6f355509beb873e6ac9cb711bb378b275039abdfbb7163bc3737801b"
+    },
+    "pressed": {
+      "path": "/interface/button-skins/button_rectangle.svg",
+      "archivePath": "Vector/Extra/button_rectangle.svg",
+      "width": 192,
+      "height": 64,
+      "bytes": 2065,
+      "sha256": "7286203d0c790e20309e6cd9cc96290f8a0d8927c348ae942e476ee32fc7e11e"
+    }
+  }
+}

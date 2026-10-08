@@ -101,7 +101,15 @@ da rodada. Não foi encontrada divergência. A interface reproduz a sequência
 autoritativa e confirma HP/log após cada evento; chegada dos comandos não define
 iniciativa. Não se exibe uma previsão falsa de quem atacará primeiro.
 
-## Validação em 03/10/2026
+## Atualização em 08/10/2026
+
+A experiência de botões com seis quadros foi cancelada. A interface mantém os
+18 símbolos SVG e usa duas molduras locais estáticas da Kenney (CC0), com centro
+HTML e cores anteriores. Os ajustes para notebooks foram preservados e os
+valores dos cartões equipados deixaram de ser cortados. Capturas, medidas atuais,
+testes e limitações em [skin e notebooks](button-art-notebook.md).
+
+## Validação histórica em 03/10/2026
 
 | Verificação | Resultado |
 |---|---|

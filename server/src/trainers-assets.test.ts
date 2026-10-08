@@ -233,13 +233,6 @@ async function run() {
     menuHashes.get(MENU_ART.friends[0]),
     "Quick and friends actually load different background bytes",
   );
-  const moveCss = await readFile(
-    resolve(
-      __dirname,
-      "../../client/src/components/MoveIdentity/MoveIdentity.module.css",
-    ),
-    "utf8",
-  );
   assert.deepEqual(Object.keys(MOVE_TYPE_GLYPHS).sort(), [...TYPE_IDS].sort());
   assert.equal(
     new Set(Object.values(MOVE_TYPE_GLYPHS)).size,
@@ -250,10 +243,23 @@ async function run() {
     assert.equal(moveTypeGlyph(type), MOVE_TYPE_GLYPHS[type]);
   for (const invalid of ["__proto__", "constructor", "unknown"])
     assert.equal(moveTypeGlyph(invalid), MOVE_TYPE_GLYPHS.normal);
-  assert.ok(
-    !moveCss.includes("/interface/type-"),
-    "Attack buttons no longer load the raster frames with internal outlines",
+  const buttonSkinCss = await readFile(
+    resolve(__dirname, "../../client/src/components/MoveIdentity/ButtonSkin.module.css"),
+    "utf8",
   );
+  assert.match(buttonSkinCss, /border-image-slice:\s*14\s*;/);
+  assert.ok(!buttonSkinCss.includes(" fill"), "Skin decorates borders, not the HTML face");
+  for (const page of [
+    "pages/BattlePage/components/MoveMenu/MoveMenu.tsx",
+    "pages/TeamSetupPage/TeamSetupPage.tsx",
+    "pages/BattlePage/BattlePage.tsx",
+  ]) {
+    const source = await readFile(resolve(__dirname, "../../client/src", page), "utf8");
+    assert.ok(
+      source.includes("buttonSkin.frame") && !source.includes("MoveButtonArt"),
+      `${page}: static local skin is applied to the real player controls`,
+    );
+  }
   const iconComponent = await readFile(
     resolve(
       __dirname,
@@ -271,7 +277,7 @@ async function run() {
     "SVG icons do not stretch small raster artwork",
   );
   console.log(
-    "Trainer/interface assets passed: 55 transparent trainer files, 11 independent 1600×900 boss backgrounds, 11 aligned 6×6 motion atlases with 396 cropped frame hashes, 24 menu images and 18 vector type glyphs; encoded dimensions, SHA256, whitelist and budgets.",
+    "Trainer/interface assets passed: transparent trainers, boss backgrounds, motion atlases, menu images, 18 vector type glyphs and static local button skins mounted in combat/preparation; dimensions, SHA256, whitelist and budgets.",
   );
 }
 void run().catch((error) => {

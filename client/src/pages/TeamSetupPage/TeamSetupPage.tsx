@@ -1,3 +1,4 @@
+import buttonSkin from '../../components/MoveIdentity/ButtonSkin.module.css'
 import { formatSize } from '../../../../server/src/contracts/formats'
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -264,7 +265,7 @@ export function TeamSetupPage() {
                     return move ? (
                       <button
                         key={name}
-                        className={`${styles.chosen} ${moveIdentity.surface}`}
+                        className={`${styles.chosen} ${moveIdentity.surface} ${buttonSkin.frame}`}
                         data-move-type={move.type}
                         style={
                           {
@@ -360,7 +361,7 @@ export function TeamSetupPage() {
                       >
                         <MoveTypeIcon type={move.type} watermark />
                         <button
-                          className={styles.moveChoice}
+                          className={`${styles.moveChoice} ${buttonSkin.frame}`}
                           disabled={disabled}
                           onClick={() => toggle(move.name)}
                           onMouseEnter={() => !disabled && audio.play('hover')}

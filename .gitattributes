@@ -1,0 +1,2 @@
+# Preserve the verified Kenney source bytes on Windows and other platforms.
+client/public/interface/button-skins/*.svg -text

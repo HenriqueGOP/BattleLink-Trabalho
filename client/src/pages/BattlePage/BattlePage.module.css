@@ -197,6 +197,14 @@
   color: var(--text-dim);
   margin-right: 8px;
 }
+.actionTabs .commandButton {
+  --skin-focus: var(--focus-ring);
+  min-height: 44px;
+  padding: 12px 16px;
+}
+.commandButton[data-command='fight'] { --skin-accent: var(--accent); }
+.commandButton[data-command='party'] { --skin-accent: var(--command-party); }
+.commandButton[data-command='run'] { --skin-accent: var(--command-run); }
 .actionTabs > button:last-child {
   margin-left: auto;
 }

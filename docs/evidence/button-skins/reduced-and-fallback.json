@@ -1,0 +1,108 @@
+{
+  "simulated": true,
+  "longName": {
+    "buttons": [
+      {
+        "animation": "none",
+        "client": 156,
+        "rect": {
+          "bottom": 460.4375,
+          "height": 156.25,
+          "left": 16,
+          "right": 176,
+          "top": 304.1875,
+          "width": 160,
+          "x": 16,
+          "y": 304.1875
+        },
+        "scroll": 156,
+        "transform": "none",
+        "transition": "1e-05s"
+      },
+      {
+        "animation": "none",
+        "client": 156,
+        "rect": {
+          "bottom": 460.4375,
+          "height": 156.25,
+          "left": 184,
+          "right": 344,
+          "top": 304.1875,
+          "width": 160,
+          "x": 184,
+          "y": 304.1875
+        },
+        "scroll": 156,
+        "transform": "none",
+        "transition": "1e-05s"
+      },
+      {
+        "animation": "none",
+        "client": 111,
+        "rect": {
+          "bottom": 579.125,
+          "height": 110.6875,
+          "left": 16,
+          "right": 176,
+          "top": 468.4375,
+          "width": 160,
+          "x": 16,
+          "y": 468.4375
+        },
+        "scroll": 111,
+        "transform": "none",
+        "transition": "1e-05s"
+      },
+      {
+        "animation": "none",
+        "client": 111,
+        "rect": {
+          "bottom": 579.125,
+          "height": 110.6875,
+          "left": 184,
+          "right": 344,
+          "top": 468.4375,
+          "width": 160,
+          "x": 184,
+          "y": 468.4375
+        },
+        "scroll": 111,
+        "transform": "none",
+        "transition": "1e-05s"
+      }
+    ],
+    "height": 800,
+    "motion": "reduced",
+    "overflow": false,
+    "width": 360
+  },
+  "missingSkin": {
+    "buttons": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "disabled": true,
+        "skin": "url(\"http://localhost:5173/interface/button-skins/unavailable-test.svg\")",
+        "text": "SurfPoder 90Precisão 100%EspecialPP 15/15Água"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "disabled": true,
+        "skin": "url(\"http://localhost:5173/interface/button-skins/unavailable-test.svg\")",
+        "text": "FlamethrowerPoder 90Precisão 100%EspecialPP 15/15Fogo"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "disabled": true,
+        "skin": "url(\"http://localhost:5173/interface/button-skins/unavailable-test.svg\")",
+        "text": "Flash CannonPoder 80Precisão 100%EspecialPP 10/10Aço"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "disabled": true,
+        "skin": "url(\"http://localhost:5173/interface/button-skins/unavailable-test.svg\")",
+        "text": "TacklePoder 40Precisão 100%FísicoPP 35/35Normal"
+      }
+    ],
+    "calls": "1"
+  }
+}
