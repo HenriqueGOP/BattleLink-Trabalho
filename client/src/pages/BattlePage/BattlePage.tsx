@@ -38,7 +38,8 @@ export function BattlePage() {
     playerId,
     status,
     opponentLeft,
-    leave, rematch,
+    leave,
+    rematch,
     attack,
     switchTo,
   } = useBattleContext()
@@ -100,7 +101,11 @@ export function BattlePage() {
   }
 
   return (
-    <main className={styles.page} data-arena={state.field.background} style={arenaMenuStyle(state.field.background, state.wire.trainerId)}>
+    <main
+      className={styles.page}
+      data-arena={state.field.background}
+      style={arenaMenuStyle(state.field.background, state.wire.trainerId)}
+    >
       <header className={styles.topbar}>
         <Brand />
         <span className={styles.room}>{status}</span>
@@ -116,7 +121,7 @@ export function BattlePage() {
         </div>
       </header>
 
-      <MatchBanner />
+      <MatchBanner compact />
       {!sceneReady ? (
         <section className={styles.waiting} aria-live="polite">
           <MenuScenery menu="ready" panel />
@@ -151,18 +156,42 @@ export function BattlePage() {
                 data-fx-stage
                 data-paused={hidden || finished ? 'true' : undefined}
                 data-animation={busy ? (current?.type ?? 'sync') : 'idle'}
-                data-trainer-phase={state.wire.trainerId && busy && current?.type === 'battle_start' ? 'pending' : undefined}
+                data-trainer-phase={
+                  state.wire.trainerId && busy && current?.type === 'battle_start'
+                    ? 'pending'
+                    : undefined
+                }
                 data-event-sequence={current?.id ?? state.wire.sequence}
               >
-            {state.wire.trainerId && <div className={styles.trainerIntro} style={{ left: `${SCENE_LAYOUT.trainer.x}%`, top: `${SCENE_LAYOUT.trainer.y}%` }} data-trainer-intro aria-hidden="true"><TrainerSprite id={state.wire.trainerId} /></div>}
+                {state.wire.trainerId && (
+                  <div
+                    className={styles.trainerIntro}
+                    style={{
+                      left: `${SCENE_LAYOUT.trainer.x}%`,
+                      top: `${SCENE_LAYOUT.trainer.y}%`,
+                    }}
+                    data-trainer-intro
+                    aria-hidden="true"
+                  >
+                    <TrainerSprite id={state.wire.trainerId} />
+                  </div>
+                )}
                 {/* O cenário, os atores e os efeitos compartilham o mesmo campo. */}
-                <BattleBackground background={state.field.background} trainerId={state.wire.trainerId} />
+                <BattleBackground
+                  background={state.field.background}
+                  trainerId={state.wire.trainerId}
+                />
                 {(state.field.weather || state.field.terrain) && (
                   <WeatherLayer weather={state.field.weather} terrain={state.field.terrain} />
                 )}
                 <div className={styles.spots}>
                   <HudCard player={opponent} opponent />
-                  <BattleSpot player={opponent} opponent spriteRef={oppSpriteRef} paused={hidden || finished} />
+                  <BattleSpot
+                    player={opponent}
+                    opponent
+                    spriteRef={oppSpriteRef}
+                    paused={hidden || finished}
+                  />
                   <BattleSpot
                     player={myPlayer}
                     opponent={false}
@@ -194,39 +223,45 @@ export function BattlePage() {
             >
               POKÉMON
             </Button>
-            <Button variant="ghost" size="sm" onClick={leaveAndHome}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={leaveAndHome}
+            >
               FUGIR
             </Button>
           </nav>
-          <CommandBar
-            message={lastLogMessage}
-            myTurn={myTurn}
-            myPokemon={myPlayer?.pokemon}
-            panelMode
-            preview={!busy && activePanel === 'moves' ? previewMove : null}
-          >
-            {activePanel === 'moves' ? (
-              <>
-                <MoveMenu
+          <div className={styles.commandDock}>
+            <CommandBar
+              message={lastLogMessage}
+              myTurn={myTurn}
+              myPokemon={myPlayer?.pokemon}
+              panelMode
+              preview={!busy && activePanel === 'moves' ? previewMove : null}
+            >
+              {activePanel === 'moves' ? (
+                <>
+                  <MoveMenu
+                    player={myPlayer}
+                    myTurn={myTurn}
+                    blocked={blocked}
+                    request={authoritative?.wire.battle?.request ?? null}
+                    onAttack={attack}
+                    onPreview={setPreviewMove}
+                    bare
+                  />
+                </>
+              ) : (
+                <BattleControls
                   player={myPlayer}
                   myTurn={myTurn}
                   blocked={blocked}
                   request={authoritative?.wire.battle?.request ?? null}
-                  onAttack={attack}
-                  onPreview={setPreviewMove}
-                  bare
+                  onSwitch={switchTo}
                 />
-              </>
-            ) : (
-              <BattleControls
-                player={myPlayer}
-                myTurn={myTurn}
-                blocked={blocked}
-                request={authoritative?.wire.battle?.request ?? null}
-                onSwitch={switchTo}
-              />
-            )}
-          </CommandBar>
+              )}
+            </CommandBar>
+          </div>
 
           <div className={styles.drawer}>
             <BattleLog entries={logEntries} />

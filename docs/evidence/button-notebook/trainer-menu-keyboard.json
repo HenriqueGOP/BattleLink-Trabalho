@@ -1,0 +1,871 @@
+[
+  {
+    "action": [
+      {
+        "label": "Desafiar Véspera ▶",
+        "text": "Desafiar Véspera ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Véspera",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Véspera"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 377,
+          "right": 469,
+          "top": 463
+        },
+        "text": "VésperaSombrio"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Maré ▶",
+        "text": "Desafiar Maré ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Maré",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Maré"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 475,
+          "right": 567,
+          "top": 463
+        },
+        "text": "MaréÁgua"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Téo Volt ▶",
+        "text": "Desafiar Téo Volt ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Téo Volt",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Téo Volt"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 573,
+          "right": 665,
+          "top": 463
+        },
+        "text": "Téo VoltElétrico"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Brasa ▶",
+        "text": "Desafiar Brasa ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Brasa",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Brasa"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 671,
+          "right": 763,
+          "top": 463
+        },
+        "text": "BrasaFogo"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Nina Eco ▶",
+        "text": "Desafiar Nina Eco ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Nina Eco",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Nina Eco"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 769,
+          "right": 861,
+          "top": 463
+        },
+        "text": "Nina EcoFantasma"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Flora ▶",
+        "text": "Desafiar Flora ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Flora",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Flora"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 867,
+          "right": 959,
+          "top": 463
+        },
+        "text": "FloraPlanta"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Nival ▶",
+        "text": "Desafiar Nival ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Nival",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Nival"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 923,
+          "right": 1015,
+          "top": 463
+        },
+        "text": "NivalGelo"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Rixa ▶",
+        "text": "Desafiar Rixa ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Rixa",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Rixa"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 923,
+          "right": 1015,
+          "top": 463
+        },
+        "text": "RixaVeneno"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Aren Cume ▶",
+        "text": "Desafiar Aren Cume ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Aren Cume",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Aren Cume"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 923,
+          "right": 1015,
+          "top": 463
+        },
+        "text": "Aren CumePedra"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Lia Horizonte ▶",
+        "text": "Desafiar Lia Horizonte ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Lia Horizonte",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Lia Horizonte"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 923,
+          "right": 1015,
+          "top": 463
+        },
+        "text": "Lia HorizonteVoador"
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "label": "Desafiar Bento Ferrugem ▶",
+        "text": "Desafiar Bento Ferrugem ▶"
+      }
+    ],
+    "art": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "Bento Ferrugem",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "h": 600,
+    "heading": [
+      "Bento Ferrugem"
+    ],
+    "selected": [
+      {
+        "focused": true,
+        "rect": {
+          "bottom": 539,
+          "left": 881,
+          "right": 973,
+          "top": 463
+        },
+        "text": "Bento FerrugemAço"
+      }
+    ],
+    "w": 1024
+  }
+]

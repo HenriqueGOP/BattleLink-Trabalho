@@ -1,12 +1,12 @@
 import { formatSize } from '../../../../server/src/contracts/formats'
-import { useRef, type CSSProperties } from 'react'
+import { useRef, type CSSProperties, type ReactNode } from 'react'
 import { Sprite } from '../Sprite'
 import { useBattleContext } from '../../context/BattleProvider'
 import { formatPokemonName } from '../../lib/format'
 import styles from './TeamEditor.module.css'
 
 /** One accessible editor for selection and move setup; species IDs are stable. */
-export function TeamEditor() {
+export function TeamEditor({ notebookCompact = false, actions }: { notebookCompact?: boolean; actions?: ReactNode }) {
   const { state, removePokemon, reorderTeam } = useBattleContext()
   const root = useRef<HTMLElement>(null)
   if (!state) return null
@@ -29,8 +29,8 @@ export function TeamEditor() {
       ;(next ?? root.current)?.focus()
     })
   }
-  return <section className={styles.editor} ref={root} tabIndex={-1} aria-label="Ordem da equipe">
-    <header className={styles.header}><strong>Sua equipe · {team.length}/{TEAM_SIZE}</strong><span>O primeiro Pokémon inicia a batalha</span></header>
+  return <section className={styles.editor} data-notebook-compact={notebookCompact || undefined} ref={root} tabIndex={-1} aria-label="Ordem da equipe">
+    <header className={styles.header}><div className={styles.heading}><strong>Sua equipe · {team.length}/{TEAM_SIZE}</strong><span>O primeiro Pokémon inicia a batalha</span></div>{actions && <div className={styles.actions}>{actions}</div>}</header>
     <ol className={styles.slots} style={{ '--team-slots': TEAM_SIZE } as CSSProperties}>
       {Array.from({ length: TEAM_SIZE }, (_, index) => {
         const member = team[index]
@@ -38,7 +38,7 @@ export function TeamEditor() {
         return <li className={styles.slot} key={member?.pokemon ?? `empty-${index}`} data-filled={Boolean(member) || undefined}>
           <span className={styles.position}>{String(index + 1).padStart(2, '0')}{index === 0 && member && <b>Inicial</b>}</span>
           {member ? <>
-            <Sprite src={member.image} name={member.pokemon} size={60} />
+            <span className={styles.memberArt}><Sprite src={member.image} name={member.pokemon} size={60} /></span>
             <strong className={styles.name}>{name}</strong>
             <div className={styles.controls}>
               <button disabled={locked || index === 0} onClick={() => move(index, -1)} aria-label={`Mover ${name} antes`} title="Mover antes"><span aria-hidden="true">←</span></button>

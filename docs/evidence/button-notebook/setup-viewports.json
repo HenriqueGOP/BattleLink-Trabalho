@@ -1,0 +1,135 @@
+[
+  {
+    "actions": [
+      {
+        "bottom": 513,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 469
+      },
+      {
+        "bottom": 581,
+        "height": 44,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 537
+      }
+    ],
+    "h": 600,
+    "overflow": false,
+    "w": 1024
+  },
+  {
+    "actions": [
+      {
+        "bottom": 633,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 589
+      },
+      {
+        "bottom": 701,
+        "height": 44,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 657
+      }
+    ],
+    "h": 720,
+    "overflow": false,
+    "w": 1280
+  },
+  {
+    "actions": [
+      {
+        "bottom": 563,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 519
+      },
+      {
+        "bottom": 631,
+        "height": 44,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 587
+      }
+    ],
+    "h": 650,
+    "overflow": false,
+    "w": 1366
+  },
+  {
+    "actions": [
+      {
+        "bottom": 681,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 637
+      },
+      {
+        "bottom": 749,
+        "height": 44,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 705
+      }
+    ],
+    "h": 768,
+    "overflow": false,
+    "w": 1366
+  },
+  {
+    "actions": [
+      {
+        "bottom": 713,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 669
+      },
+      {
+        "bottom": 781,
+        "height": 44,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 737
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "w": 1440
+  },
+  {
+    "actions": [
+      {
+        "bottom": 1418.34375,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 1374.34375
+      },
+      {
+        "bottom": 2451.53125,
+        "height": 54,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 2397.53125
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "w": 360
+  },
+  {
+    "actions": [
+      {
+        "bottom": 1233.171875,
+        "height": 44,
+        "name": "Salvar golpes",
+        "top": 1189.171875
+      },
+      {
+        "bottom": 2189.671875,
+        "height": 54,
+        "name": "Aceitar equipe e batalhar ▶",
+        "top": 2135.671875
+      }
+    ],
+    "h": 1024,
+    "overflow": false,
+    "w": 768
+  }
+]

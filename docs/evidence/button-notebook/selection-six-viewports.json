@@ -1,0 +1,821 @@
+[
+  {
+    "action": [
+      {
+        "bottom": 182.5,
+        "height": 44,
+        "top": 138.5
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 588,
+        "client": 178,
+        "scroll": 2109,
+        "top": 410.5
+      }
+    ],
+    "h": 600,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.875
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.875
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 46.890625
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 46.890625
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "action": [
+      {
+        "bottom": 182.5,
+        "height": 44,
+        "top": 138.5
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 708,
+        "client": 298,
+        "scroll": 1521,
+        "top": 410.5
+      }
+    ],
+    "h": 720,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.109375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 61.109375
+      }
+    ],
+    "w": 1280
+  },
+  {
+    "action": [
+      {
+        "bottom": 182.5,
+        "height": 44,
+        "top": 138.5
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 638,
+        "client": 228,
+        "scroll": 1521,
+        "top": 410.5
+      }
+    ],
+    "h": 650,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      }
+    ],
+    "w": 1366
+  },
+  {
+    "action": [
+      {
+        "bottom": 182.5,
+        "height": 44,
+        "top": 138.5
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 756,
+        "client": 346,
+        "scroll": 1521,
+        "top": 410.5
+      }
+    ],
+    "h": 768,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      }
+    ],
+    "w": 1366
+  },
+  {
+    "action": [
+      {
+        "bottom": 182.5,
+        "height": 44,
+        "top": 138.5
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 788,
+        "client": 378,
+        "scroll": 1521,
+        "top": 410.5
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 63.328125
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 63.34375
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 63.328125
+      }
+    ],
+    "w": 1440
+  },
+  {
+    "action": [
+      {
+        "bottom": 583.28125,
+        "height": 44,
+        "top": 539.28125
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 7566.46875,
+        "client": 6005,
+        "scroll": 6005,
+        "top": 1561.78125
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 61.5
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 127
+      }
+    ],
+    "w": 360
+  },
+  {
+    "action": [
+      {
+        "bottom": 431.34375,
+        "height": 44,
+        "top": 387.34375
+      }
+    ],
+    "catalog": [
+      {
+        "bottom": 6892.03125,
+        "client": 5895,
+        "scroll": 5895,
+        "top": 997.34375
+      }
+    ],
+    "h": 1024,
+    "overflow": false,
+    "team": [
+      {
+        "height": 44,
+        "text": "Preparar golpes →",
+        "width": 159.953125
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "←",
+        "width": 62.4375
+      },
+      {
+        "height": 44,
+        "text": "→",
+        "width": 62.453125
+      },
+      {
+        "height": 44,
+        "text": "×",
+        "width": 62.4375
+      }
+    ],
+    "w": 768
+  }
+]

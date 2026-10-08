@@ -1,0 +1,198 @@
+[
+  {
+    "cards": [
+      {
+        "bottom": 495.65625,
+        "height": 238,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 257.65625,
+        "width": 309.328125
+      },
+      {
+        "bottom": 495.65625,
+        "height": 238,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 257.65625,
+        "width": 309.328125
+      },
+      {
+        "bottom": 495.65625,
+        "height": 238,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 257.65625,
+        "width": 309.34375
+      }
+    ],
+    "h": 600,
+    "overflow": false,
+    "w": 1024
+  },
+  {
+    "cards": [
+      {
+        "bottom": 555.65625,
+        "height": 238,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 317.65625,
+        "width": 394.65625
+      },
+      {
+        "bottom": 555.65625,
+        "height": 238,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 317.65625,
+        "width": 394.671875
+      },
+      {
+        "bottom": 555.65625,
+        "height": 238,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 317.65625,
+        "width": 394.65625
+      }
+    ],
+    "h": 720,
+    "overflow": false,
+    "w": 1280
+  },
+  {
+    "cards": [
+      {
+        "bottom": 520.65625,
+        "height": 238,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 282.65625,
+        "width": 423.328125
+      },
+      {
+        "bottom": 520.65625,
+        "height": 238,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 282.65625,
+        "width": 423.328125
+      },
+      {
+        "bottom": 520.65625,
+        "height": 238,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 282.65625,
+        "width": 423.34375
+      }
+    ],
+    "h": 650,
+    "overflow": false,
+    "w": 1366
+  },
+  {
+    "cards": [
+      {
+        "bottom": 579.65625,
+        "height": 238,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 341.65625,
+        "width": 423.328125
+      },
+      {
+        "bottom": 579.65625,
+        "height": 238,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 341.65625,
+        "width": 423.328125
+      },
+      {
+        "bottom": 579.65625,
+        "height": 238,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 341.65625,
+        "width": 423.34375
+      }
+    ],
+    "h": 768,
+    "overflow": false,
+    "w": 1366
+  },
+  {
+    "cards": [
+      {
+        "bottom": 595.65625,
+        "height": 238,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 357.65625,
+        "width": 448
+      },
+      {
+        "bottom": 595.65625,
+        "height": 238,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 357.65625,
+        "width": 448
+      },
+      {
+        "bottom": 595.65625,
+        "height": 238,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 357.65625,
+        "width": 448
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "w": 1440
+  },
+  {
+    "cards": [
+      {
+        "bottom": 350.65625,
+        "height": 124,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 226.65625,
+        "width": 320
+      },
+      {
+        "bottom": 508.65625,
+        "height": 144,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 364.65625,
+        "width": 320
+      },
+      {
+        "bottom": 646.65625,
+        "height": 124,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 522.65625,
+        "width": 320
+      }
+    ],
+    "h": 800,
+    "overflow": false,
+    "w": 360
+  },
+  {
+    "cards": [
+      {
+        "bottom": 799.890625,
+        "height": 380.5,
+        "name": "Partida rápidaEncontre outro treinador e comece a batalhar.",
+        "top": 419.390625,
+        "width": 209.28125
+      },
+      {
+        "bottom": 799.890625,
+        "height": 380.5,
+        "name": "Jogar com amigosConvide por código e batalhe com amigos.",
+        "top": 419.390625,
+        "width": 209.28125
+      },
+      {
+        "bottom": 799.890625,
+        "height": 380.5,
+        "name": "Desafios PvEConheça nossos treinadores e desafios.",
+        "top": 419.390625,
+        "width": 209.28125
+      }
+    ],
+    "h": 1024,
+    "overflow": false,
+    "w": 768
+  }
+]

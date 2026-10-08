@@ -7,3 +7,12 @@
 .banner button { min-height: 44px; min-width: 44px; border: 1px solid #8bb1c6; border-radius: 8px; padding: 10px 12px; background: #244d63; color: #fff; cursor: pointer; }
 .banner button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 @media(max-width: 480px) { .banner { padding: 14px; gap: 15px; } .banner ul { width: 100%; } }
+@media (min-width: 980px) and (max-height: 800px) {
+  .banner[data-notebook-compact] { min-height: 44px; margin: 0; padding: 6px 12px; gap: 8px 16px; }
+  .banner[data-notebook-compact] > div { gap: 0; }
+  .banner[data-notebook-compact] strong { font-size: 13px; }
+  .banner[data-notebook-compact] span,
+  .banner[data-notebook-compact] b { font-size: 12px; }
+  .banner[data-notebook-compact] ul { gap: 8px 16px; }
+  .banner[data-notebook-compact] li { gap: 0; }
+}

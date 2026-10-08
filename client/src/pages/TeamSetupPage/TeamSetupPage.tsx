@@ -136,6 +136,9 @@ export function TeamSetupPage() {
           </p>
         </div>
         <div className={styles.tools}>
+          <a className={styles.reviewLink} href="#team-confirmation">
+            Revisar e confirmar ↓
+          </a>
           <MenuEmblem menu="setup" />
           <AudioSettings />
           <Button variant="ghost" size="sm" onClick={leave}>
@@ -144,8 +147,13 @@ export function TeamSetupPage() {
         </div>
       </header>
 
-      <MatchBanner />
-      <TeamEditor />
+      <MatchBanner compact />
+      <details className={styles.orderEditor}>
+        <summary>
+          Editar a ordem da equipe <span>O primeiro Pokémon inicia a batalha</span>
+        </summary>
+        <TeamEditor notebookCompact />
+      </details>
 
       <div className={styles.workspace}>
         <nav className={styles.tabs} aria-label="Pokémon da equipe">
@@ -233,172 +241,182 @@ export function TeamSetupPage() {
             </article>
 
             <article className={styles.moves}>
-              <div className={styles.movesHeader}>
-                <div>
-                  <p className={styles.sectionKicker}>Seu conjunto de golpes</p>
-                  <h3 className={styles.movesTitle}>Golpes equipados</h3>
+              <section className={styles.equippedPanel} aria-label="Golpes equipados e ações">
+                <div className={styles.movesHeader}>
+                  <div>
+                    <p className={styles.sectionKicker}>Seu conjunto de golpes</p>
+                    <h3 className={styles.movesTitle}>Golpes equipados</h3>
+                  </div>
+                  <output
+                    className={styles.moveCount}
+                    aria-live="polite"
+                    aria-atomic="true"
+                    data-full={chosen.length === MAX_MOVES || undefined}
+                    aria-label={`${chosen.length} de ${MAX_MOVES} golpes`}
+                  >
+                    {chosen.length}/{MAX_MOVES}
+                  </output>
                 </div>
-                <output
-                  className={styles.moveCount}
-                  aria-live="polite"
-                  aria-atomic="true"
-                  data-full={chosen.length === MAX_MOVES || undefined}
-                  aria-label={`${chosen.length} de ${MAX_MOVES} golpes`}
-                >
-                  {chosen.length}/{MAX_MOVES}
-                </output>
-              </div>
-              <div className={styles.chosenRow} aria-label="Golpes escolhidos">
-                {Array.from({ length: MAX_MOVES }, (_, index) => {
-                  const name = chosen[index]
-                  const move = selected.moves.find((candidate) => candidate.name === name)
-                  return move ? (
-                    <button
-                      key={name}
-                      className={`${styles.chosen} ${moveIdentity.surface}`}
-                      data-move-type={move.type}
-                      style={
-                        {
-                          '--move-type': `var(--type-${move.type}, var(--type-normal))`,
-                        } as CSSProperties
-                      }
-                      onClick={() => toggle(name)}
-                      aria-label={`Remover ${move.displayName ?? name} dos golpes escolhidos`}
-                    >
-                      <MoveTypeIcon type={move.type} watermark />
-                      <span className={styles.chosenName}>
-                        <MoveTypeIcon type={move.type} size={18} />
-                        <span className={styles.chosenIndex}>{index + 1}</span>
-                        {move.displayName ?? name}
-                        <span className={styles.remove} aria-hidden="true">
-                          ×
-                        </span>
-                      </span>
-                      <span className={styles.moveMeta}>
-                        <TypeBadge type={move.type} small />
-                        <span>{categoryLabel(move.category)}</span>
-                      </span>
-                      <MoveStats move={move} />
-                    </button>
-                  ) : (
-                    <div key={`empty-${index}`} className={styles.emptySlot}>
-                      <span>{String(index + 1).padStart(2, '0')}</span>
-                      <p>Escolha um golpe</p>
-                    </div>
-                  )
-                })}
-              </div>
-              {chosen.length === 0 && (
-                <span className={styles.chosenHint}>Escolha de 1 a 4 golpes abaixo</span>
-              )}
-              <div className={styles.moveActions}>
-                <Button variant="ghost" onClick={keepSuggested} disabled={setupPending}>
-                  Manter sugeridos
-                </Button>
-                <Button
-                  onClick={saveMoves}
-                  disabled={chosen.length === 0 || chosen.length > MAX_MOVES || setupPending}
-                >
-                  Salvar golpes
-                </Button>
-              </div>
-
-              <div className={styles.candidatesHeader}>
-                <div>
-                  <h3 className={styles.movesTitle}>Golpes disponíveis</h3>
-                  <p>{candidateMoves.length} no catálogo deste Pokémon</p>
-                </div>
-                <label className={styles.moveSearch}>
-                  <span className="sr-only">Buscar golpe pelo nome</span>
-                  <input
-                    type="search"
-                    placeholder="Buscar golpe…"
-                    value={moveQuery}
-                    onChange={(event) => setMoveQuery(event.target.value)}
-                  />
-                </label>
-              </div>
-              <label className={styles.availableFilter}>
-                <input
-                  type="checkbox"
-                  checked={onlyAvailable}
-                  onChange={(event) => setOnlyAvailable(event.target.checked)}
-                />{' '}
-                Mostrar somente golpes compatíveis
-              </label>
-              <div className={styles.moveGrid}>
-                {candidateMoves.map((move) => {
-                  const isSelected = chosen.includes(move.name)
-                  const disabled =
-                    Boolean(move.unsupported?.length) || (!isSelected && chosen.length >= MAX_MOVES)
-                  return (
-                    <article
-                      key={move.name}
-                      className={`${styles.moveCard} ${moveIdentity.surface} ${isSelected ? styles.moveSelected : ''}`}
-                      data-move-type={move.type}
-                      style={
-                        {
-                          '--move-type': `var(--type-${move.type}, var(--type-normal))`,
-                        } as CSSProperties
-                      }
-                      data-unavailable={Boolean(move.unsupported?.length) || undefined}
-                    >
-                      <MoveTypeIcon type={move.type} watermark />
+                <div className={styles.chosenRow} aria-label="Golpes escolhidos">
+                  {Array.from({ length: MAX_MOVES }, (_, index) => {
+                    const name = chosen[index]
+                    const move = selected.moves.find((candidate) => candidate.name === name)
+                    return move ? (
                       <button
-                        className={styles.moveChoice}
-                        disabled={disabled}
-                        onClick={() => toggle(move.name)}
-                        onMouseEnter={() => !disabled && audio.play('hover')}
-                        aria-pressed={isSelected}
-                        title={move.description ?? move.name}
+                        key={name}
+                        className={`${styles.chosen} ${moveIdentity.surface}`}
+                        data-move-type={move.type}
+                        style={
+                          {
+                            '--move-type': `var(--type-${move.type}, var(--type-normal))`,
+                          } as CSSProperties
+                        }
+                        onClick={() => toggle(name)}
+                        aria-label={`Remover ${move.displayName ?? name} dos golpes escolhidos`}
                       >
-                        <span className={styles.moveName}>
-                          <MoveTypeIcon type={move.type} size={20} />
-                          <span className={styles.check} aria-hidden="true">
-                            {isSelected ? '✓' : '+'}
+                        <MoveTypeIcon type={move.type} watermark />
+                        <span className={styles.chosenName}>
+                          <MoveTypeIcon type={move.type} size={18} />
+                          <span className={styles.chosenIndex}>{index + 1}</span>
+                          {move.displayName ?? name}
+                          <span className={styles.remove} aria-hidden="true">
+                            ×
                           </span>
-                          {move.displayName ?? move.name}
                         </span>
                         <span className={styles.moveMeta}>
                           <TypeBadge type={move.type} small />
                           <span>{categoryLabel(move.category)}</span>
                         </span>
                         <MoveStats move={move} />
-                        <span className={styles.effects}>
-                          {moveEffects(move)
-                            .slice(0, 3)
-                            .map((effect) => (
-                              <em
-                                key={effect.label}
-                                className={`${styles.effect} ${styles[effect.tone]}`}
-                              >
-                                {effect.label}
-                              </em>
-                            ))}
-                        </span>
-                        {move.unsupported?.length ? (
-                          <span className={styles.unsupported}>{move.unsupported.join(', ')}</span>
-                        ) : null}
                       </button>
-                      <details className={styles.moveDescription}>
-                        <summary>Detalhes do golpe</summary>
-                        <p>{move.description || 'Descrição não disponível.'}</p>
-                      </details>
-                    </article>
-                  )
-                })}
-                {candidateMoves.length === 0 && (
-                  <p className={styles.emptyMoves} role="status">
-                    Nenhum golpe encontrado com esse nome.
-                  </p>
+                    ) : (
+                      <div key={`empty-${index}`} className={styles.emptySlot}>
+                        <span>{String(index + 1).padStart(2, '0')}</span>
+                        <p>Escolha um golpe</p>
+                      </div>
+                    )
+                  })}
+                </div>
+                {chosen.length === 0 && (
+                  <span className={styles.chosenHint}>Escolha de 1 a 4 golpes abaixo</span>
                 )}
-              </div>
+                <div className={styles.moveActions}>
+                  <Button variant="ghost" onClick={keepSuggested} disabled={setupPending}>
+                    Manter sugeridos
+                  </Button>
+                  <Button
+                    onClick={saveMoves}
+                    disabled={chosen.length === 0 || chosen.length > MAX_MOVES || setupPending}
+                  >
+                    Salvar golpes
+                  </Button>
+                </div>
+              </section>
+
+              <section
+                className={styles.availablePanel}
+                aria-label="Catálogo de golpes disponíveis"
+              >
+                <div className={styles.candidatesHeader}>
+                  <div>
+                    <h3 className={styles.movesTitle}>Golpes disponíveis</h3>
+                    <p>{candidateMoves.length} no catálogo deste Pokémon</p>
+                  </div>
+                  <label className={styles.moveSearch}>
+                    <span className="sr-only">Buscar golpe pelo nome</span>
+                    <input
+                      type="search"
+                      placeholder="Buscar golpe…"
+                      value={moveQuery}
+                      onChange={(event) => setMoveQuery(event.target.value)}
+                    />
+                  </label>
+                </div>
+                <label className={styles.availableFilter}>
+                  <input
+                    type="checkbox"
+                    checked={onlyAvailable}
+                    onChange={(event) => setOnlyAvailable(event.target.checked)}
+                  />{' '}
+                  Mostrar somente golpes compatíveis
+                </label>
+                <div className={styles.moveGrid}>
+                  {candidateMoves.map((move) => {
+                    const isSelected = chosen.includes(move.name)
+                    const disabled =
+                      Boolean(move.unsupported?.length) ||
+                      (!isSelected && chosen.length >= MAX_MOVES)
+                    return (
+                      <article
+                        key={move.name}
+                        className={`${styles.moveCard} ${moveIdentity.surface} ${isSelected ? styles.moveSelected : ''}`}
+                        data-move-type={move.type}
+                        style={
+                          {
+                            '--move-type': `var(--type-${move.type}, var(--type-normal))`,
+                          } as CSSProperties
+                        }
+                        data-unavailable={Boolean(move.unsupported?.length) || undefined}
+                      >
+                        <MoveTypeIcon type={move.type} watermark />
+                        <button
+                          className={styles.moveChoice}
+                          disabled={disabled}
+                          onClick={() => toggle(move.name)}
+                          onMouseEnter={() => !disabled && audio.play('hover')}
+                          aria-pressed={isSelected}
+                          title={move.description ?? move.name}
+                        >
+                          <span className={styles.moveName}>
+                            <MoveTypeIcon type={move.type} size={20} />
+                            <span className={styles.check} aria-hidden="true">
+                              {isSelected ? '✓' : '+'}
+                            </span>
+                            {move.displayName ?? move.name}
+                          </span>
+                          <span className={styles.moveMeta}>
+                            <TypeBadge type={move.type} small />
+                            <span>{categoryLabel(move.category)}</span>
+                          </span>
+                          <MoveStats move={move} />
+                          <span className={styles.effects}>
+                            {moveEffects(move)
+                              .slice(0, 3)
+                              .map((effect) => (
+                                <em
+                                  key={effect.label}
+                                  className={`${styles.effect} ${styles[effect.tone]}`}
+                                >
+                                  {effect.label}
+                                </em>
+                              ))}
+                          </span>
+                          {move.unsupported?.length ? (
+                            <span className={styles.unsupported}>
+                              {move.unsupported.join(', ')}
+                            </span>
+                          ) : null}
+                        </button>
+                        <details className={styles.moveDescription}>
+                          <summary>Detalhes do golpe</summary>
+                          <p>{move.description || 'Descrição não disponível.'}</p>
+                        </details>
+                      </article>
+                    )
+                  })}
+                  {candidateMoves.length === 0 && (
+                    <p className={styles.emptyMoves} role="status">
+                      Nenhum golpe encontrado com esse nome.
+                    </p>
+                  )}
+                </div>
+              </section>
             </article>
           </section>
         )}
       </div>
 
-      <footer className={styles.footer}>
+      <footer className={styles.footer} id="team-confirmation" tabIndex={-1}>
         <div className={styles.footerNote}>
           <GameIcon name="check" size={18} />
           <span>

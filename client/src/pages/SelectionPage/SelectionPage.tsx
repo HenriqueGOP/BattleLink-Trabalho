@@ -173,12 +173,11 @@ export function SelectionPage() {
         </div>
       </header>
 
-      <MatchBanner />
-      <TeamEditor />
-      <div className={styles.reviewActions}>
+      <MatchBanner compact />
+      <TeamEditor notebookCompact actions={<>
         <p role="status">{setupPending ? 'Sincronizando sua equipe…' : team.length === TEAM_SIZE ? 'Revise a ordem e prepare os golpes quando estiver pronto.' : `Escolha mais ${TEAM_SIZE - team.length} Pokémon para continuar.`}</p>
         <Button disabled={team.length !== TEAM_SIZE || setupPending} onClick={() => navigate('/equipe')}>Preparar golpes →</Button>
-      </div>
+      </>} />
 
       <div className={styles.actions}>
         <label className={styles.searchWrap}>
@@ -294,31 +293,35 @@ export function SelectionPage() {
               id="pokemon-details"
               aria-label={`Ficha de ${formatPokemonName(inspected.name)}`}
             >
-              <div className={styles.detailTop}>
-                <span>Ficha do Pokémon</span>
-                <b>#{String(inspected.id).padStart(3, '0')}</b>
+              <div className={styles.detailIdentity}>
+                <div className={styles.detailTop}>
+                  <span>Ficha do Pokémon</span>
+                  <b>#{String(inspected.id).padStart(3, '0')}</b>
+                </div>
+                <div className={styles.portrait}>
+                  <Sprite src={inspected.image} name={inspected.name} size={176} loading="eager" />
+                </div>
+                <h2>{formatPokemonName(inspected.name)}</h2>
+                <div className={styles.detailTypes}>
+                  {detail.types.map((type) => (
+                    <TypeBadge key={type} type={type} />
+                  ))}
+                </div>
               </div>
-              <div className={styles.portrait}>
-                <Sprite src={inspected.image} name={inspected.name} size={176} loading="eager" />
+              <div className={styles.detailBody} tabIndex={0} aria-label="Atributos e informações do Pokémon">
+                <div className={styles.statsTitle}>Atributos · nível 50</div>
+                <dl className={styles.stats}>
+                  {Object.entries(STAT_LABELS).map(([key, label]) => (
+                    <div key={key}>
+                      <dt>{label}</dt>
+                      <dd>{detail.stats[key as keyof typeof STAT_LABELS]}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className={styles.detailHint}>
+                  Valores iniciais, antes dos modificadores de batalha.
+                </p>
               </div>
-              <h2>{formatPokemonName(inspected.name)}</h2>
-              <div className={styles.detailTypes}>
-                {detail.types.map((type) => (
-                  <TypeBadge key={type} type={type} />
-                ))}
-              </div>
-              <div className={styles.statsTitle}>Atributos · nível 50</div>
-              <dl className={styles.stats}>
-                {Object.entries(STAT_LABELS).map(([key, label]) => (
-                  <div key={key}>
-                    <dt>{label}</dt>
-                    <dd>{detail.stats[key as keyof typeof STAT_LABELS]}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className={styles.detailHint}>
-                Valores iniciais, antes dos modificadores de batalha.
-              </p>
               <Button
                 disabled={chosenIds.has(inspected.name) || team.length >= TEAM_SIZE || setupPending}
                 onClick={() => {

@@ -1,0 +1,100 @@
+[
+  {
+    "h": 600,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 462,
+        "height": 44,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 418,
+        "width": 294
+      }
+    ],
+    "w": 1024
+  },
+  {
+    "h": 720,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 462,
+        "height": 44,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 418,
+        "width": 294
+      }
+    ],
+    "w": 1280
+  },
+  {
+    "h": 650,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 462,
+        "height": 44,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 418,
+        "width": 294
+      }
+    ],
+    "w": 1366
+  },
+  {
+    "h": 768,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 462,
+        "height": 44,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 418,
+        "width": 294
+      }
+    ],
+    "w": 1366
+  },
+  {
+    "h": 800,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 462,
+        "height": 44,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 418,
+        "width": 294
+      }
+    ],
+    "w": 1440
+  },
+  {
+    "h": 800,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 743.390625,
+        "height": 54,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 689.390625,
+        "width": 280
+      }
+    ],
+    "w": 360
+  },
+  {
+    "h": 1024,
+    "overflow": false,
+    "primary": [
+      {
+        "bottom": 692.75,
+        "height": 54,
+        "name": "ENTRAR NA FILA ▶",
+        "top": 638.75,
+        "width": 254
+      }
+    ],
+    "w": 768
+  }
+]

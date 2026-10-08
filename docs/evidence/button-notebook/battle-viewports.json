@@ -1,0 +1,681 @@
+[
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "hover"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 449.484375,
+          "height": 121.984375,
+          "top": 327.5,
+          "width": 174,
+          "x": 639,
+          "y": 327.5
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 449.484375,
+          "height": 121.984375,
+          "top": 327.5,
+          "width": 174,
+          "x": 821,
+          "y": 327.5
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 579.46875,
+          "height": 121.984375,
+          "top": 457.484375,
+          "width": 174,
+          "x": 639,
+          "y": 457.484375
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 577.46875,
+          "height": 121.984375,
+          "top": 455.484375,
+          "width": 174,
+          "x": 821,
+          "y": 455.484375
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 600,
+      "width": 1024
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 223.234375,
+          "x": 796.53125,
+          "y": 327.5
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 223.234375,
+          "x": 1027.765625,
+          "y": 327.5
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 223.234375,
+          "x": 796.53125,
+          "y": 432.640625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 527.78125,
+          "height": 97.140625,
+          "top": 430.640625,
+          "width": 223.234375,
+          "x": 1027.765625,
+          "y": 430.640625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 239.765625,
+          "x": 849.453125,
+          "y": 327.5
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 239.78125,
+          "x": 1097.21875,
+          "y": 327.5
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 239.765625,
+          "x": 849.453125,
+          "y": 432.640625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 239.78125,
+          "x": 1097.21875,
+          "y": 432.640625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 650,
+      "width": 1366
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 239.765625,
+          "x": 849.453125,
+          "y": 327.5
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 239.78125,
+          "x": 1097.21875,
+          "y": 327.5
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 239.765625,
+          "x": 849.453125,
+          "y": 432.640625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 239.78125,
+          "x": 1097.21875,
+          "y": 432.640625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 768,
+      "width": 1366
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 254,
+          "x": 895,
+          "y": 327.5
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 424.640625,
+          "height": 97.140625,
+          "top": 327.5,
+          "width": 254,
+          "x": 1157,
+          "y": 327.5
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 254,
+          "x": 895,
+          "y": 432.640625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 529.78125,
+          "height": 97.140625,
+          "top": 432.640625,
+          "width": 254,
+          "x": 1157,
+          "y": 432.640625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 800,
+      "width": 1440
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 1304.625,
+          "height": 133.53125,
+          "top": 1171.09375,
+          "width": 146,
+          "x": 25,
+          "y": 1171.09375
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 1304.625,
+          "height": 133.53125,
+          "top": 1171.09375,
+          "width": 146,
+          "x": 179,
+          "y": 1171.09375
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 1427.3125,
+          "height": 114.6875,
+          "top": 1312.625,
+          "width": 146,
+          "x": 25,
+          "y": 1312.625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 1427.3125,
+          "height": 114.6875,
+          "top": 1312.625,
+          "width": 146,
+          "x": 179,
+          "y": 1312.625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 800,
+      "width": 360
+    }
+  },
+  {
+    "art": [
+      {
+        "animate": "false",
+        "id": "fight",
+        "ready": "false",
+        "state": "selected"
+      },
+      {
+        "animate": "false",
+        "id": "party",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "flee",
+        "ready": "false",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      },
+      {
+        "animate": "false",
+        "id": "water",
+        "ready": "true",
+        "state": "idle"
+      }
+    ],
+    "moves": [
+      {
+        "box": {
+          "bottom": 976.640625,
+          "height": 121.984375,
+          "top": 854.65625,
+          "width": 197.203125,
+          "x": 326.59375,
+          "y": 854.65625
+        },
+        "name": "Water SpoutPoder 150Precisão 100%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 976.640625,
+          "height": 121.984375,
+          "top": 854.65625,
+          "width": 197.203125,
+          "x": 531.796875,
+          "y": 854.65625
+        },
+        "name": "Wave CrashPoder 120Precisão 100%FísicoPP 10/10Água"
+      },
+      {
+        "box": {
+          "bottom": 1106.625,
+          "height": 121.984375,
+          "top": 984.640625,
+          "width": 197.203125,
+          "x": 326.59375,
+          "y": 984.640625
+        },
+        "name": "Hydro CannonPoder 150Precisão 90%EspecialPP 5/5Água"
+      },
+      {
+        "box": {
+          "bottom": 1106.625,
+          "height": 121.984375,
+          "top": 984.640625,
+          "width": 197.203125,
+          "x": 531.796875,
+          "y": 984.640625
+        },
+        "name": "Aqua JetPoder 40Precisão 100%FísicoPP 20/20Água"
+      }
+    ],
+    "overflow": false,
+    "viewport": {
+      "height": 1024,
+      "width": 768
+    }
+  }
+]

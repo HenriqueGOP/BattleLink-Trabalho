@@ -1,0 +1,125 @@
+[
+  {
+    "items": [
+      {
+        "attributes": [
+          [
+            "data-button-art",
+            "fire"
+          ],
+          [
+            "data-button-state",
+            "recharge"
+          ],
+          [
+            "data-ready",
+            "true"
+          ],
+          [
+            "data-animate",
+            "false"
+          ]
+        ],
+        "frame": "url(\"http://localhost:5173/interface/buttons/fire/frame-06.webp\")",
+        "id": "fire"
+      },
+      {
+        "attributes": [
+          [
+            "data-button-art",
+            "water"
+          ],
+          [
+            "data-button-state",
+            "recharge"
+          ],
+          [
+            "data-ready",
+            "true"
+          ],
+          [
+            "data-animate",
+            "false"
+          ]
+        ],
+        "frame": "url(\"http://localhost:5173/interface/buttons/water/frame-06.webp\")",
+        "id": "water"
+      },
+      {
+        "attributes": [
+          [
+            "data-button-art",
+            "steel"
+          ],
+          [
+            "data-button-state",
+            "recharge"
+          ],
+          [
+            "data-ready",
+            "true"
+          ],
+          [
+            "data-animate",
+            "false"
+          ]
+        ],
+        "frame": "url(\"http://localhost:5173/interface/buttons/steel/frame-06.webp\")",
+        "id": "steel"
+      }
+    ],
+    "state": "recharge"
+  },
+  {
+    "items": [
+      {
+        "disabled": true,
+        "frame": "url(\"http://localhost:5173/interface/buttons/fire/frame-01.webp\")",
+        "id": "fire",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Fogo"
+      },
+      {
+        "disabled": true,
+        "frame": "url(\"http://localhost:5173/interface/buttons/water/frame-01.webp\")",
+        "id": "water",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Água"
+      },
+      {
+        "disabled": true,
+        "frame": "url(\"http://localhost:5173/interface/buttons/steel/frame-01.webp\")",
+        "id": "steel",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Aço"
+      }
+    ],
+    "state": "disabled"
+  },
+  {
+    "items": [
+      {
+        "animate": "false",
+        "disabled": false,
+        "frame": "none",
+        "id": "fire",
+        "ready": "false",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Fogo"
+      },
+      {
+        "animate": "false",
+        "disabled": false,
+        "frame": "none",
+        "id": "water",
+        "ready": "false",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Água"
+      },
+      {
+        "animate": "false",
+        "disabled": false,
+        "frame": "none",
+        "id": "steel",
+        "ready": "false",
+        "text": "Nome longo do golpe de demonstraçãoPoder 90 · Precisão 100% · EspecialPP 15/15Aço"
+      }
+    ],
+    "state": "forced-fallback"
+  }
+]

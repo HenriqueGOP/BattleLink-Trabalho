@@ -212,3 +212,14 @@
     font-size: 11px;
   }
 }
+@media (min-width: 980px) and (max-height: 800px) {
+  .controls { gap: 6px; }
+  .urgent { padding: 8px; font-size: 13px; }
+  .roster { gap: 6px; }
+  .slot { min-height: 72px; grid-template-columns: 32px minmax(0, 1fr); padding: 6px; gap: 6px; }
+  .portrait { width: 32px; height: 32px; }
+  .info { gap: 3px; }
+  .name { font-size: 12px; }
+  .hpText { font-size: 12px; }
+  .activeFlag { font-size: 9px; }
+}
