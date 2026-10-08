@@ -1,0 +1,83 @@
+[
+  {
+    "actionStyles": [
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      },
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      }
+    ],
+    "fullyInside": true,
+    "opponent": {
+      "x": 0.6580233895705522,
+      "y": 0.6484765625
+    },
+    "trainer": {
+      "height": 76,
+      "width": 60.79998779296875,
+      "x": 0.8160467791411042,
+      "y": 0.6187890625
+    },
+    "width": 360,
+    "zIndex": "9"
+  },
+  {
+    "actionStyles": [
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      },
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      }
+    ],
+    "fullyInside": true,
+    "opponent": {
+      "x": 0.6591124311294766,
+      "y": 0.6483072916666667
+    },
+    "trainer": {
+      "height": 140,
+      "width": 112,
+      "x": 0.8182248622589532,
+      "y": 0.6186631944444444
+    },
+    "width": 768,
+    "zIndex": "9"
+  },
+  {
+    "actionStyles": [
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      },
+      {
+        "filter": "none",
+        "inline": null,
+        "transform": "none"
+      }
+    ],
+    "fullyInside": true,
+    "opponent": {
+      "x": 0.6594246908127208,
+      "y": 0.6486752717391304
+    },
+    "trainer": {
+      "height": 140,
+      "width": 112,
+      "x": 0.8188631846289752,
+      "y": 0.6189538043478261
+    },
+    "width": 1280,
+    "zIndex": "9"
+  }
+]

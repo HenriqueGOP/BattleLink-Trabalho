@@ -1,5 +1,9 @@
 # Apresentação do combate — revisão de 2026-10-07
 
+Continuação: [auditoria final do frontend](FRONTEND_COMPLETION_AUDIT_2026-10-07.md)
+registra o gesto específico de ataques especiais, treinadores próximos aos Pokémon,
+correções de layout e novas capturas. As evidências abaixo pertencem à revisão anterior.
+
 ## Escopo e arquitetura preservada
 
 Revisão incremental sobre o trabalho de frontend que já estava sem commit. Nenhuma mudança no protocolo `pokemon-battle/4`, nas regras, nos contratos compartilhados ou nas dependências. O servidor continua decidindo todos os resultados; o catálogo, Pokémon, símbolos e atlas são locais.

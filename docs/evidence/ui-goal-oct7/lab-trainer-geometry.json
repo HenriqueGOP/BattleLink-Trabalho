@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Véspera",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Maré",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Téo Volt",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Brasa",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Nina Eco",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Flora",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Nival",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Rixa",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Aren Cume",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Lia Horizonte",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  },
+  {
+    "name": "Bento Ferrugem",
+    "feetX": 0.8188631846289752,
+    "feetY": 0.6189538043478261,
+    "found": true,
+    "inside": true,
+    "width": 1280,
+    "z": "9"
+  }
+]

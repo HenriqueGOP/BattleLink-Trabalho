@@ -1,0 +1,107 @@
+[
+  {
+    "heading": {
+      "bottom": 1275.65625,
+      "height": 26.4375,
+      "left": 131,
+      "right": 321,
+      "top": 1249.21875,
+      "width": 190,
+      "x": 131,
+      "y": 1249.21875
+    },
+    "portrait": {
+      "bottom": 1336.9375,
+      "height": 88,
+      "left": 29,
+      "right": 117,
+      "top": 1248.9375,
+      "width": 88,
+      "x": 29,
+      "y": 1248.9375
+    },
+    "separated": true,
+    "sprite": {
+      "bottom": 1336.9375,
+      "height": 88,
+      "left": 29,
+      "right": 117,
+      "top": 1248.9375,
+      "width": 88,
+      "x": 29,
+      "y": 1248.9375
+    },
+    "spriteContained": true,
+    "width": 360
+  },
+  {
+    "heading": {
+      "bottom": 880.671875,
+      "height": 27.59375,
+      "left": 163,
+      "right": 605,
+      "top": 853.078125,
+      "width": 442,
+      "x": 163,
+      "y": 853.078125
+    },
+    "portrait": {
+      "bottom": 952.375,
+      "height": 110,
+      "left": 37,
+      "right": 147,
+      "top": 842.375,
+      "width": 110,
+      "x": 37,
+      "y": 842.375
+    },
+    "separated": true,
+    "sprite": {
+      "bottom": 952.375,
+      "height": 110,
+      "left": 37,
+      "right": 147,
+      "top": 842.375,
+      "width": 110,
+      "x": 37,
+      "y": 842.375
+    },
+    "spriteContained": true,
+    "width": 768
+  },
+  {
+    "heading": {
+      "bottom": 722.609375,
+      "height": 36.796875,
+      "left": 503,
+      "right": 1071,
+      "top": 685.8125,
+      "width": 568,
+      "x": 503,
+      "y": 685.8125
+    },
+    "portrait": {
+      "bottom": 804.703125,
+      "height": 140,
+      "left": 341,
+      "right": 481,
+      "top": 664.703125,
+      "width": 140,
+      "x": 341,
+      "y": 664.703125
+    },
+    "separated": true,
+    "sprite": {
+      "bottom": 804.703125,
+      "height": 140,
+      "left": 341,
+      "right": 481,
+      "top": 664.703125,
+      "width": 140,
+      "x": 341,
+      "y": 664.703125
+    },
+    "spriteContained": true,
+    "width": 1280
+  }
+]

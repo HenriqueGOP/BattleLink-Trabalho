@@ -5,8 +5,8 @@ import { menuArtworkMetrics } from '../assets'
 export const SCENE_LAYOUT = Object.freeze({
   me: { x: 28, y: 86, depth: 1 },
   opponent: { x: 66, y: 65, depth: .82 },
-  // Dedicated upper-right ground point, outside both creature bounds and HUDs.
-  trainer: { x: 90, y: 35, depth: .7 },
+  // Feet on the arena floor, beside and slightly behind the opposing Pokémon.
+  trainer: { x: 82, y: 62, depth: .7 },
   maxTravel: 82,
   maxVerticalTravel: 22,
 })

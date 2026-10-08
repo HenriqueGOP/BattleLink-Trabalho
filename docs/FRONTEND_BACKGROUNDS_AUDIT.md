@@ -1,5 +1,8 @@
 # Fundos e estrutura dos menus
 
+Conferência integrada atual: [auditoria de 07/10](FRONTEND_COMPLETION_AUDIT_2026-10-07.md),
+incluindo os onze treinadores, três larguras e ajuste da posição na arena.
+
 ## Origem dos problemas
 
 - `HomePage` mostrava a mesma imagem `/arenas/forest.webp` em `.scene::before` tanto na partida rápida quanto no convite para amigos. As imagens distintas `quick-splash.webp` e `friends-splash.webp` apareciam apenas dentro dos painéis.

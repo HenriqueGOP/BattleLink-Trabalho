@@ -9,6 +9,7 @@ export interface MoveProfile {
   readonly family: MoveFamily
   readonly element: string
   readonly statusMove: boolean
+  readonly specialMove: boolean
   readonly anticipation: number
   readonly travel: number
   readonly recovery: number
@@ -67,6 +68,7 @@ export function moveProfile(moveId: string): MoveProfile | null {
     family,
     element: move.type,
     statusMove: move.category === 'Status',
+    specialMove: move.category === 'Special',
     anticipation: family === 'contact' || family === 'slash' ? 170 : 220,
     travel: family === 'contact' ? 310 : family === 'beam' ? 520 : 460,
     recovery: family === 'contact' || family === 'slash' ? 300 : 240,
@@ -86,5 +88,11 @@ export function actionVector(
   const distance = Math.hypot(x, y)
   if (distance < 1) return { x: 0, y: 0 }
   const travel = Math.min(distance * 0.45, SCENE_LAYOUT.maxTravel)
-  return { x: (x / distance) * travel, y: Math.max(-SCENE_LAYOUT.maxVerticalTravel, Math.min(SCENE_LAYOUT.maxVerticalTravel, (y / distance) * travel)) }
+  return {
+    x: (x / distance) * travel,
+    y: Math.max(
+      -SCENE_LAYOUT.maxVerticalTravel,
+      Math.min(SCENE_LAYOUT.maxVerticalTravel, (y / distance) * travel)
+    ),
+  }
 }

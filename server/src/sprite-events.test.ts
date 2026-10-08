@@ -7,6 +7,7 @@ import { AnimationDirector } from "../../client/src/lib/presentation/AnimationDi
 import { applyPresentedEvent } from "../../client/src/lib/presentation/BattleEventQueue";
 import { isChargingMove } from "../../client/src/lib/presentation/spriteRegistry";
 import { IMPACT } from "../../client/src/lib/presentation/impact";
+import { SCENE_LAYOUT } from "../../client/src/lib/presentation/sceneLayout";
 import {
   actionVector,
   moveProfile,
@@ -26,6 +27,13 @@ import {
 } from "../../client/src/lib/presentation/motionPreference";
 
 function profileTests() {
+  const { trainer, opponent } = SCENE_LAYOUT;
+  assert.ok(trainer.x > opponent.x && trainer.x < 90,
+    "Treinador fica ao lado do adversário, com margem na arena");
+  assert.ok(Math.abs(trainer.y - opponent.y) <= 5,
+    "Pés do treinador ficam próximos ao piso do Pokémon");
+  assert.ok(Math.hypot(trainer.x - opponent.x, trainer.y - opponent.y) < 20,
+    "Treinador permanece próximo ao Pokémon adversário");
   for (const [id, family] of [
     ["tackle", "contact"],
     ["slash", "slash"],
@@ -62,6 +70,9 @@ function profileTests() {
     "Feixe usa geometria distinta do orb",
   );
   assert.equal(projectileMove("shadowball"), true);
+  assert.equal(moveProfile("flamethrower")?.specialMove, true);
+  assert.equal(moveProfile("airslash")?.specialMove, true);
+  assert.equal(moveProfile("tackle")?.specialMove, false);
   assert.equal(
     emissionClip("calmmind"),
     "psychic",
@@ -496,6 +507,13 @@ async function directorTests() {
       );
       assert.equal(commits, 1);
       assert.equal(requestedAtlases, 0, 'move não inicia atlas antes de um resultado confirmado');
+      assert.ok(
+        Node.animated.slice(before).some((entry) => entry.element === myBody),
+      );
+      assert.ok(
+        Node.animated.slice(before).every((entry) => entry.element !== foeBody),
+        "Emissão não antecipa reação ao status",
+      );
       const semanticEvents = [
         { type: 'miss', actor: 'p1s0', target: 'p2s0' },
         { type: 'immune', target: 'p2s0' },
@@ -514,14 +532,35 @@ async function directorTests() {
         assert.equal(labels[0].node.textContent, ['ERROU!', 'NÃO AFETA!', '4 acertos'][index]);
         assert.equal(labels[0].node.parent, null, 'Texto transitório é removido');
       }
+      for (const actor of ['p1s0', 'p2s0'] as const) {
+        for (const moveId of ['flamethrower', 'airslash', 'psychic']) {
+          const animationsBefore = Node.animated.length;
+          await gestureDirector.run({ type: 'move', actor,
+            target: actor === 'p1s0' ? 'p2s0' : 'p1s0', moveId,
+            round: 1, sequence: 40, audience: 'public' }, wire,
+            new AbortController().signal, () => {});
+          const gestures = Node.animated.slice(animationsBefore);
+          assert.equal(gestures.length, 1, 'Especial tem um gesto corporal finito');
+          assert.equal(gestures[0].element, actor === 'p1s0' ? myBody : foeBody,
+            'Somente o corpo do atacante recebe o gesto, nos dois lados');
+          assert.ok(gestures[0].frames.some(frame => String(frame.transform).includes('scale(1.06)')),
+            'Especial prepara e libera energia, inclusive quando sua família é corte');
+          assert.equal(gestures[0].frames[0].transform, gestures[0].frames.at(-1)!.transform,
+            'Gesto retorna ao ponto inicial');
+          assert.equal(gestures[0].options.fill, 'none', 'Não deixa transformações persistentes');
+          assert.equal(requestedAtlases, 0, 'Execução especial não antecipa impacto no alvo');
+        }
+      }
+      const reducedDirector = new AnimationDirector({ stage: () => stage as unknown as HTMLElement,
+        sprite: side => (side === 'me' ? me : foe) as unknown as HTMLElement,
+        reducedMotion: () => true });
+      const reducedBefore = Node.animated.length;
+      await reducedDirector.run({ type: 'move', actor: 'p1s0', target: 'p2s0',
+        moveId: 'flamethrower', round: 1, sequence: 41, audience: 'public' }, wire,
+        new AbortController().signal, () => {});
+      reducedDirector.dispose();
+      assert.equal(Node.animated.length, reducedBefore, 'Preferência reduzida desativa o gesto especial');
       globalThis.Image = undefined as unknown as typeof Image;
-      assert.ok(
-        Node.animated.slice(before).some((entry) => entry.element === myBody),
-      );
-      assert.ok(
-        Node.animated.slice(before).every((entry) => entry.element !== foeBody),
-        "Emissão não antecipa reação ao status",
-      );
       const applied = Node.animated.length;
       await gestureDirector.run(
         {

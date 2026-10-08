@@ -165,6 +165,7 @@
 }
 .portrait {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
   border-radius: 12px;
   background: var(--portrait-face);

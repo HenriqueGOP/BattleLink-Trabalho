@@ -1,0 +1,3647 @@
+[
+  {
+    "bg": [
+      7,
+      18,
+      29
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 11.02,
+    "size": 12,
+    "text": "02 / 03 · preparar golpes",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      18,
+      29
+    ],
+    "color": "rgb(245, 249, 252)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 17.82,
+    "size": 38.4,
+    "text": "Prepare sua equipe",
+    "threshold": 3,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      18,
+      29
+    ],
+    "color": "rgb(210, 224, 235)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 14.01,
+    "size": 14,
+    "text": "Até 4 golpes por Pokémon. A troca é opcional — os sugeridos já valem.",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 13,
+    "text": "Sair",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      24,
+      60,
+      80
+    ],
+    "color": "rgb(242, 248, 252)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.89,
+    "size": 16,
+    "text": "Desafio de Véspera",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      24,
+      60,
+      80
+    ],
+    "color": "rgb(209, 228, 239)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.91,
+    "size": 13,
+    "text": "Duelo rápido · 3 Pokémon · Normal",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      24,
+      60,
+      80
+    ],
+    "color": "rgb(209, 228, 239)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.91,
+    "size": 13,
+    "text": "3/3 escolhidos",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      24,
+      60,
+      80
+    ],
+    "color": "rgb(209, 228, 239)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.91,
+    "size": 13,
+    "text": "Equipe pronta ✓",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      46,
+      73
+    ],
+    "color": "rgb(50, 224, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.78,
+    "size": 16,
+    "text": "Sua equipe · 3/3",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      46,
+      73
+    ],
+    "color": "rgb(210, 224, 235)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.34,
+    "size": 13,
+    "text": "O primeiro Pokémon inicia a batalha",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 13,
+    "text": "Charizard",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 18,
+    "text": "→",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.5,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 12,
+    "text": "02",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 13,
+    "text": "Pikachu",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 18,
+    "text": "←",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 18,
+    "text": "→",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.5,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 12,
+    "text": "03",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 13,
+    "text": "Squirtle",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 18,
+    "text": "←",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.5,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      16,
+      46,
+      73
+    ],
+    "color": "rgb(245, 249, 252)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.15,
+    "size": 16,
+    "text": "Ordem atual: 1, Charizard; 2, Pikachu; 3, Squirtle",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      46,
+      73
+    ],
+    "color": "rgb(50, 224, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.78,
+    "size": 12,
+    "text": "3 / 3",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 9,
+    "text": "01",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 13,
+    "text": "Charizard",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "4 golpes equipados",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.2,
+    "size": 9,
+    "text": "02",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(245, 249, 252)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 14.87,
+    "size": 13,
+    "text": "Pikachu",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.2,
+    "size": 12,
+    "text": "4 golpes equipados",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.2,
+    "size": 9,
+    "text": "03",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(245, 249, 252)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 14.87,
+    "size": 13,
+    "text": "Squirtle",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      11,
+      36,
+      61
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.2,
+    "size": 12,
+    "text": "4 golpes equipados",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Pokémon 1 / 3 · Nível 50",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.82,
+    "size": 32,
+    "text": "Charizard",
+    "threshold": 3,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Voador",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Habilidade",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(133, 243, 206)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 12.62,
+    "size": 12,
+    "text": "HP",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Pronto para a arena",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.84,
+    "size": 12,
+    "text": "Seu conjunto de golpes",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.65,
+    "size": 20,
+    "text": "Golpes equipados",
+    "threshold": 3,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(133, 243, 206)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 12.62,
+    "size": 11,
+    "text": "1",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Físico",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(133, 243, 206)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 12.62,
+    "size": 11,
+    "text": "2",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(133, 243, 206)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 12.62,
+    "size": 11,
+    "text": "3",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(133, 243, 206)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 12.62,
+    "size": 11,
+    "text": "4",
+    "threshold": 4.5,
+    "weight": "600"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 18,
+    "text": "×",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 14,
+    "text": "Manter sugeridos",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      200,
+      56,
+      68
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 5.12,
+    "size": 14,
+    "text": "Salvar golpes",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.65,
+    "size": 20,
+    "text": "Golpes disponíveis",
+    "threshold": 3,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.84,
+    "size": 12,
+    "text": "136 no catálogo deste Pokémon",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 15.65,
+    "size": 16,
+    "text": "Buscar golpe pelo nome",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      8,
+      31,
+      53
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.84,
+    "size": 12,
+    "text": "Mostrar somente golpes compatíveis",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      23,
+      111,
+      85
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 6.1,
+    "size": 13,
+    "text": "✓",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      51,
+      79
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.47,
+    "size": 12,
+    "text": "Causa dano",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      23,
+      111,
+      85
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 6.1,
+    "size": 13,
+    "text": "✓",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      68,
+      34,
+      56
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 7.8,
+    "size": 12,
+    "text": "Pode causar Queimadura",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      23,
+      111,
+      85
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 6.1,
+    "size": 13,
+    "text": "✓",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Físico",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      68,
+      34,
+      56
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 7.8,
+    "size": 12,
+    "text": "Pode causar Queimadura",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.16,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.16,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      23,
+      111,
+      85
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 6.1,
+    "size": 13,
+    "text": "✓",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 19.66,
+    "size": 12,
+    "text": "Fogo",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Especial",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Poder",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Precisão",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "PP",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      68,
+      34,
+      56
+    ],
+    "color": "rgb(255, 173, 187)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 7.8,
+    "size": 12,
+    "text": "Reduz o Ataque Especial do usuário",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.16,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 9.16,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      7,
+      30,
+      52
+    ],
+    "color": "rgb(182, 212, 237)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 10.95,
+    "size": 12,
+    "text": "Detalhes do golpe",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      46,
+      73
+    ],
+    "color": "rgb(179, 201, 217)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 8.13,
+    "size": 12,
+    "text": "Confirme quando terminar de ajustar seus golpes.",
+    "threshold": 4.5,
+    "weight": "400"
+  },
+  {
+    "bg": [
+      16,
+      45,
+      71
+    ],
+    "color": "rgb(243, 248, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 13.22,
+    "size": 14,
+    "text": "← Voltar à seleção",
+    "threshold": 4.5,
+    "weight": "700"
+  },
+  {
+    "bg": [
+      200,
+      56,
+      68
+    ],
+    "color": "rgb(255, 255, 255)",
+    "gradient": true,
+    "pass": true,
+    "ratio": 5.12,
+    "size": 16,
+    "text": "Aceitar equipe e batalhar ▶",
+    "threshold": 4.5,
+    "weight": "700"
+  }
+]

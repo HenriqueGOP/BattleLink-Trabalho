@@ -1,5 +1,8 @@
 # Refatoração visual Battle Link
 
+Conferência atual e correções de 07/10: [auditoria final](FRONTEND_COMPLETION_AUDIT_2026-10-07.md).
+Os resultados de 03/10 abaixo permanecem identificados como histórico.
+
 ## Direção antes da arte
 
 Painéis de console em azul profundo, bordas angulares ciano, ações principais vermelhas. Textos e dados permanecem HTML. Referências Genshin estudadas pela composição, linhas de ação, espaço negativo e luz; personagens e figurinos próprios do projeto.
@@ -46,15 +49,16 @@ O [manifesto da interface](../client/public/interface/manifest.json) declara cam
 dimensões, bytes e alfa dos 43 arquivos: 24 exclusivos de menu, marca `logo.webp`
 e 18 `type-<id>.webp`. O maior arquivo de interface mede 301 KiB.
 
-Cada treinador usa `client/public/trainers/<id>/splash.webp` no painel PvE,
-`portrait.webp` no seletor e `motion.webp` na entrada e resultado. Os arquivos
-anteriores `art.webp` e `atlas.webp` foram preservados. São 55 WebP de treinador.
+Cada treinador usa `client/public/trainers/<id>/art.webp` transparente sobre seu
+`background.webp` no painel PvE, `portrait.webp` no seletor e `motion.webp` na entrada
+e resultado. `splash.webp` e `atlas.webp` foram preservados. São 55 WebP de personagem,
+além de onze fundos.
 O [manifesto dos treinadores](../client/public/trainers/manifest.json) declara alfa,
 orçamento e geometria. Splashes/ilustrações têm até 350 KiB; atlas até 150 KiB.
 
-`motion.webp` mede 960×400, com seis colunas (idle, prepare, throw, follow,
-celebrate, defeated) e duas linhas de quadros. Célula 160×200, âncora 80/194,
-escala única por personagem. Os 132 quadros foram inspecionados; o empacotamento
+`motion.webp` atualmente mede 960×1200, com seis colunas (idle, prepare, throw, follow,
+celebrate, defeated) e seis linhas de quadros. Célula 160×200, âncora 80/194,
+escala única por personagem. Os 396 quadros têm geometria e hashes verificados; o empacotamento
 recorta margens e fragmentos de células vizinhas sem pintar pixels. Os estados
 de lançamento de cinco personagens foram reordenados para ir do impulso à soltura.
 Prompts: [trainer-motion.json](art-prompts/trainer-motion.json). Fontes PNG:
@@ -132,9 +136,9 @@ registram seus estados anteriores.
   Os testes de transporte usam conexões independentes.
 - Largura de 360 px é uma conferência de viewport. Desempenho/FPS em celular
   físico não foi medido.
-- Atlas têm dois quadros por estado. Representam poses distintas e identidade
+- Atlas atuais têm seis quadros por estado. Representam poses distintas e identidade
   individual, com transições coordenadas; não são animações de caminhada.
 - Salas em memória não sobrevivem a reinício do servidor. Contas, campanha e
   distribuição entre servidores permanecem fora do escopo aprovado.
-- Alterações anteriores e novas permanecem na árvore de trabalho; não houve
-  commit, push ou publicação.
+- O registro original de 03/10 antecede os commits `4ced922` e `dfb6992`,
+  que preservaram e enviaram o trabalho anterior. A revisão atual está na auditoria final.

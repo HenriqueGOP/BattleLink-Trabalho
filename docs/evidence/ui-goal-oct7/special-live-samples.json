@@ -1,0 +1,377 @@
+[
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "none",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "none",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "idle"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "brightness(1)",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "info"
+  },
+  {
+    "sprites": [
+      {
+        "filter": "none",
+        "height": 159.890625,
+        "inline": null,
+        "side": "opponent",
+        "transform": "none",
+        "width": 159.890625,
+        "x": 666.5234375,
+        "y": 138.5
+      },
+      {
+        "filter": "none",
+        "height": 195,
+        "inline": null,
+        "side": "me",
+        "transform": "none",
+        "width": 195,
+        "x": 220.328125,
+        "y": 199.15625
+      }
+    ],
+    "stageAnimation": "idle"
+  }
+]

@@ -410,6 +410,7 @@ export class AnimationDirector implements EventRunner {
           if (!profile) break
           this.hold(scope, actor)
           const contact =
+            !profile.specialMove &&
             (profile.family === 'contact' || profile.family === 'slash') &&
             event.target !== event.actor
           const actorPoint = sceneAnchor(actor),
@@ -420,21 +421,48 @@ export class AnimationDirector implements EventRunner {
             event.actor.startsWith(wire.viewer) ? 1 : -1
           )
           await Promise.all([
-            actorBody && contact
-              ? scope.lunge(actorBody, vector, profile)
-              : scope.animate(
+            profile.specialMove
+              ? scope.animate(
                   actorBody,
                   [
-                    { transform: 'translateY(0) ' },
-                    { transform: 'translateY(3px) ', offset: 0.2 },
-                    { transform: 'translateY(-5px) ', offset: 0.55 },
-                    { transform: 'translateY(0) ' },
+                    { transform: 'translate(0, 0) scale(1)', filter: 'brightness(1)' },
+                    {
+                      transform: 'translateY(4px) scale(.97)',
+                      offset: 0.2,
+                      filter: 'brightness(1)',
+                    },
+                    {
+                      transform: 'translateY(-12px) scale(1.06)',
+                      offset: 0.48,
+                      filter: 'brightness(1.18)',
+                    },
+                    {
+                      transform: `translate(${event.actor.startsWith(wire.viewer) ? 8 : -8}px, -6px) scale(1.02)`,
+                      offset: 0.7,
+                      filter: 'brightness(1.08)',
+                    },
+                    { transform: 'translate(0, 0) scale(1)', filter: 'brightness(1)' },
                   ],
                   {
                     duration: profile.anticipation + profile.travel + profile.recovery,
                     easing: 'ease-in-out',
                   }
-                ),
+                )
+              : actorBody && contact
+                ? scope.lunge(actorBody, vector, profile)
+                : scope.animate(
+                    actorBody,
+                    [
+                      { transform: 'translateY(0) ' },
+                      { transform: 'translateY(3px) ', offset: 0.2 },
+                      { transform: 'translateY(-5px) ', offset: 0.55 },
+                      { transform: 'translateY(0) ' },
+                    ],
+                    {
+                      duration: profile.anticipation + profile.travel + profile.recovery,
+                      easing: 'ease-in-out',
+                    }
+                  ),
           ])
           break
         }
